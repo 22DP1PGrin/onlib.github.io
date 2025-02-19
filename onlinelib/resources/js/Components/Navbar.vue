@@ -218,16 +218,17 @@
         cursor: pointer; /* Peles formāts */
         outline: none; /* Noņemam noklusēto apmales stāvokli */
         margin-right: 7px; /* Atstarpe no labās puses */
-        width: 33px;
-        height: 33px;
+        margin-top: 1px;
+        width: 30px;
+        height: 30px;
     }
 
    /* Meklēšanas joslas aktīvā stāvoklis */
    .search.active .input {
-       width: 150px;
-       height: 5px;
+       width: 180px;
+       height: 23px;
        opacity: 1; /* Parādam elementu */
-       margin: 5px;
+       margin: 10px;
    }
 
    .input{
@@ -264,10 +265,10 @@
    /* Responsive Design */
     @media screen and (max-width: 1164px){
         .search{
-            margin-top: -75px; /* Atstarpe no augšas */
+            margin-top: -67px; /* Atstarpe no augšas */
         }
         .pressed2{
-            margin-top: -48px; /* Atstarpe no augšas */
+            margin-top: -46px; /* Atstarpe no augšas */
         }
         .marks{
             display:none; /* Paslēpj navigācijas saites */
@@ -337,17 +338,20 @@
             margin-top: 15px;
         }
         .search{
-            margin-top:13px
+            margin-top:0;
         }
         .search .btn{
-            padding: 0px;
+            padding: 0;
             width: 28px;
             height: 28px;
+            margin-top: 13px;
         }
-        .search .input {
-            padding: 8px;
+        .search.active .input {
+            width: 160px;
+            height: 20px;
+            margin-bottom: 0;
+            margin-top:13px;
         }
-
         .pressed2{
             display: none;
         }
@@ -363,15 +367,15 @@
             padding: 8px; /* Iekšējās atstarpes */
             width: 120px !important;
         }
-        .search{
-            margin-top: 13px;
-        }
         .search .btn{
-            padding: 0px;
-            width: 28px;
-            height: 28px;
+            margin-top: 15px;
         }
-
+        .search.active .input {
+            width: 160px;
+            height: 20px;
+            margin-bottom: 0;
+            margin-top:16px;
+        }
         .pressed3{
             margin-top: 15px;
         }
@@ -393,32 +397,42 @@
 
 <script>
 
-   export default {
-     mounted() {
-       const toggleButton = document.querySelector('.toggle-button');
-       const navbarLinks = document.querySelector('.navbar-links');
+export default {
+    mounted() {
+        this.setupHamburgerMenu(); // Настройка гамбургер-меню
+        this.setupSearch(); // Настройка поиска
+    },
+    methods: {
+        // Логика для гамбургер-меню
+        setupHamburgerMenu() {
+            const toggleButton = this.$el.querySelector('.toggle-button');
+            const navbarLinks = this.$el.querySelector('.navbar-links');
 
-       if (toggleButton && navbarLinks) {
-         toggleButton.addEventListener('click', () => {
-           navbarLinks.classList.toggle('active');
-         });
-       }
-    }
-   }
-
-   document.addEventListener('DOMContentLoaded', () => {
-    const search = document.querySelector('.search');
-    const btn = document.querySelector('.btn');
-    const input = document.querySelector('.input');
-
-    if (btn) {
-        btn.addEventListener('click', () => {
-            if (input.value.trim() === '') {
-                search.classList.toggle('active');
-            } else {
-                input.focus();
+            if (toggleButton && navbarLinks) {
+                toggleButton.addEventListener('click', () => {
+                    navbarLinks.classList.toggle('active');
+                });
             }
-        });
+        },
+        // Логика для поиска
+        setupSearch() {
+            const search = this.$el.querySelector('.search');
+            const btn = this.$el.querySelector('.btn');
+            const input = this.$el.querySelector('.input');
+
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    if (input.value.trim() === '') {
+                        search.classList.toggle('active');
+                        if (search.classList.contains('active')) {
+                            input.focus(); // Фокусируемся на поле ввода, если оно появилось
+                        }
+                    } else {
+                        input.focus();
+                    }
+                });
+            }
+        }
     }
-});
+}
 </script>
