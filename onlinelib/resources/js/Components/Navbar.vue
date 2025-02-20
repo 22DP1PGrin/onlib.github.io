@@ -50,96 +50,96 @@
 
    /* Navigācijas josla */
    .navbar {
-        display: flex;
-        align-items: center; /* Vertikāla izlīdzināšana */
-
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 1000; /* Nodrošina, ka navigācija ir virs citiem elementiem */
-        height: 55px;
-        margin: 0;  /* Noņem arpusejo atstarpi */
-        padding: 0;  /* Noņem iekšējo atstarpi */
-        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna navigācijas joslas apakšā */
-        background-color: #c58667; /* Fona krāsa */
-        flex-grow: 1; /* Izplešas, lai aizpildītu vietu */
+       display: flex;
+       align-items: center; /* Vertikāla izlīdzināšana */
+       top: 0;
+       left: 0;
+       right: 0;
+       z-index: 1000; /* Nodrošina, ka navigācija ir virs citiem elementiem */
+       height: 55px;
+       margin: 0;  /* Noņem arpusejo atstarpi */
+       padding: 0;  /* Noņem iekšējo atstarpi */
+       box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna navigācijas joslas apakšā */
+       background-color: #c58667; /* Fona krāsa */
+       flex-grow: 1; /* Izplešas, lai aizpildītu vietu */
    }
    .navbar-links {
-        display: none; /* Paslēpjam navigācijas saites */
-        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2); /* Ēna */
-        border-top: 1px solid rgba(26, 16, 8, 0.8); /*augšējā apmales vērtības */
-        border-bottom: 1px solid rgba(26, 16, 8, 0.8); /*apakšējā apmales vērtības */
+       display: none; /* Paslēpjam navigācijas saites */
+       box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2); /* Ēna */
+       border-top: 1px solid rgba(26, 16, 8, 0.8); /*augšējā apmales vērtības */
+       border-bottom: 1px solid rgba(26, 16, 8, 0.8); /*apakšējā apmales vērtības */
    }
 
    .navbar-links ul {
-        margin: 0;
-        padding: 0;
-        display: flex;
+       margin: 0;
+       padding: 0;
+       display: flex;
 
    }
    li {
-        display: inline; /* Lai saites būtu vienā rindā */
+       display: inline; /* Lai saites būtu vienā rindā */
     }
 
    .navbar-links li {
-        list-style: none; /* Noņemam saraksta punktus */
+       list-style: none; /* Noņemam saraksta punktus */
    }
 
    .navbar-links a {
-        text-decoration: none; /* Noņemam noklusēto teksta apakšsvītrojumu */
-        color: rgba(26, 16, 8, 0.8); /*Teksta krāsa */
-        padding: 0.5rem; /* Iekšējās atstarpes */
-        display: block; /* Bloka elementi */
+       text-decoration: none; /* Noņemam noklusēto teksta apakšsvītrojumu */
+       color: rgba(26, 16, 8, 0.8); /*Teksta krāsa */
+       padding: 0.5rem; /* Iekšējās atstarpes */
+       display: block; /* Bloka elementi */
    }
 
    .navbar-links a:hover {
-        color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
+       color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
    }
    .navbar-links a:hover .fa{
-        color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
+       color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
    }
 
    /* Pogas izvēlne */
    .toggle-button {
-        position: absolute; /* Absolūta pozīcija */
-        margin-left: 60px; /* Atstarpe no kreisās puses */
-        top: 1.2rem; /* Atstarpe no augšas */
-        display: none; /* Paslēpjam pogu */
-        flex-direction: column; /* Kolonnas izkārtojums */
-        justify-content: space-between; /* Horizontāla izlīdzināšana */
-        width: 30px; /* Platums */
-        height: 21px; /* Augstums */
+       position: absolute; /* Absolūta pozīcija */
+       margin-left: 60px; /* Atstarpe no kreisās puses */
+       top: 1.2rem; /* Atstarpe no augšas */
+       display: none; /* Paslēpjam pogu */
+       flex-direction: column; /* Kolonnas izkārtojums */
+       justify-content: space-between; /* Horizontāla izlīdzināšana */
+       width: 30px; /* Platums */
+       height: 19px; /* Augstums */
    }
    .toggle-button:hover .bar {
-        background-color: rgba(255, 187, 142, 0.8); /* Mainam krāsu, kad pele tiek pārvilkta */
+       background-color: rgba(255, 187, 142, 0.8); /* Mainam krāsu, kad pele tiek pārvilkta */
    }
 
    /* Pogas izvēlnes elementi */
    .toggle-button .bar {
-        height: 3px;
-        width: 80%;
-        background-color: rgba(26, 16, 8, 0.8);
-        border-radius: 10px; /* Noapaļo apmalas */
+       height: 3px;
+       width: 80%;
+       background-color: rgba(26, 16, 8, 0.8);
+       border-radius: 10px; /* Noapaļo apmalas */
    }
 
    .marks{
-        margin-left:-45px
+       margin-left:-45px;
+       padding: 9px;
    }
 
    .pressed1nav{
-        color: rgba(26, 16, 8, 0.8); /*Teksta krāsa */
-        text-align: center; /* Centrējam tekstu */
-        text-decoration: none; /* Noņemam noklusēto teksta apakšsvītrojumu */
-        font-size: 17px; /* Fonta izmērs navigācijas tekstam */
-        cursor: pointer; /* Mainam peles formu uz rādītāju */
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
-        margin: 7px; /* Atstarpe ap elementiem */
+       color: rgba(26, 16, 8, 0.8); /*Teksta krāsa */
+       text-align: center; /* Centrējam tekstu */
+       text-decoration: none; /* Noņemam noklusēto teksta apakšsvītrojumu */
+       font-size: 17px; /* Fonta izmērs navigācijas tekstam */
+       cursor: pointer; /* Mainam peles formu uz rādītāju */
+       font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
+       margin: 7px; /* Atstarpe ap elementiem */
     }
 
    .account{
-        display: flex; /* Flexbox for layout */
-        margin-left: auto; /* Novietojam konta bloku pa labi */
-        text-align: center; /* Centrējam tekstu */
+       display: flex; /* Flexbox for layout */
+       margin-left: auto; /* Novietojam konta bloku pa labi */
+       text-align: center; /* Centrējam tekstu */
    }
 
    .pressed1{
@@ -155,17 +155,17 @@
 
    .pressed2{
        color: rgba(26, 16, 8, 0.8); /*Teksta krāsa */
-       margin: 7px;
+       margin: 9px;
        text-decoration: none; /* Noņemam noklusēto teksta apakšsvītrojumu */
        font-size: 17px; /* Fonta izmērs navigācijas tekstam */
        font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
    }
 
    .pressed3{
-        display:none;
-        text-decoration: none; /* Noņemam noklusēto teksta apakšsvītrojumu */
-        margin-top: 13px;
-        margin-right:15px ;
+       display:none;
+       text-decoration: none; /* Noņemam noklusēto teksta apakšsvītrojumu */
+       margin-top: 13px;
+       margin-right:15px ;
     }
     .pressed3:hover .fa{
         color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
@@ -179,34 +179,34 @@
     }
 
    .pressed2:hover .fa{
-       color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
+        color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
    }
    .pressed2:hover {
-       color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
+        color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
    }
 
     /* Meklēšanas josla */
    .search {
-       display: flex;  /* Flexbox izkārtojums konta sadaļai */
-       align-items: center;  /* Elementu vertikāla izlīdzināšana */
+        display: flex;  /* Flexbox izkārtojums konta sadaļai */
+        align-items: center;  /* Elementu vertikāla izlīdzināšana */
    }
 
    .search:hover {
-       transform: none; /*noņemam transformāciju, kad pele tiek pārvilkta */
+        transform: none; /*noņemam transformāciju, kad pele tiek pārvilkta */
    }
 
    /* Ievades lauks meklēšanai */
    .search .input {
-       background-color: #ffffff; /*Krasa fona */
-       border: 0; /* Noņemam apmales */
-       border-radius: 20px; /* Noapaļo apmalas*/
-       border-color: rgba(26, 16, 8, 0.8); /* Mainam apmales krāsu */
-       font-size: 15px; /* Fonta izmērs */
-       padding: 10px; /* Iekšējās atstarpes */
-       height: 10px;
-       width: 0; /* Sakam ar nulles platumu */
-       overflow: hidden; /* Paslēpjam pārplūdes elementus */
-       opacity: 0; /* Paslēpjam elementu */
+        background-color: #ffffff; /*Krasa fona */
+        border: 0; /* Noņemam apmales */
+        border-radius: 20px; /* Noapaļo apmalas*/
+        border-color: rgba(26, 16, 8, 0.8); /* Mainam apmales krāsu */
+        font-size: 15px; /* Fonta izmērs */
+        padding: 10px; /* Iekšējās atstarpes */
+        height: 10px;
+        width: 0; /* Sakam ar nulles platumu */
+        overflow: hidden; /* Paslēpjam pārplūdes elementus */
+        opacity: 0; /* Paslēpjam elementu */
    }
 
    /* Poga meklēšanai */
@@ -214,7 +214,7 @@
         background-color: #c58667;
         border: 2px solid rgba(26, 16, 8, 0.8); /*apmales vērtības */
         border-radius: 20px;
-        padding: 2px; /* Iekšējās atstarpes */
+        padding: 0; /* Iekšējās atstarpes */
         cursor: pointer; /* Peles formāts */
         outline: none; /* Noņemam noklusēto apmales stāvokli */
         margin-right: 7px; /* Atstarpe no labās puses */
@@ -225,19 +225,20 @@
 
    /* Meklēšanas joslas aktīvā stāvoklis */
    .search.active .input {
-       width: 180px;
-       height: 23px;
-       opacity: 1; /* Parādam elementu */
-       margin: 10px;
+        width: 180px;
+        height: 23px;
+        opacity: 1; /* Parādam elementu */
+        margin: 10px;
    }
 
    .input{
-       color: rgba(26, 16, 8, 0.8);
-       font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
+        color: rgba(26, 16, 8, 0.8);
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
    }
 
    .input:focus {
-       outline: none; /* Noņemam noklusēto apmales stāvokli */
+       outline: none !important; /* Noņemam noklusēto apmales stāvokli */
+       box-shadow: none !important;
    }
    .btn:hover {
        border-color: rgba(255, 187, 142, 0.8); /* Mainam apmales krāsu, kad pele tiek pārvilkta */
@@ -250,10 +251,10 @@
    }
 
    .SmallLogo{
-        display:none;
-        position: absolute;
-        margin-top: 2px;
-        margin-left:7px;
+       display:none;
+       position: absolute;
+       margin-top: 2px;
+       margin-left:7px;
    }
 
    .BigLogo{
@@ -341,7 +342,6 @@
             margin-top:0;
         }
         .search .btn{
-            padding: 0;
             width: 28px;
             height: 28px;
             margin-top: 13px;
@@ -358,6 +358,10 @@
         .navbar-links{
             margin-top: 12px;
         }
+        .pressed1{
+            font-size: 16px;
+        }
+
     }
     @media (max-width: 350px){
         .SmallLogo{
@@ -369,6 +373,7 @@
         }
         .search .btn{
             margin-top: 15px;
+            padding: -5px;
         }
         .search.active .input {
             width: 160px;
@@ -391,6 +396,9 @@
         }
         .navbar-links{
             margin-top: 10px;
+        }
+        .pressed1{
+            font-size: 15px;
         }
     }
    </style>

@@ -23,10 +23,10 @@
     /* Kājenes stils */
     footer {
         background-color: #c58667; /* Fona krāsa */
-        padding: 25px; /* Iekšējās atstarpes */
+        padding: 20px; /* Iekšējās atstarpes */
         display: flex; /* Flexbox izkārtojums */
         flex-direction: column; /* Kolonnas izkārtojums */
-        height: 200px; /* Augstums */
+        height: 180px; /* Augstums */
         box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna navigācijas joslas apakšā */
     }
 
@@ -67,7 +67,7 @@
         color: rgba(20, 13, 7, 0.8); /* Teksta krāsa */
         font-size: 16px; /* Fonta izmērs */
         font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
-        margin-top: 40px; /* Atstarpe no augšas */
+        margin-top: 35px; /* Atstarpe no augšas */
         text-align: center; /* Centrējam tekstu */
         cursor: context-menu; /* Peles formāts */
     }
@@ -76,15 +76,46 @@
 
     @media screen and (max-width: 800px) {
         footer {
-            padding: 20px; /* Iekšējās atstarpes */
+            padding:25px; /* Iekšējās atstarpes */
+            height: 175px;
         }
         .footer-links {
+            margin-top: -10px;
             gap: 10px; /* Atstarpes starp saitēm */
             font-size: 16px; /* Fonta lielums */
         }
         .info {
-            margin-top: 18px; /* Atstarpe no augšas */
+            margin-top: 30px; /* Atstarpe no augšas */
             font-size: 15px;
+        }
+    }
+    @media screen and (max-width: 484px) {
+        footer {
+            padding:25px; /* Iekšējās atstarpes */
+            height: 170px;
+        }
+        .footer-links {
+            margin-top: -15px;
+            gap: 7px; /* Atstarpes starp saitēm */
+            font-size: 16px; /* Fonta lielums */
+        }
+        .info {
+            margin-top: 20px; /* Atstarpe no augšas */
+        }
+    }
+    @media screen and (max-width: 338px) {
+        footer {
+            padding:20px; /* Iekšējās atstarpes */
+            height: 165px;
+        }
+        .footer-links {
+            margin-top: -16px;
+            gap: 3px; /* Atstarpes starp saitēm */
+            font-size: 15px; /* Fonta lielums */
+        }
+        .info {
+            margin-top: 7px; /* Atstarpe no augšas */
+            font-size: 14px; /* Fonta lielums */
         }
     }
 </style>
