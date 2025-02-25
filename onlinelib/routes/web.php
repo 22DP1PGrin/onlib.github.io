@@ -29,5 +29,9 @@ Route::get('/', function () {
     return Inertia::render('HomeView', []);
 })->name('home');
 
+Route::get('/contentpolicy', function () {
+    return Inertia::render('ContentPolicy', []);
+})->name('contentpolicy');
+
 require __DIR__.'/auth.php';
 

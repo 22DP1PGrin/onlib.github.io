@@ -56,7 +56,7 @@
        left: 0;
        right: 0;
        z-index: 1000; /* Nodrošina, ka navigācija ir virs citiem elementiem */
-       height: 55px;
+       height: 55px !important;
        margin: 0;  /* Noņem arpusejo atstarpi */
        padding: 0;  /* Noņem iekšējo atstarpi */
        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna navigācijas joslas apakšā */
@@ -68,6 +68,7 @@
        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2); /* Ēna */
        border-top: 1px solid rgba(26, 16, 8, 0.8); /*augšējā apmales vērtības */
        border-bottom: 1px solid rgba(26, 16, 8, 0.8); /*apakšējā apmales vērtības */
+
    }
 
    .navbar-links ul {
@@ -295,10 +296,10 @@
             transition: height 0.3s ease; /* Mainam joslas augstumu */
         }
 
-         .navbar.active {
+         .navbar {
            position: relative;
            height: auto; /* Augstums */
-           z-index: 0; /* Nodrošina, ka navigācija ir virs citiem elementiem */
+           z-index: 1000 !important; /* Nodrošina, ka navigācija ir virs citiem elementiem */
          }
 
          .navbar-links ul {
@@ -407,11 +408,11 @@
 
 export default {
     mounted() {
-        this.setupHamburgerMenu(); // Настройка гамбургер-меню
-        this.setupSearch(); // Настройка поиска
+        this.setupHamburgerMenu();
+        this.setupSearch();
     },
     methods: {
-        // Логика для гамбургер-меню
+
         setupHamburgerMenu() {
             const toggleButton = this.$el.querySelector('.toggle-button');
             const navbarLinks = this.$el.querySelector('.navbar-links');
@@ -422,7 +423,7 @@ export default {
                 });
             }
         },
-        // Логика для поиска
+
         setupSearch() {
             const search = this.$el.querySelector('.search');
             const btn = this.$el.querySelector('.btn');
@@ -433,7 +434,7 @@ export default {
                     if (input.value.trim() === '') {
                         search.classList.toggle('active');
                         if (search.classList.contains('active')) {
-                            input.focus(); // Фокусируемся на поле ввода, если оно появилось
+                            input.focus();
                         }
                     } else {
                         input.focus();
