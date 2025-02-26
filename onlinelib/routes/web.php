@@ -27,11 +27,15 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('HomeView', []);
-})->name('home');
+})->name('Home');
 
 Route::get('/contentpolicy', function () {
     return Inertia::render('ContentPolicy', []);
-})->name('contentpolicy');
+})->name('ContentPolicy');
+
+Route::get('/termsofservice', function () {
+    return Inertia::render('TermsOfService', []);
+})->name('TermsOfService');
 
 require __DIR__.'/auth.php';
 

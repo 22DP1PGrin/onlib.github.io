@@ -2,8 +2,8 @@
 
     <nav class="navbar">
 
-        <a href="/html/index.html" class="BigLogo"><img src="../../../public/images/Logo.jpg" ></a> <!-- Saite uz sākumlapu un lielo logo -->
-        <a href="/html/index.html" class="SmallLogo"><img src="../../../public/images/Logo2.0.jpg" ></a> <!-- Saite uz sākumlapu un mazo logo -->
+        <a href="/"class="BigLogo"><img src="../../../public/images/Logo.jpg" ></a> <!-- Saite uz sākumlapu un lielo logo -->
+        <a href="/" class="SmallLogo"><img src="../../../public/images/Logo2.0.jpg" ></a> <!-- Saite uz sākumlapu un mazo logo -->
 
         <ul class="marks">
             <li><a class="pressed1nav" href="../html/Library.html"><i style="font-size:16px" class="fa">&#xf02d;</i> Bibliotēka</a></li> <!-- Saite uz lapu "Bibliotēka" -->
@@ -19,7 +19,7 @@
                 </button>
             </div>
 
-            <a class="pressed3" href="#LogIn"> <i style="font-size:27px" class="fa">&#xf2be; <br></i></a> <!-- Saite uz pierakstīšanās lapu -->
+            <a class="pressed3" href="#LogIn"> <i style="font-size:27px" class="fa">&#xf2be; <br></i></a> <!-- Saite uz pierakstīšanās lapu, kad ir mazs ēkrans. -->
             <a class="pressed2" href="#SigIn"><i style="font-size:16px" class="fa">&#xf2bd;</i> Reģistrācija</a> <!-- Saite uz reģistrācijas lapu -->
             <a class="pressed2" href="#LogIn"> <i style="font-size:16px" class="fa">&#xf2be;</i> Pieslēgties</a> <!-- Saite uz pierakstīšanās lapu -->
 
@@ -52,9 +52,6 @@
    .navbar {
        display: flex;
        align-items: center; /* Vertikāla izlīdzināšana */
-       top: 0;
-       left: 0;
-       right: 0;
        z-index: 1000; /* Nodrošina, ka navigācija ir virs citiem elementiem */
        height: 55px !important;
        margin: 0;  /* Noņem arpusejo atstarpi */
@@ -72,11 +69,11 @@
    }
 
    .navbar-links ul {
-       margin: 0;
-       padding: 0;
+       margin: 0; /* Iekšpusē starp elementiem nav atstarpes */
+       padding: 0; /* Arpusē starp elementiem nav atstarpes */
        display: flex;
-
    }
+
    li {
        display: inline; /* Lai saites būtu vienā rindā */
     }
@@ -99,34 +96,11 @@
        color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
    }
 
-   /* Pogas izvēlne */
-   .toggle-button {
-       position: absolute; /* Absolūta pozīcija */
-       margin-left: 60px; /* Atstarpe no kreisās puses */
-       top: 1.2rem; /* Atstarpe no augšas */
-       display: none; /* Paslēpjam pogu */
-       flex-direction: column; /* Kolonnas izkārtojums */
-       justify-content: space-between; /* Horizontāla izlīdzināšana */
-       width: 30px; /* Platums */
-       height: 19px; /* Augstums */
-   }
-   .toggle-button:hover .bar {
-       background-color: rgba(255, 187, 142, 0.8); /* Mainam krāsu, kad pele tiek pārvilkta */
-   }
-
-   /* Pogas izvēlnes elementi */
-   .toggle-button .bar {
-       height: 3px;
-       width: 80%;
-       background-color: rgba(26, 16, 8, 0.8);
-       border-radius: 10px; /* Noapaļo apmalas */
-   }
-
+   /*Saites navigacijas joslā*/
    .marks{
-       margin-left:-45px;
-       padding: 9px;
+       margin-left:-45px; /*Atsarpes no kreisa puse*/
+       padding: 9px; /*Atstarpes starp elementiem iekšā*/
    }
-
    .pressed1nav{
        color: rgba(26, 16, 8, 0.8); /*Teksta krāsa */
        text-align: center; /* Centrējam tekstu */
@@ -135,23 +109,20 @@
        cursor: pointer; /* Mainam peles formu uz rādītāju */
        font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
        margin: 7px; /* Atstarpe ap elementiem */
-    }
+   }
+
+   .pressed1nav:hover{
+       color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
+   }
+
+   .pressed1nav:hover .fa{
+       color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
+   }
 
    .account{
        display: flex; /* Flexbox for layout */
        margin-left: auto; /* Novietojam konta bloku pa labi */
        text-align: center; /* Centrējam tekstu */
-   }
-
-   .pressed1{
-       color: rgba(26, 16, 8, 0.8); /*Teksta krāsa */
-       text-align: center; /* Centrējam tekstu */
-       text-decoration: none; /* Noņemam noklusēto teksta apakšsvītrojumu */
-       font-size: 17px; /* Fonta izmērs navigācijas tekstam */
-       font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
-       right: 200px;
-       display: none;
-
    }
 
    .pressed2{
@@ -167,23 +138,51 @@
        text-decoration: none; /* Noņemam noklusēto teksta apakšsvītrojumu */
        margin-top: 13px;
        margin-right:15px ;
-    }
-    .pressed3:hover .fa{
-        color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
-    }
+   }
 
-    .pressed1nav:hover{
-        color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
-    }
-    .pressed1nav:hover .fa{
-        color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
-    }
+   .pressed3:hover .fa{
+       color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
+   }
 
    .pressed2:hover .fa{
-        color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
+       color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
    }
+
    .pressed2:hover {
-        color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
+       color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
+   }
+
+   /* Pogas izvēlne un Hamburger menu*/
+   .toggle-button {
+       position: absolute; /* Absolūta pozīcija */
+       margin-left: 60px; /* Atstarpe no kreisās puses */
+       top: 1.2rem; /* Atstarpe no augšas */
+       display: none; /* Paslēpjam pogu */
+       flex-direction: column; /* Kolonnas izkārtojums */
+       justify-content: space-between; /* Horizontāla izlīdzināšana */
+       width: 30px; /* Platums */
+       height: 19px; /* Augstums */
+   }
+   .toggle-button:hover .bar {
+       background-color: rgba(255, 187, 142, 0.8); /* Mainam krāsu, kad pele tiek pārvilkta */
+   }
+
+   .toggle-button .bar {
+       height: 3px;
+       width: 80%;
+       background-color: rgba(26, 16, 8, 0.8);
+       border-radius: 10px; /* Noapaļo apmalas */
+   }
+
+   .pressed1{
+       color: rgba(26, 16, 8, 0.8); /*Teksta krāsa */
+       text-align: center; /* Centrējam tekstu */
+       text-decoration: none; /* Noņemam noklusēto teksta apakšsvītrojumu */
+       font-size: 17px; /* Fonta izmērs navigācijas tekstam */
+       font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
+       right: 200px;
+       display: none;
+
    }
 
     /* Meklēšanas josla */
@@ -196,7 +195,6 @@
         transform: none; /*noņemam transformāciju, kad pele tiek pārvilkta */
    }
 
-   /* Ievades lauks meklēšanai */
    .search .input {
         background-color: #ffffff; /*Krasa fona */
         border: 0; /* Noņemam apmales */
@@ -251,6 +249,7 @@
        color: rgba(26, 16, 8, 0.8);  /* Fonta krāsa */
    }
 
+   /*Logotipi*/
    .SmallLogo{
        display:none;
        position: absolute;
@@ -265,141 +264,164 @@
 
 
    /* Responsive Design */
-    @media screen and (max-width: 1164px){
-        .search{
+    @media screen and (max-width: 1164px) {
+        .search {
             margin-top: -67px; /* Atstarpe no augšas */
         }
-        .pressed2{
+
+        .pressed2 {
             margin-top: -46px; /* Atstarpe no augšas */
         }
-        .marks{
-            display:none; /* Paslēpj navigācijas saites */
+
+        .marks {
+            display: none; /* Paslēpj navigācijas saites */
         }
+
         .toggle-button {
             display: flex; /* Parādam pogu */
             margin-left: 160px; /* Atstarpe no kreisās puses */
         }
-        .BigLogo{
+
+        .BigLogo {
             margin-top: -3px; /* Atstarpe no augšas */
         }
+
         .navbar-links {
-            width: 100%;
-            background-color: #c58667;
-            margin: 0;
-            padding: 0;
-            margin-top: -15px;
+            width: 100%; /* Pilns platums */
+            background-color: #c58667; /* Fona krāsa */
+            margin: 0; /* Bez ārējām atstarpēm */
+            padding: 0; /* Bez iekšējām atstarpēm */
+            margin-top: -15px; /* Atstarpe no augšas */
         }
 
         .navbar {
             flex-direction: column; /* Kolonnas izkārtojums */
             align-items: flex-start; /* Horizontāla izlīdzināšana pa kreisi */
-            transition: height 0.3s ease; /* Mainam joslas augstumu */
+            transition: height 0.3s ease; /* Animācija augstuma maiņai */
         }
 
-         .navbar {
-           position: relative;
-           height: auto; /* Augstums */
-           z-index: 1000 !important; /* Nodrošina, ka navigācija ir virs citiem elementiem */
-         }
-
-         .navbar-links ul {
-           flex-direction: column;
-           width: 100%;
-           margin-top: 1rem;
-           list-style: none; /* Noņemam saraksta punktus */
-           padding: 0;
-           margin: 0;
-           width: 100%;
-         }
-
-         .navbar-links li {
-           text-align: center;
-         }
-
-         .navbar-links.active {
-           display: flex;
-           background-color: #c58667;
-           flex-direction: column;
-           margin-bottom: 100px;
-         }
-        }
-    @media (max-width: 800px){
-        .BigLogo{
-            display:none;
-        }
-        .SmallLogo{
-            display:flex;
-            margin-bottom: 697px;
-        }
-        .toggle-button {
-            margin-left: 60px;
-        }
-        .pressed3{
-            display: flex;
-            margin-left:5px;
-            margin-top: 15px;
-        }
-        .search{
-            margin-top:0;
-        }
-        .search .btn{
-            width: 28px;
-            height: 28px;
-            margin-top: 13px;
-        }
-        .search.active .input {
-            width: 160px;
-            height: 20px;
-            margin-bottom: 0;
-            margin-top:13px;
-        }
-        .pressed2{
-            display: none;
-        }
-        .navbar-links{
-            margin-top: 12px;
-        }
-        .pressed1{
-            font-size: 16px;
+        .navbar {
+            position: relative; /* Relatīvā pozīcija */
+            height: auto; /* Augstums automātisks */
+            z-index: 1000 !important; /* Z-indekss, lai būtu virs citiem elementiem */
         }
 
-    }
-    @media (max-width: 350px){
-        .SmallLogo{
-            display: flex;
+        .navbar-links ul {
+            flex-direction: column; /* Kolonnas izkārtojums */
+            width: 100%; /* Pilns platums */
+            margin-top: 1rem; /* Atstarpe no augšas */
+            list-style: none; /* Noņem saraksta punktus */
+            padding: 0; /* Bez iekšējām atstarpēm */
+            margin: 0; /* Bez ārējām atstarpēm */
+            width: 100%; /* Pilns platums */
         }
-        .search .input {
-            padding: 8px; /* Iekšējās atstarpes */
-            width: 120px !important;
+
+        .navbar-links li {
+            text-align: center; /* Teksta centrēšana */
         }
-        .search .btn{
-            margin-top: 15px;
-            padding: -5px;
+
+        .navbar-links.active {
+            display: flex; /* Flex izkārtojums */
+            background-color: #c58667; /* Fona krāsa */
+            flex-direction: column; /* Kolonnas izkārtojums */
+            margin-bottom: 100px; /* Atstarpe no apakšas */
         }
-        .search.active .input {
-            width: 160px;
-            height: 20px;
-            margin-bottom: 0;
-            margin-top:16px;
+
+        @media (max-width: 800px) {
+            .BigLogo {
+                display: none; /* Paslēpj lielo logo */
+            }
+
+            .SmallLogo {
+                display: flex; /* Parāda mazo logo */
+                margin-bottom: 697px; /* Atstarpe no apakšas */
+            }
+
+            .toggle-button {
+                margin-left: 60px; /* Atstarpe no kreisās puses */
+            }
+
+            .pressed3 {
+                display: flex; /* Flex izkārtojums */
+                margin-left: 5px; /* Atstarpe no kreisās puses */
+                margin-top: 15px; /* Atstarpe no augšas */
+            }
+
+            .search {
+                margin-top: 0; /* Bez atstarpes no augšas */
+            }
+
+            .search .btn {
+                width: 28px; /* Pogas platums */
+                height: 28px; /* Pogas augstums */
+                margin-top: 13px; /* Atstarpe no augšas */
+            }
+
+            .search.active .input {
+                width: 160px; /* Ievades lauka platums */
+                height: 20px; /* Ievades lauka augstums */
+                margin-bottom: 0; /* Bez atstarpes no apakšas */
+                margin-top: 13px; /* Atstarpe no augšas */
+            }
+
+            .pressed2 {
+                display: none; /* Paslēpj elementu */
+            }
+
+            .navbar-links {
+                margin-top: 12px; /* Atstarpe no augšas */
+            }
+
+            .pressed1 {
+                font-size: 16px; /* Teksta izmērs */
+            }
         }
-        .pressed3{
-            margin-top: 15px;
-        }
-        .toggle-button .bar {
-            height: 3px;
-            width: 70%;
-            margin: 2px;
-            background-color: rgba(26, 16, 8, 0.8);
-            border-radius: 10px;
-        }
-        .toggle-button{
-            margin-left: 50px;
-        }
-        .navbar-links{
-            margin-top: 10px;
-        }
-        .pressed1{
-            font-size: 15px;
+
+        @media (max-width: 350px) {
+            .SmallLogo {
+                display: flex; /* Parāda mazo logo */
+            }
+
+            .search .input {
+                padding: 8px; /* Iekšējās atstarpes */
+                width: 120px !important; /* Ievades lauka platums */
+            }
+
+            .search .btn {
+                margin-top: 15px; /* Atstarpe no augšas */
+                padding: -5px; /* Iekšējās atstarpes */
+            }
+
+            .search.active .input {
+                width: 160px; /* Ievades lauka platums */
+                height: 20px; /* Ievades lauka augstums */
+                margin-bottom: 0; /* Bez atstarpes no apakšas */
+                margin-top: 16px; /* Atstarpe no augšas */
+            }
+
+            .pressed3 {
+                margin-top: 15px; /* Atstarpe no augšas */
+            }
+
+            .toggle-button .bar {
+                height: 3px; /* Svītras augstums */
+                width: 70%; /* Svītras platums */
+                margin: 2px; /* Atstarpe apkārt */
+                background-color: rgba(26, 16, 8, 0.8); /* Svītras krāsa */
+                border-radius: 10px; /* Noapaļotie stūri */
+            }
+
+            .toggle-button {
+                margin-left: 50px; /* Atstarpe no kreisās puses */
+            }
+
+            .navbar-links {
+                margin-top: 10px; /* Atstarpe no augšas */
+            }
+
+            .pressed1 {
+                font-size: 15px; /* Teksta izmērs */
+            }
         }
     }
    </style>
@@ -408,35 +430,49 @@
 
 export default {
     mounted() {
+        // Izsauc funkcijas, lai iestatītu hamburger izvēlni un meklēšanas funkcionalitāti
         this.setupHamburgerMenu();
         this.setupSearch();
     },
     methods: {
-
+        // Funkcija, kas iestata hamburger izvēlni
         setupHamburgerMenu() {
+            // Atrod pogu, kas atver/slēpj izvēlni
             const toggleButton = this.$el.querySelector('.toggle-button');
+            // Atrod navigācijas sašu konteineru
             const navbarLinks = this.$el.querySelector('.navbar-links');
 
+            // Pārbauda, vai elementi eksistē
             if (toggleButton && navbarLinks) {
+                // Pievieno klikšķa notikumu pogai
                 toggleButton.addEventListener('click', () => {
+                    // Pievieno vai noņem klasi "active", lai parādītu vai paslēptu izvēlni
                     navbarLinks.classList.toggle('active');
                 });
             }
         },
 
+        // Funkcija, kas iestata meklēšanas funkcionalitāti
         setupSearch() {
+            // Atrod meklēšanas lauku un pogu
             const search = this.$el.querySelector('.search');
             const btn = this.$el.querySelector('.btn');
             const input = this.$el.querySelector('.input');
 
+            // Pārbauda, vai poga eksistē
             if (btn) {
+                // Pievieno klikšķa notikumu pogai
                 btn.addEventListener('click', () => {
+                    // Pārbauda, vai ievades lauks ir tukšs
                     if (input.value.trim() === '') {
+                        // Pievieno vai noņem klasi "active", lai parādītu vai paslēptu meklēšanas lauku
                         search.classList.toggle('active');
+                        // Ja meklēšanas lauks ir aktīvs, fokusē to
                         if (search.classList.contains('active')) {
                             input.focus();
                         }
                     } else {
+                        // Ja ievades lauks nav tukšs, fokusē to
                         input.focus();
                     }
                 });
@@ -444,4 +480,5 @@ export default {
         }
     }
 }
+
 </script>

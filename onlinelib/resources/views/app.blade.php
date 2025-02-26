@@ -23,14 +23,17 @@
     </body>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Orelega+One&display=swap');
-        html, body {
-            margin: 0; /*Noņemam default margin*/
-            padding: 0; /*Noņemam default padding*/
 
+        html{
+            height: 100%;
         }
-
         body{
             background-color: antiquewhite; /*Fona krāsa*/
+            min-height: 100%;
+            padding: 0;
+            margin:0;
+            position: relative;
+
         }
 
 

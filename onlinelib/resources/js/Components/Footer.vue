@@ -3,7 +3,7 @@
 <footer id="footer">
     <div class="footer-container">
             <ul class="footer-links">
-                <li><a href="#Terms of Service">Pakalpojuma noteikumi</a></li> <!-- Saite uz lietotāja līgumu -->
+                <li><a href="/termsofservice">Pakalpojuma noteikumi</a></li> <!-- Saite uz lietotāja līgumu -->
                 <li><a href="/contentpolicy">Satura politika</a></li> <!-- Saite uz satura politiku -->
                 <li><a href="#Privacy policy">Privātuma politika</a></li> <!-- Saite uz privātuma politiku -->
             </ul>
@@ -28,6 +28,10 @@
         flex-direction: column; /* Kolonnas izkārtojums */
         height: 180px; /* Augstums */
         box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna navigācijas joslas apakšā */
+        position: absolute;
+        top: 100%;
+        width: 100%;
+        bottom: 0;
     }
 
     .footer-container {
