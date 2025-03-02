@@ -5,7 +5,7 @@
             <ul class="footer-links">
                 <li><a href="/termsofservice">Pakalpojuma noteikumi</a></li> <!-- Saite uz lietotāja līgumu -->
                 <li><a href="/contentpolicy">Satura politika</a></li> <!-- Saite uz satura politiku -->
-                <li><a href="#Privacy policy">Privātuma politika</a></li> <!-- Saite uz privātuma politiku -->
+                <li><a href="/privacypolicy">Privātuma politika</a></li> <!-- Saite uz privātuma politiku -->
             </ul>
             <ul class="footer-links">
                 <li><a href="#DMCA Policy">DMCA politika</a></li> <!-- Saite uz DMCA politiku -->

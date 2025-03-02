@@ -37,5 +37,9 @@ Route::get('/termsofservice', function () {
     return Inertia::render('TermsOfService', []);
 })->name('TermsOfService');
 
+Route::get('/privacypolicy', function () {
+    return Inertia::render('PrivacyPolicy', []);
+})->name('PrivacyPolicy');
+
 require __DIR__.'/auth.php';
 
