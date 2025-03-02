@@ -41,5 +41,17 @@ Route::get('/privacypolicy', function () {
     return Inertia::render('PrivacyPolicy', []);
 })->name('PrivacyPolicy');
 
+Route::get('/dmcapolicy', function () {
+    return Inertia::render('DMCAPolicy', []);
+})->name('DMCAPolicy');
+
+Route::get('/faq', function () {
+    return Inertia::render('FAQ', []);
+})->name('FAQ');
+
+Route::get('/technicalsupport', function () {
+    return Inertia::render('TechnicalSupport', []);
+})->name('TechnicalSupport');
+
 require __DIR__.'/auth.php';
 

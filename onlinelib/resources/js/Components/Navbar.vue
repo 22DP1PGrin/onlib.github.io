@@ -231,8 +231,11 @@
    }
 
    .input{
-        color: rgba(26, 16, 8, 0.8);
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
+       color: rgba(26, 16, 8, 0.8);
+       font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
+   }
+   .search input::placeholder {
+       color: rgba(26, 16, 8, 0.8); /* Krāsa */
    }
 
    .input:focus {

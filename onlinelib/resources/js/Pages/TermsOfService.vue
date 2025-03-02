@@ -84,7 +84,7 @@ export default {
 </script>
 
 <style scoped>
-/* Lapas virsraksta stils */
+    /* Lapas virsraksta stils */
     .PageName {
         text-align: center; /* Centrē tekstu */
     }
@@ -127,9 +127,9 @@ export default {
     /* Satura konteinera stils */
     .content {
         justify-items: center; /* Centrē saturu horizontāli */
-        max-width: 1200px; /* Максимальная ширина контента */
-        margin: 0 auto; /* Центрирование контента */
-        padding: 0 20px; /* Отступы по бокам */
+        max-width: 1200px; /* Maksimālais satura platums */
+        margin: 0 auto; /* Centrēt saturu */
+        padding: 0 20px; /*Atstarpes sānos*/
     }
 
     /* Galvenā satura konteinera stils */
@@ -151,8 +151,7 @@ export default {
         color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
     }
 
-    /* Medija vaicājums maziem ekrāniem (max-width: 768px) */
-
+    /* Responsivitāte */
 
     @media (max-width: 768px) {
 
@@ -170,3 +169,4 @@ export default {
         }
     }
 </style>
+
