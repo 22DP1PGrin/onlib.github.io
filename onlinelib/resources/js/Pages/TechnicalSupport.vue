@@ -1,12 +1,18 @@
 <template>
+    <!-- Navigācijas josla -->
     <Navbar />
+
+    <!-- Galvenais saturs -->
     <div class="support-page">
         <div class="main-content">
+            <!-- Virsraksts -->
             <h1>Tehniskais atbalsts</h1>
+            <!-- Apraksts -->
             <p>
                 Ja jums ir jautājumi, problēmas vai ierosinājumi, lūdzu, sazinieties ar mūsu atbalsta komandu. Mēs esam šeit, lai palīdzētu!
             </p>
         </div>
+
         <!-- Kontaktforma -->
         <div class="contact-form">
             <h2>Sazināties ar mums</h2>
@@ -58,152 +64,163 @@
                 Mēs centīsimies atbildēt uz jūsu ziņojumu 24 stundu laikā.
             </p>
             <p>
-                Ja nevarat gaidīt atbildi, lūdzu, pārbaudiet mūsu <a href="/faq">bieži uzdoto jautājumu sadaļu</a>, kur jūs varat atrast ātras atbildes uz visbiežākajiem jautājumiem.
+                Ja nevarat gaidīt atbildi, lūdzu, pārbaudiet mūsu <a href="/faq">bieži uzdoto jautājumu </a>sadaļu, kur jūs varat atrast ātras atbildes uz visbiežākajiem jautājumiem.
             </p>
         </div>
     </div>
+
+    <!-- Kājene -->
     <Footer />
 </template>
 
 <script>
+// Importējam nepieciešamos komponentus
 import Navbar from "@/components/Navbar.vue";
 import Footer from "@/components/Footer.vue";
 
 export default {
     name: "SupportPage",
     components: {
-        Navbar,
-        Footer,
+        Navbar, // Reģistrējam Navigācijas joslu
+        Footer, // Reģistrējam Kājeni
     },
     data() {
         return {
+            // Formas dati
             form: {
-                name: "",
-                surname:"",
-                email: "",
-                subject: "",
-                message: "",
+                name: "", // Lietotāja vārds
+                surname: "", // Lietotāja uzvārds
+                email: "", // Lietotāja e-pasta adrese
+                subject: "", // Tēma
+                message: "", // Ziņojums
             },
         };
     },
     methods: {
+        // Formas iesniegšanas metode
         submitForm() {
-            console.log("Forma iesniegta:", this.form);
-            alert("Paldies par jūsu ziņojumu! Mēs ar jums sazināsimies drīz.");
-            this.form = { name: "",surname: "", email: "", subject: "", message: "" };
+            console.log("Forma iesniegta:", this.form); // Izvada formas datus konsolē
+            alert("Paldies par jūsu ziņojumu! Mēs ar jums sazināsimies drīz."); // Parāda paziņojumu
+            this.form = { name: "", surname: "", email: "", subject: "", message: "" }; // Notīra formu
         },
     },
 };
 </script>
 
 <style scoped>
-    .support-page {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-        line-height: 1.6;
-        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-    }
-    .main-content p{
-        margin-top: -10px;
-        font-size: 1.0rem; /* Teksta izmērs */
-        margin-bottom: 25px;
+/* Galvenais konteiners */
+.support-page {
+    max-width: 800px; /* Maksimālais platums */
+    margin: 0 auto; /* Centrēšana */
+    padding: 20px; /* Iekšējā atstarpe */
+    font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+    line-height: 1.6; /* Teksta augstums */
+    color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+}
 
-    }
-    h1 {
-        font-size: 1.7rem; /* Teksta izmērs */
-        font-weight: bold; /* Treknraksts */
-        text-align: center; /* Centrē tekstu */
-        margin-top: 0; /* Atstarpe no augšas */
-        padding: 60px; /* Iekšējā atstarpe */
-    }
+/* Apraksta stils */
+.main-content p {
+    margin-top: -10px; /* Atstarpe no augšas */
+    font-size: 1.0rem; /* Teksta izmērs */
+    margin-bottom: 25px; /* Atstarpe no apakšas */
+}
 
-    h2 {
-        font-weight: bold; /* Treknraksts */
-        font-size: 1.4rem;
-        margin-top: 20px;
-        margin-bottom: 25px;
-    }
+/* Virsraksta stils */
+h1 {
+    font-size: 1.7rem; /* Teksta izmērs */
+    font-weight: bold; /* Treknraksts */
+    text-align: center; /* Centrē tekstu */
+    margin-top: 0; /* Atstarpe no augšas */
+    padding: 60px; /* Iekšējā atstarpe */
+}
 
-    .contact-form {
-        background-color: #c58667; /* Fona krāsa */
-        padding: 20px;
-        border-radius: 8px;
-        border: 1px solid rgba(26, 16, 8, 0.8);
-        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna navigācijas joslas apakšā */
-    }
+/* Apakšvirsraksta stils */
+h2 {
+    font-weight: bold; /* Treknraksts */
+    font-size: 1.4rem; /* Teksta izmērs */
+    margin-top: 20px; /* Atstarpe no augšas */
+    margin-bottom: 25px; /* Atstarpe no apakšas */
+}
 
-    input:focus{
-        outline: none !important; /* Noņemam noklusēto apmales stāvokli */
-        box-shadow: none !important;
-    }
-    .form-group {
-        margin-bottom: 15px;
-    }
+/* Kontaktformas stils */
+.contact-form {
+    background-color: #e4a27c; /* Fona krāsa */
+    padding: 20px; /* Iekšējā atstarpe */
+    border-radius: 8px; /* Noapaļotie stūri */
+    border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+    box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */
+}
 
-    label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
-    /* Noņem noklusēto zilo apmali (fokusu) */
-    .subject:focus {
-        outline: none; /* Noņem fokusu */
-        border-color: #ccc; /* Pielāgojiet apmales krāsu pēc vajadzības */
-    }
+/* Formas grupu stils */
+.form-group {
+    margin-bottom: 15px; /* Atstarpe starp formu grupām */
+}
 
-    /* Atspējo fona izmaiņas opcijām, kad uz tām tiek novadīts kursors */
-    .subject option:hover {
-        background-color: transparent; /* Fons nemainās */
-    }
+/* Etiķešu stils */
+label {
+    display: block; /* Parāda kā bloku elementu */
+    margin-bottom: 5px; /* Atstarpe no apakšas */
+    font-weight: bold; /* Treknraksts */
+}
 
-    /* Pielāgojiet opciju izskatu */
-    .subject option {
-        background-color: white; /* Fona krāsa opcijām */
-        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-    }
+/* Opciju stils */
+.subject option {
+    background-color: white; /* Fona krāsa opcijām */
+    color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+}
 
-    input,
-    select,
-    textarea {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid rgba(26, 16, 8, 0.8);
-        border-radius: 4px;
-        font-size: 1rem;
-    }
+/* Ievades lauku stils */
+input,
+select,
+textarea {
+    width: 100%; /* Pilns platums */
+    padding: 10px; /* Iekšējā atstarpe */
+    border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+    border-radius: 4px; /* Noapaļotie stūri */
+    font-size: 1rem; /* Teksta izmērs */
+}
 
-    textarea {
-        resize: vertical;
-    }
+/* Teksta lauka stils */
+textarea {
+    resize: vertical; /* Atļauj vertikālo izmēru maiņu */
+}
 
-    button {
-        background-color: #c58667; /* Fona krāsa */
-        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-        border: 2px solid rgba(26, 16, 8, 0.8);
-        padding: 5px 25px;
-        border-radius: 4px;
-        font-size: 1rem;
-        cursor: pointer;
-    }
+/* Fokusa stils */
+select:focus,
+textarea:focus,
+input:focus {
+    outline: none; /* Noņem noklusēto fokusu */
+    box-shadow: none; /* Noņem ēnu */
+    background-color: white; /* Fona krāsa */
+    border-color: rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+}
 
-    button:hover {
-        color: rgba(255, 187, 142, 0.8); /* Teksta krāsa saitēm, kad pele tiek pārvilkta */
-        border-color: rgba(255, 187, 142, 0.8); /* Teksta krāsa saitēm, kad pele tiek pārvilkta */;
+/* Pogas stils */
+button {
+    background-color: #c58667; /* Fona krāsa */
+    color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+    border: 2px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+    padding: 5px 25px; /* Iekšējā atstarpe */
+    border-radius: 4px; /* Noapaļotie stūri */
+    font-size: 1.0rem; /* Teksta izmērs */
+    cursor: pointer; /* Kursora izskats */
+}
 
-    }
+/* Pogas stils, kad pele ir virs tās */
+button:hover {
+    background-color: rgba(255, 187, 142, 0.8); /* Fona krāsa */
+}
 
-    .additional-info p{
-        margin-top: 30px;
-        font-size: 1.0rem; /* Teksta izmērs */
-        margin-bottom: 25px;
+/* Papildu informācijas stils */
+.additional-info p {
+    margin-top: 30px; /* Atstarpe no augšas */
+    font-size: 1.0rem; /* Teksta izmērs */
+    margin-bottom: 25px; /* Atstarpe no apakšas */
+}
 
-    }
-
-    a {
-        text-decoration: none; /* Noņem apakšsvītrojumu */
-        color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
-    }
-
+/* Saites stils */
+a {
+    text-decoration: none; /* Noņem apakšsvītrojumu */
+    color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
+}
 </style>
