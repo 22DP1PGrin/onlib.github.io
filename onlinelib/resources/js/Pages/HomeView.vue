@@ -35,7 +35,7 @@ export default{
     margin-top: 55px; /* Adjust this depending on the navbar's height */
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Растягиваем на всю высоту экрана */
+
 }
 
 

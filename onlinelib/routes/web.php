@@ -53,5 +53,9 @@ Route::get('/technicalsupport', function () {
     return Inertia::render('TechnicalSupport', []);
 })->name('TechnicalSupport');
 
+Route::get('/registerp', function () {
+    return Inertia::render('Auth/Register', []);
+})->name('registerp');
+
 require __DIR__.'/auth.php';
 

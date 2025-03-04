@@ -20,7 +20,7 @@
             </div>
 
             <a class="pressed3" href="#LogIn"> <i style="font-size:27px" class="fa">&#xf2be; <br></i></a> <!-- Saite uz pierakstīšanās lapu, kad ir mazs ēkrans. -->
-            <a class="pressed2" href="#SigIn"><i style="font-size:16px" class="fa">&#xf2bd;</i> Reģistrācija</a> <!-- Saite uz reģistrācijas lapu -->
+            <a class="pressed2" href="/registerp"><i style="font-size:16px" class="fa">&#xf2bd;</i> Reģistrācija</a> <!-- Saite uz reģistrācijas lapu -->
             <a class="pressed2" href="#LogIn"> <i style="font-size:16px" class="fa">&#xf2be;</i> Pieslēgties</a> <!-- Saite uz pierakstīšanās lapu -->
 
         </div>

@@ -5,11 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3e76eb8-75aa-48f5-a2ef-f4cf9daec5ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/PrivacyPolicy.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/Footer.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Footer.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/ContentPolicy.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/ContentPolicy.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TermsOfService.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TermsOfService.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Navbar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Register.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/HomeView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/HomeView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -148,6 +152,9 @@
       <path value="$PROJECT_DIR$/onlinelib/vendor/symfony/service-contracts" />
     </include_path>
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -197,7 +204,9 @@
       <workItem from="1740483583818" duration="918000" />
       <workItem from="1740484531015" duration="4953000" />
       <workItem from="1740557580652" duration="11081000" />
-      <workItem from="1740915725955" duration="3771000" />
+      <workItem from="1740915725955" duration="17227000" />
+      <workItem from="1741020094772" duration="3572000" />
+      <workItem from="1741088237534" duration="5922000" />
     </task>
     <servers />
   </component>
