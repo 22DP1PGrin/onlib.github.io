@@ -6,15 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="c3e76eb8-75aa-48f5-a2ef-f4cf9daec5ed" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Navbar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/Checkbox.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Checkbox.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/InputError.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/InputError.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/InputLabel.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/InputLabel.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/PrimaryButton.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/PrimaryButton.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/TextInput.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/TextInput.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Login.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Register.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/HomeView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/HomeView.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TechnicalSupport.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TechnicalSupport.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -206,7 +205,8 @@
       <workItem from="1740557580652" duration="11081000" />
       <workItem from="1740915725955" duration="17227000" />
       <workItem from="1741020094772" duration="3572000" />
-      <workItem from="1741088237534" duration="5922000" />
+      <workItem from="1741088237534" duration="6090000" />
+      <workItem from="1741162473415" duration="11120000" />
     </task>
     <servers />
   </component>

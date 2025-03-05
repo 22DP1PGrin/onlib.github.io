@@ -20,13 +20,13 @@
                 <!-- Vārds -->
                 <div class="form-group">
                     <label for="name">Vārds:</label>
-                    <input type="text" class="input" v-model="form.name" required />
+                    <input type="text" class="input" v-model="form.name" required autocomplete="given-name" />
                 </div>
 
                 <!-- Uzvārds -->
                 <div class="form-group">
                     <label for="name">Uzvārds:</label>
-                    <input type="text" class="input" v-model="form.surname" required />
+                    <input type="text" class="input" v-model="form.surname" required autocomplete="family-name"/>
                 </div>
 
                 <!-- E-pasta adrese -->

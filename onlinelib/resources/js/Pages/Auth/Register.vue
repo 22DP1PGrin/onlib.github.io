@@ -7,32 +7,38 @@ import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { route } from "ziggy-js";
 
+// Formas datu inicializācija
 const form = useForm({
-    name: '',
-    lastname: '',
-    nickname: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
+    name: '', // Lietotāja vārds
+    lastname: '', // Lietotāja uzvārds
+    nickname: '', // Lietotāja segvārds
+    email: '', // Lietotāja e-pasta adrese
+    password: '', // Lietotāja parole
+    password_confirmation: '', // Paroles apstiprinājums
 });
 
+// Formas iesniegšanas metode
 const submit = () => {
     form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
+        onFinish: () => form.reset('password', 'password_confirmation'),  // Notīra paroles laukus pēc iesniegšanas
     });
 };
 </script>
 
 <template>
+        <!-- Lapas virsraksts -->
         <Head title="Register" />
 
         <div class="support-page">
 
             <div class="contact-form">
+                <!-- Formas virsraksts -->
                 <h1>Reģistrācija</h1>
                 <form @submit.prevent="submit">
+
+                    <!-- Vārda lauks -->
                     <div class="form-group">
-                        <InputLabel for="name" value="Vārds" />
+                        <InputLabel for="name" value="Vārds" class="label"/>
                         <TextInput
                             id="name"
                             type="text"
@@ -42,11 +48,13 @@ const submit = () => {
                             autofocus
                             autocomplete="given-name"
                         />
+                        <!-- Kļūdu ziņojums -->
                         <InputError class="mt-2" :message="form.errors.name" />
                     </div>
 
+                    <!-- Uzvārda lauks -->
                     <div class="form-group">
-                        <InputLabel for="lastname" value="Uzvārds" />
+                        <InputLabel for="lastname" value="Uzvārds" class="label"/>
                         <TextInput
                             id="lastname"
                             type="text"
@@ -56,11 +64,13 @@ const submit = () => {
                             autofocus
                             autocomplete="family-name"
                         />
-                        <InputError class="mt-2" :message="form.errors.lastname" />
+                        <!-- Kļūdu ziņojums -->
+                        <InputError class="mt-2" :message="form.errors.lastname"/>
                     </div>
 
+                    <!-- Segvārda lauks -->
                     <div class="form-group">
-                        <InputLabel for="nickname" value="Segvārds" />
+                        <InputLabel for="nickname" value="Segvārds" class="label" />
                         <TextInput
                             id="nickname"
                             type="text"
@@ -70,11 +80,13 @@ const submit = () => {
                             autofocus
                             autocomplete="nickname"
                         />
+                        <!-- Kļūdu ziņojums -->
                         <InputError class="mt-2" :message="form.errors.nickname" />
                     </div>
 
+                    <!-- E-pasta lauks -->
                     <div class="form-group">
-                        <InputLabel for="email" value="E-pasta adrese" />
+                        <InputLabel for="email" value="E-pasta adrese" class="label"/>
                         <TextInput
                             id="email"
                             type="email"
@@ -83,11 +95,13 @@ const submit = () => {
                             required
                             autocomplete="username"
                         />
+                        <!-- Kļūdu ziņojums -->
                         <InputError class="mt-2" :message="form.errors.email" />
                     </div>
 
+                    <!-- Paroles lauks -->
                     <div class="form-group">
-                        <InputLabel for="password" value="Parole" />
+                        <InputLabel for="password" value="Parole" class="label"/>
                         <TextInput
                             id="password"
                             type="password"
@@ -96,11 +110,13 @@ const submit = () => {
                             required
                             autocomplete="new-password"
                         />
+                        <!-- Kļūdu ziņojums -->
                         <InputError class="mt-2" :message="form.errors.password" />
                     </div>
 
+                    <!-- Paroles apstiprinājuma lauks -->
                     <div class="form-group">
-                        <InputLabel for="password_confirmation" value="Apstipriniet paroli" />
+                        <InputLabel for="password_confirmation" value="Apstipriniet paroli" class="label"/>
                         <TextInput
                             id="password_confirmation"
                             type="password"
@@ -109,17 +125,21 @@ const submit = () => {
                             required
                             autocomplete="new-password"
                         />
+                        <!-- Kļūdu ziņojums -->
                         <InputError class="mt-2" :message="form.errors.password_confirmation" />
                     </div>
 
+                    <!-- Iesniegšanas poga un saite uz pieteikšanās lapu -->
                     <div class="form-group flex items-center justify-end">
+
+                        <!-- Saite uz pietekšānu -->
                         <Link
                             :href="route('login')"
-                            class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                         >
                             Jau reģistrējies?
                         </Link>
 
+                        <!-- Saite uz reģistrāciju -->
                         <PrimaryButton
                             class="ms-4"
                             :class="{ 'opacity-25': form.processing }"
@@ -134,16 +154,19 @@ const submit = () => {
 </template>
 
 <style scoped>
-
-
 /* Galvenais konteiners */
 .support-page {
     max-width: 470px; /* Maksimālais platums */
+    width: 100%; /* Pilns platums */
     margin: 0 auto; /* Centrēšana */
     padding: 20px; /* Iekšējā atstarpe */
     font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
     line-height: 1.6; /* Teksta augstums */
     color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+    position: absolute; /* Absolūtā pozicionēšana */
+    top: 50%; /* Novietošana 50% no augšas */
+    left: 50%; /* Novietošana 50% no kreisās puses */
+    transform: translate(-50%, -50%); /* Centrēšana */
 }
 
 /* Apraksta stils */
@@ -158,8 +181,8 @@ h1 {
     font-size: 1.7rem; /* Teksta izmērs */
     font-weight: bold; /* Treknraksts */
     text-align: center; /* Centrē tekstu */
-    margin-top: 0; /* Atstarpe no augšas */
-    padding: 60px; /* Iekšējā atstarpe */
+    margin-top: 12px; /* Atstarpe no augšas */
+    padding: 0; /* Iekšējā atstarpe */
 }
 
 /* Kontaktformas stils */
@@ -174,6 +197,12 @@ h1 {
 /* Formas grupu stils */
 .form-group {
     margin-bottom: 15px; /* Atstarpe starp formu grupām */
+    color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+}
+
+.label{
+    color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+    font-weight: normal; /* Normāls fonta stils */
 }
 
 /* Etiķešu stils */
@@ -203,6 +232,7 @@ label {
 /* Pogas stils */
 button {
     background-color: #c58667; /* Fona krāsa */
+    font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
     color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
     border: 2px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
     padding: 5px 25px; /* Iekšējā atstarpe */
@@ -228,4 +258,9 @@ a {
     text-decoration: none; /* Noņem apakšsvītrojumu */
     color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
 }
+
+a:hover{
+    color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
+}
+
 </style>
