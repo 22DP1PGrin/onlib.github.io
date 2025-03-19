@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 //Route::get('/', function () {
@@ -24,6 +25,12 @@ use Inertia\Inertia;
 //    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 //});
 //
+Route::get('/api/is-logged-in', function () {
+    return response()->json([
+        'isLoggedIn' => auth()->check(),
+        'user' => auth()->user(), // Include the authenticated user
+    ]);
+});
 
 Route::get('/', function () {
     return Inertia::render('HomeView', []);

@@ -1,3 +1,102 @@
+<script>
+import {computed, ref, watch} from 'vue';
+import {useUser} from "@/Components/Check/UserCheck.js";
+const { isLoggedIn, user } = useUser();
+export default {
+
+    props: {
+        auth: Object // Принимаем пропс `auth` с сервера
+    },
+    setup(props) {
+        // Реактивные данные
+        const user = ref(props.auth?.user || null);
+
+        // Вычисляемое свойство для проверки аутентификации
+        const isLoggedIn = computed(() => {
+            return !!user.value; // Проверяем, есть ли пользователь
+        });
+
+        // Следим за изменениями в props.auth
+        watch(
+            () => props.auth, // Отслеживаем изменения в props.auth
+            (newAuth) => {
+                user.value = newAuth?.user || null; // Обновляем данные пользователя
+            },
+            { immediate: true } // Выполняем сразу при монтировании
+        );
+
+        // Метод для выхода из системы
+        const logout = () => {
+            fetch("/logout", { method: "POST", credentials: "include" })
+                .then(() => {
+                    user.value = null; // Сбрасываем данные пользователя
+                })
+                .catch((error) => {
+                    console.error("Ошибка при выходе из системы", error);
+                });
+        };
+
+        // Возвращаем данные и методы, чтобы они были доступны в шаблоне
+        return {
+            isLoggedIn,
+            user,
+            logout
+        };
+    },
+
+    mounted() {
+        // Izsauc funkcijas, lai iestatītu hamburger izvēlni un meklēšanas funkcionalitāti
+        this.setupHamburgerMenu();
+        this.setupSearch();
+    },
+    methods: {
+        // Funkcija, kas iestata hamburger izvēlni
+        setupHamburgerMenu() {
+            // Atrod pogu, kas atver/slēpj izvēlni
+            const toggleButton = this.$el.querySelector('.toggle-button');
+            // Atrod navigācijas sašu konteineru
+            const navbarLinks = this.$el.querySelector('.navbar-links');
+
+            // Pārbauda, vai elementi eksistē
+            if (toggleButton && navbarLinks) {
+                // Pievieno klikšķa notikumu pogai
+                toggleButton.addEventListener('click', () => {
+                    // Pievieno vai noņem klasi "active", lai parādītu vai paslēptu izvēlni
+                    navbarLinks.classList.toggle('active');
+                });
+            }
+
+        },
+
+        // Funkcija, kas iestata meklēšanas funkcionalitāti
+        setupSearch() {
+            // Atrod meklēšanas lauku un pogu
+            const search = this.$el.querySelector('.search');
+            const btn = this.$el.querySelector('.btn');
+            const input = this.$el.querySelector('.input');
+
+            // Pārbauda, vai poga eksistē
+            if (btn) {
+                // Pievieno klikšķa notikumu pogai
+                btn.addEventListener('click', () => {
+                    // Pārbauda, vai ievades lauks ir tukšs
+                    if (input.value.trim() === '') {
+                        // Pievieno vai noņem klasi "active", lai parādītu vai paslēptu meklēšanas lauku
+                        search.classList.toggle('active');
+                        // Ja meklēšanas lauks ir aktīvs, fokusē to
+                        if (search.classList.contains('active')) {
+                            input.focus();
+                        }
+                    } else {
+                        // Ja ievades lauks nav tukšs, fokusē to
+                        input.focus();
+                    }
+                });
+            }
+        }
+    }
+}
+</script>
 <template>
 
     <nav class="navbar">
@@ -18,10 +117,18 @@
                     <i style="font-size:15px" class="fa">&#xf002;</i>
                 </button>
             </div>
+            <template v-if="!isLoggedIn">
+                <a class="pressed2" href="/registerp"><i style="font-size:16px" class="fa">&#xf2bd;</i> Reģistrācija</a>
+                <a class="pressed2" href="/login"> <i style="font-size:16px" class="fa">&#xf2be;</i> Pieslēgties</a>
+            </template>
+
+            <template v-else>
+                <a class="pressed2" href="/profile"><i class="fa">&#xf2c0;</i> {{ user.nickname }}</a>
+                <a class="pressed2" @click.prevent="logout"><i class="fa">&#xf08b;</i> Iziet</a>
+            </template>
 
             <a class="pressed3" href="/login"> <i style="font-size:27px" class="fa">&#xf2be; <br></i></a> <!-- Saite uz pierakstīšanās lapu, kad ir mazs ēkrans. -->
-            <a class="pressed2" href="/registerp"><i style="font-size:16px" class="fa">&#xf2bd;</i> Reģistrācija</a> <!-- Saite uz reģistrācijas lapu -->
-            <a class="pressed2" href="/login"> <i style="font-size:16px" class="fa">&#xf2be;</i> Pieslēgties</a> <!-- Saite uz pierakstīšanās lapu -->
+
 
         </div>
 
@@ -428,60 +535,3 @@
         }
     }
    </style>
-
-<script>
-
-export default {
-    mounted() {
-        // Izsauc funkcijas, lai iestatītu hamburger izvēlni un meklēšanas funkcionalitāti
-        this.setupHamburgerMenu();
-        this.setupSearch();
-    },
-    methods: {
-        // Funkcija, kas iestata hamburger izvēlni
-        setupHamburgerMenu() {
-            // Atrod pogu, kas atver/slēpj izvēlni
-            const toggleButton = this.$el.querySelector('.toggle-button');
-            // Atrod navigācijas sašu konteineru
-            const navbarLinks = this.$el.querySelector('.navbar-links');
-
-            // Pārbauda, vai elementi eksistē
-            if (toggleButton && navbarLinks) {
-                // Pievieno klikšķa notikumu pogai
-                toggleButton.addEventListener('click', () => {
-                    // Pievieno vai noņem klasi "active", lai parādītu vai paslēptu izvēlni
-                    navbarLinks.classList.toggle('active');
-                });
-            }
-        },
-
-        // Funkcija, kas iestata meklēšanas funkcionalitāti
-        setupSearch() {
-            // Atrod meklēšanas lauku un pogu
-            const search = this.$el.querySelector('.search');
-            const btn = this.$el.querySelector('.btn');
-            const input = this.$el.querySelector('.input');
-
-            // Pārbauda, vai poga eksistē
-            if (btn) {
-                // Pievieno klikšķa notikumu pogai
-                btn.addEventListener('click', () => {
-                    // Pārbauda, vai ievades lauks ir tukšs
-                    if (input.value.trim() === '') {
-                        // Pievieno vai noņem klasi "active", lai parādītu vai paslēptu meklēšanas lauku
-                        search.classList.toggle('active');
-                        // Ja meklēšanas lauks ir aktīvs, fokusē to
-                        if (search.classList.contains('active')) {
-                            input.focus();
-                        }
-                    } else {
-                        // Ja ievades lauks nav tukšs, fokusē to
-                        input.focus();
-                    }
-                });
-            }
-        }
-    }
-}
-
-</script>
