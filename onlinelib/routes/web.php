@@ -68,5 +68,9 @@ Route::get('/login', function () {
     return Inertia::render('Auth/Login', []);
 })->name('login');
 
+Route::get('/profile', function () {
+    return Inertia::render('Profile', []);
+})->name('Profile');
+
 require __DIR__.'/auth.php';
 

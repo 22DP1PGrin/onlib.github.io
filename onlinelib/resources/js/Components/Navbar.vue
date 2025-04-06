@@ -1,48 +1,33 @@
 <script>
-import {computed, ref, watch} from 'vue';
-import {useUser} from "@/Components/Check/UserCheck.js";
-const { isLoggedIn, user } = useUser();
+import { usePage, router } from '@inertiajs/vue3'
+import { computed } from 'vue'
+
 export default {
+    setup() {
+        // Aprēķina lietotāja datus no lapas propieniem
+        const user = computed(() => usePage().props.auth.user)
 
-    props: {
-        auth: Object // Принимаем пропс `auth` с сервера
-    },
-    setup(props) {
-        // Реактивные данные
-        const user = ref(props.auth?.user || null);
+        // Pārbauda, vai lietotājs ir pieslēdzies (pārvērš vērtību par boolean)
+        const isLoggedIn = computed(() => !!user.value)
 
-        // Вычисляемое свойство для проверки аутентификации
-        const isLoggedIn = computed(() => {
-            return !!user.value; // Проверяем, есть ли пользователь
-        });
-
-        // Следим за изменениями в props.auth
-        watch(
-            () => props.auth, // Отслеживаем изменения в props.auth
-            (newAuth) => {
-                user.value = newAuth?.user || null; // Обновляем данные пользователя
-            },
-            { immediate: true } // Выполняем сразу при монтировании
-        );
-
-        // Метод для выхода из системы
+        // Izrakstīšanās funkcija
         const logout = () => {
-            fetch("/logout", { method: "POST", credentials: "include" })
-                .then(() => {
-                    user.value = null; // Сбрасываем данные пользователя
-                })
-                .catch((error) => {
-                    console.error("Ошибка при выходе из системы", error);
-                });
-        };
+            router.post(route('logout'), {}, {
+                onSuccess: () => {
+                    // Notīra datus vai pāradresē
+                    window.location.href = '/' // Piespiedu lapas atsvaidzināšana
+                }
+            })
+        }
 
-        // Возвращаем данные и методы, чтобы они были доступны в шаблоне
+        // Atgriež reakrīvās vērtības un metodes
         return {
-            isLoggedIn,
             user,
+            isLoggedIn,
             logout
         };
     },
+
 
     mounted() {
         // Izsauc funkcijas, lai iestatītu hamburger izvēlni un meklēšanas funkcionalitāti
@@ -105,8 +90,8 @@ export default {
         <a href="/" class="SmallLogo"><img src="../../../public/images/Logo2.0.jpg" ></a> <!-- Saite uz sākumlapu un mazo logo -->
 
         <ul class="marks">
-            <li><a class="pressed1nav" href="../html/Library.html"><i style="font-size:16px" class="fa">&#xf02d;</i> Bibliotēka</a></li> <!-- Saite uz lapu "Bibliotēka" -->
-            <li><a class="pressed1nav" href="../html/Bookmarks.html"><i style="font-size:16px;" class="fa">&#xf02e;</i> Grāmatzīmes</a></li> <!-- Saite uz lapu "Grāmatzīmes" -->
+            <li><a class="pressed1nav" href="../html/Library.html"><i class="fa">&#xf02d;</i> Bibliotēka</a></li> <!-- Saite uz lapu "Bibliotēka" -->
+            <li><a class="pressed1nav" href="../html/Bookmarks.html"><i class="fa">&#xf02e;</i> Grāmatzīmes</a></li> <!-- Saite uz lapu "Grāmatzīmes" -->
             <li><a class="pressed1nav"><i class="fa">&#xf040;</i> Rakstīšana</a> </li><!-- Saite uz lapu "Rakstīšana" -->
         </ul>
 
@@ -114,22 +99,21 @@ export default {
             <div class="search"> <!-- Meklēšanas josla -->
                 <input type="text" class="input" placeholder="Meklēt grāmatu..."> <!-- Ievades lauks meklēšanai -->
                 <button class="btn">
-                    <i style="font-size:15px" class="fa">&#xf002;</i>
+                    <i class="fa bar">&#xf002;</i>
                 </button>
             </div>
+
             <template v-if="!isLoggedIn">
-                <a class="pressed2" href="/registerp"><i style="font-size:16px" class="fa">&#xf2bd;</i> Reģistrācija</a>
-                <a class="pressed2" href="/login"> <i style="font-size:16px" class="fa">&#xf2be;</i> Pieslēgties</a>
+                <a class="pressed2" href="/registerp"><i class="fa">&#xf2bd;</i> Reģistrācija</a>
+                <a class="pressed2" href="/login"> <i class="fa">&#xf2be;</i> Pieslēgties</a>
+                <a class="pressed3" href="/login"> <i class="fa">&#xf2be; <br></i></a>
             </template>
 
             <template v-else>
-                <a class="pressed2" href="/profile"><i class="fa">&#xf2c0;</i> {{ user.nickname }}</a>
+                <a class="pressed2" href="/profile"><i class="fa profile-icon">&#xf2be;</i> {{ user.nickname }}</a>
+                <a class="pressed3" href="/profile"> <i class="fa">&#xf2be; <br></i></a>
                 <a class="pressed2" @click.prevent="logout"><i class="fa">&#xf08b;</i> Iziet</a>
             </template>
-
-            <a class="pressed3" href="/login"> <i style="font-size:27px" class="fa">&#xf2be; <br></i></a> <!-- Saite uz pierakstīšanās lapu, kad ir mazs ēkrans. -->
-
-
         </div>
 
         <a href="#" class="toggle-button"> <!-- Pogas izvēlne -->
@@ -140,20 +124,18 @@ export default {
 
         <!-- Hamburger menu -->
         <div class="navbar-links">
-
             <ul>
                 <li><a class="pressed1" href="../html/Library.html"><i style="font-size:16px" class="fa">&#xf02d;</i> Bibliotēka</a></li> <!-- Saite uz lapu "Bibliotēka" -->
                 <li><a class="pressed1" href="../html/Bookmarks.html"><i style="font-size:16px;" class="fa">&#xf02e;</i> Grāmatzīmes</a></li> <!-- Saite uz lapu "Grāmatzīmes" -->
                 <li><a class="pressed1"><i class="fa">&#xf040;</i> Rakstīšana</a> </li><!-- Saite uz lapu "Rakstīšana" -->
             </ul>
-
         </div>
-
     </nav>
 
    </template>
 
    <style>
+
 
    /* Navigācijas josla */
    .navbar {
@@ -163,7 +145,7 @@ export default {
        height: 55px !important;
        margin: 0;  /* Noņem arpusejo atstarpi */
        padding: 0;  /* Noņem iekšējo atstarpi */
-       box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna navigācijas joslas apakšā */
+        /* Ēna navigācijas joslas apakšā */
        background-color: #c58667; /* Fona krāsa */
        flex-grow: 1; /* Izplešas, lai aizpildītu vietu */
    }
@@ -216,6 +198,7 @@ export default {
        cursor: pointer; /* Mainam peles formu uz rādītāju */
        font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
        margin: 7px; /* Atstarpe ap elementiem */
+       transition: color 0.3s;
    }
 
    .pressed1nav:hover{
@@ -231,6 +214,9 @@ export default {
        margin-left: auto; /* Novietojam konta bloku pa labi */
        text-align: center; /* Centrējam tekstu */
    }
+   .account .fa{
+       transition: color 0.3s;
+   }
 
    .pressed2{
        color: rgba(26, 16, 8, 0.8); /*Teksta krāsa */
@@ -238,6 +224,7 @@ export default {
        text-decoration: none; /* Noņemam noklusēto teksta apakšsvītrojumu */
        font-size: 17px; /* Fonta izmērs navigācijas tekstam */
        font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
+       transition: color 0.3s;
    }
 
    .pressed3{
@@ -245,6 +232,7 @@ export default {
        text-decoration: none; /* Noņemam noklusēto teksta apakšsvītrojumu */
        margin-top: 13px;
        margin-right:15px ;
+       transition: color 0.3s;
    }
 
    .pressed3:hover .fa{
@@ -269,6 +257,7 @@ export default {
        justify-content: space-between; /* Horizontāla izlīdzināšana */
        width: 30px; /* Platums */
        height: 19px; /* Augstums */
+       transition: color 0.3s;
    }
    .toggle-button:hover .bar {
        background-color: rgba(255, 187, 142, 0.8); /* Mainam krāsu, kad pele tiek pārvilkta */
@@ -290,6 +279,23 @@ export default {
        right: 200px;
        display: none;
 
+   }
+   .pressed1 .fa{
+       transition: color 0.3s;
+       font-size: 16px;
+   }
+
+   .pressed2 .fa{
+       transition: color 0.3s;
+       font-size: 16px;
+   }
+   .pressed1nav .fa{
+       transition: color 0.3s;
+       font-size: 16px;
+   }
+   .pressed3 .fa{
+       transition: color 0.3s;
+       font-size: 27px;
    }
 
     /* Meklēšanas josla */
@@ -327,7 +333,12 @@ export default {
         margin-top: 1px;
         width: 30px;
         height: 30px;
+        transition: border-color 0.3s;
     }
+   .btn .fa{
+       font-size: 15px;
+       transition: color 0.3s !important;
+   }
 
    /* Meklēšanas joslas aktīvā stāvoklis */
    .search.active .input {
@@ -342,12 +353,13 @@ export default {
        font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
    }
    .search input::placeholder {
-       color: rgba(26, 16, 8, 0.8); /* Krāsa */
+       color: rgba(26, 16, 8, 0.42); /* Krāsa */
    }
 
    .input:focus {
        outline: none !important; /* Noņemam noklusēto apmales stāvokli */
        box-shadow: none !important;
+       background-color: #ffd9c6; /* Fona krāsa */
    }
    .btn:hover {
        border-color: rgba(255, 187, 142, 0.8); /* Mainam apmales krāsu, kad pele tiek pārvilkta */

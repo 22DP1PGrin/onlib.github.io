@@ -115,9 +115,25 @@ export default {
 </script>
 
 <style scoped>
-    /* Lapas virsraksta stils */
-    .PageName {
-        text-align: center; /* Centrē tekstu */
+    /* Galvenā satura konteinera stils */
+    .main-content {
+        align-items: center; /* Centrē saturu vertikāli */
+        flex: 1; /* Aizpilda atlikušo vietu */
+        padding: 20px; /* Iekšējā atstarpe */
+        margin-top: 55px; /* Atstarpe no augšas */
+        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+        display: flex; /* Flex izkārtojums */
+        flex-direction: column; /* Kolonnas izkārtojums */
+        padding-bottom: 60px;
+    }
+
+    /* Satura konteinera stils */
+    .content {
+        justify-items: center; /* Centrē saturu horizontāli */
+        max-width: 800px; /* Maksimālais satura platums */
+        margin: 0 auto; /* Centrēt saturu */
+        padding: 0 20px; /*Atstarpes sānos*/
     }
 
     /* Galvenā virsraksta stils */
@@ -155,40 +171,17 @@ export default {
         margin: 10px -10px; /* Ārējā atstarpe */
     }
 
-    /* Satura konteinera stils */
-    .content {
-        justify-items: center; /* Centrē saturu horizontāli */
-        max-width: 1200px; /* Maksimālais satura platums */
-        margin: 0 auto; /* Centrēt saturu */
-        padding: 0 20px; /*Atstarpes sānos*/
-    }
-
-    /* Galvenā satura konteinera stils */
-    .main-content {
-        align-items: center; /* Centrē saturu vertikāli */
-        flex: 1; /* Aizpilda atlikušo vietu */
-        padding: 20px; /* Iekšējā atstarpe */
-        margin-top: 55px; /* Atstarpe no augšas */
-        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-        display: flex; /* Flex izkārtojums */
-        flex-direction: column; /* Kolonnas izkārtojums */
-        padding-bottom: 60px;
-    }
-
     /* Saišu stils */
     a {
         text-decoration: none; /* Noņem apakšsvītrojumu */
         color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
     }
+    a:hover{
+        color: rgba(26, 16, 8, 0.8);
+    }
 
     /* Responsivitāte */
-
     @media (max-width: 768px) {
-
-        .PageName {
-            font-size: 1.5rem; /* Teksta izmērs */
-        }
 
         .main-content p,
         .main-content ul {
@@ -197,6 +190,26 @@ export default {
 
         li {
             margin-right: 100px; /* Atstarpe no labās puses */
+        }
+    }
+
+    @media (max-width: 500px) {
+
+        .main-content p,
+        .main-content ul {
+            font-size: 0.9rem; /* Teksta izmērs */
+        }
+        h1{
+            font-size: 1.5rem;
+        }
+
+        h2{
+            font-size: 1rem;
+        }
+
+        li {
+            margin-right: 0; /* Atstarpe no labās puses */
+            margin-left: 30px;
         }
     }
 </style>

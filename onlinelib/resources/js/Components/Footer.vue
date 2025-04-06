@@ -60,6 +60,7 @@
         text-decoration: none; /* Noņemam apakšsvītrojumu */
         font-size: 17px; /* Teksta izmērs */
         font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
+        transition: color 0.3s;
 
     }
 

@@ -5,14 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3e76eb8-75aa-48f5-a2ef-f4cf9daec5ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Check/UserCheck.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/Auth/AuthenticatedSessionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/Auth/AuthenticatedSessionController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/Auth/RegisteredUserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/Auth/RegisteredUserController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/User.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/database/migrations/0001_01_01_000000_create_users_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/database/migrations/0001_01_01_000000_create_users_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/Checkbox.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Checkbox.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/Footer.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Footer.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Navbar.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/routes/auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/routes/auth.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Register.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/ContentPolicy.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/ContentPolicy.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/DMCAPolicy.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/DMCAPolicy.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/FAQ.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/FAQ.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/PrivacyPolicy.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/PrivacyPolicy.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TechnicalSupport.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TechnicalSupport.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TermsOfService.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TermsOfService.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -174,6 +182,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/Onlib&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -213,7 +222,43 @@
       <workItem from="1740915725955" duration="17227000" />
       <workItem from="1741020094772" duration="3572000" />
       <workItem from="1741088237534" duration="6090000" />
-      <workItem from="1741162473415" duration="25337000" />
+      <workItem from="1741162473415" duration="26887000" />
+      <workItem from="1742798423911" duration="285000" />
+      <workItem from="1742800369523" duration="78000" />
+      <workItem from="1742800594487" duration="19000" />
+      <workItem from="1742801391576" duration="23000" />
+      <workItem from="1742802407946" duration="20000" />
+      <workItem from="1742802558756" duration="21000" />
+      <workItem from="1742803276102" duration="145000" />
+      <workItem from="1742803713660" duration="19000" />
+      <workItem from="1742805051292" duration="56000" />
+      <workItem from="1742919350809" duration="229000" />
+      <workItem from="1742920764508" duration="83000" />
+      <workItem from="1742973691565" duration="46000" />
+      <workItem from="1742973885669" duration="42000" />
+      <workItem from="1742974397053" duration="28000" />
+      <workItem from="1742974536939" duration="8000" />
+      <workItem from="1742974583426" duration="90000" />
+      <workItem from="1742974705193" duration="15000" />
+      <workItem from="1742974778492" duration="76000" />
+      <workItem from="1742977875592" duration="14000" />
+      <workItem from="1742977911211" duration="13000" />
+      <workItem from="1742981218669" duration="21000" />
+      <workItem from="1743068156962" duration="37000" />
+      <workItem from="1743070136411" duration="60000" />
+      <workItem from="1743162636195" duration="20000" />
+      <workItem from="1743162949375" duration="136000" />
+      <workItem from="1743163871811" duration="23000" />
+      <workItem from="1743163968791" duration="34000" />
+      <workItem from="1743176209734" duration="58000" />
+      <workItem from="1743252305846" duration="10000" />
+      <workItem from="1743335787913" duration="5875000" />
+      <workItem from="1743411151830" duration="9000" />
+      <workItem from="1743421323384" duration="43000" />
+      <workItem from="1743502230030" duration="52000" />
+      <workItem from="1743503718511" duration="85000" />
+      <workItem from="1743858754963" duration="17592000" />
+      <workItem from="1743957613442" duration="1299000" />
     </task>
     <servers />
   </component>

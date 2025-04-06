@@ -53,7 +53,7 @@
             <!-- Jautājums 5: Kā dzēst savu kontu? -->
             <h2>5. Kā dzēst savu kontu?</h2>
             <p>
-                Lai izdzēstu savu kontu, noklikšķiniet uz profila ikonas un atlasiet iestatījumu sadaļu.
+                Lai izdzēstu savu kontu, noklikšķiniet uz profila ikonas un noklikšķiniet uz pogas "Rediģēt profilu".
                 Tur jūs atradīsit opciju "Dzēst kontu".
             </p>
             <p>Lūdzu, ņemiet vērā, ka jūsu konts un visi saistītie dati tiks neatgriezeniski dzēsti.</p>
@@ -61,7 +61,7 @@
         <!-- Jautājums 6: Kā mainīt paroli? -->
             <h2>6. Kā mainīt paroli?</h2>
             <p>
-                Lai mainītu paroli, noklikšķiniet uz profila ikonas un atlasiet iestatījumu sadaļu.
+                Lai mainītu paroli, noklikšķiniet uz profila ikonas un noklikšķiniet uz pogas "Rediģēt profilu".
                 Tur atradīsiet opciju "Mainīt paroli".
                 Ievadiet savu pašreizējo paroli un izvēlieties jaunu drošu paroli.
             </p>
@@ -99,88 +99,104 @@ export default {
 </script>
 
 <style scoped>
-/* Lapas virsraksta stils */
-.PageName {
-    text-align: center; /* Centrē tekstu */
-}
 
-/* Galvenā virsraksta stils */
-h1 {
-    font-size: 1.7rem; /* Teksta izmērs */
-    font-weight: bold; /* Treknraksts */
-    text-align: center; /* Centrē tekstu */
-    margin-top: -80px; /* Atstarpe no augšas */
-    padding: 60px; /* Iekšējā atstarpe */
-}
+    /* Galvenā satura konteinera stils */
+    .main-content {
+        align-items: center; /* Centrē saturu vertikāli */
+        flex: 1; /* Aizpilda atlikušo vietu */
+        padding: 20px; /* Iekšējā atstarpe */
+        margin-top: 55px; /* Atstarpe no augšas */
+        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+        display: flex; /* Flex izkārtojums */
+        flex-direction: column; /* Kolonnas izkārtojums */
+        padding-bottom: 60px;
+    }
 
-/* Apakšvirsrakstu stils */
-h2 {
-    font-size: 1.1rem; /* Teksta izmērs */
-    font-style: italic; /* Slīpraksts */
-    font-weight: bold; /* Treknraksts */
-}
+    /* Satura konteinera stils */
+    .content {
+        justify-items: center; /* Centrē saturu horizontāli */
+        max-width: 800px; /* Maksimālais satura platums */
+        margin: 0 auto; /* Centrēt saturu */
+        padding: 0 20px; /*Atstarpes sānos*/
+    }
 
-/* Rindkopu stils */
-.main-content p {
-    font-size: 1.0rem; /* Teksta izmērs */
-    margin: 10px 20px; /* Ārējā atstarpe */
-}
+    /* Galvenā virsraksta stils */
+    h1 {
+        font-size: 1.7rem; /* Teksta izmērs */
+        font-weight: bold; /* Treknraksts */
+        text-align: center; /* Centrē tekstu */
+        margin-top: -80px; /* Atstarpe no augšas */
+        padding: 60px; /* Iekšējā atstarpe */
+    }
 
-/* Saraksta elementu stils */
-li {
-    display: block; /* Parāda kā bloku elementu */
-    padding: 10px; /* Iekšējā atstarpe */
-    margin-left: 50px; /* Atstarpe no kreisās puses */
-}
+    /* Apakšvirsrakstu stils */
+    h2 {
+        font-size: 1.1rem; /* Teksta izmērs */
+        font-style: italic; /* Slīpraksts */
+        font-weight: bold; /* Treknraksts */
+    }
 
-/* Sarakstu stils */
-.main-content ul {
-    font-size: 1.0rem; /* Teksta izmērs */
-    margin: 10px -10px; /* Ārējā atstarpe */
-}
+    /* Rindkopu stils */
+    .main-content p {
+        font-size: 1.0rem; /* Teksta izmērs */
+        margin: 10px 20px; /* Ārējā atstarpe */
+    }
 
-/* Satura konteinera stils */
-.content {
-    justify-items: center; /* Centrē saturu horizontāli */
-    max-width: 1200px; /* Maksimālais satura platums */
-    margin: 0 auto; /* Centrēt saturu */
-    padding: 0 20px; /*Atstarpes sānos*/
-}
+    /* Saraksta elementu stils */
+    li {
+        display: block; /* Parāda kā bloku elementu */
+        padding: 10px; /* Iekšējā atstarpe */
+        margin-left: 50px; /* Atstarpe no kreisās puses */
+    }
 
-/* Galvenā satura konteinera stils */
-.main-content {
-    align-items: center; /* Centrē saturu vertikāli */
-    flex: 1; /* Aizpilda atlikušo vietu */
-    padding: 20px; /* Iekšējā atstarpe */
-    margin-top: 55px; /* Atstarpe no augšas */
-    color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-    font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-    display: flex; /* Flex izkārtojums */
-    flex-direction: column; /* Kolonnas izkārtojums */
-    padding-bottom: 60px;
-}
+    /* Sarakstu stils */
+    .main-content ul {
+        font-size: 1.0rem; /* Teksta izmērs */
+        margin: 10px -10px; /* Ārējā atstarpe */
+    }
 
-/* Saišu stils */
-a {
-    text-decoration: none; /* Noņem apakšsvītrojumu */
-    color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
-}
+    /* Saišu stils */
+    a {
+        text-decoration: none; /* Noņem apakšsvītrojumu */
+        color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
+    }
+
+    a:hover{
+        color: rgba(26, 16, 8, 0.8);
+    }
 
 /* Responsivitāte */
 
-@media (max-width: 768px) {
+    @media (max-width: 768px) {
 
-    .PageName {
-        font-size: 1.5rem; /* Teksta izmērs */
+        .main-content p,
+        .main-content ul {
+            font-size: 1rem; /* Teksta izmērs */
+        }
+
+        li {
+            margin-right: 100px; /* Atstarpe no labās puses */
+        }
     }
 
-    .main-content p,
-    .main-content ul {
-        font-size: 1rem; /* Teksta izmērs */
-    }
+    @media (max-width: 500px) {
 
-    li {
-        margin-right: 100px; /* Atstarpe no labās puses */
+        .main-content p,
+        .main-content ul {
+            font-size: 0.9rem; /* Teksta izmērs */
+        }
+        h1{
+            font-size: 1.5rem;
+        }
+
+        h2{
+            font-size: 1rem;
+        }
+
+        li {
+            margin-right: 0; /* Atstarpe no labās puses */
+            margin-left: 30px;
+        }
     }
-}
 </style>

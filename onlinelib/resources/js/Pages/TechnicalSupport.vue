@@ -19,14 +19,8 @@
             <form @submit.prevent="submitForm">
                 <!-- Vārds -->
                 <div class="form-group">
-                    <label for="name">Vārds:</label>
+                    <label for="name">Segvārds:</label>
                     <input type="text" class="input" v-model="form.name" required autocomplete="given-name" />
-                </div>
-
-                <!-- Uzvārds -->
-                <div class="form-group">
-                    <label for="name">Uzvārds:</label>
-                    <input type="text" class="input" v-model="form.surname" required autocomplete="family-name"/>
                 </div>
 
                 <!-- E-pasta adrese -->
@@ -88,8 +82,7 @@ export default {
         return {
             // Formas dati
             form: {
-                name: "", // Lietotāja vārds
-                surname: "", // Lietotāja uzvārds
+                nickname: "", // Lietotāja vārds
                 email: "", // Lietotāja e-pasta adrese
                 subject: "", // Tēma
                 message: "", // Ziņojums
@@ -101,126 +94,146 @@ export default {
         submitForm() {
             console.log("Forma iesniegta:", this.form); // Izvada formas datus konsolē
             alert("Paldies par jūsu ziņojumu! Mēs ar jums sazināsimies drīz."); // Parāda paziņojumu
-            this.form = { name: "", surname: "", email: "", subject: "", message: "" }; // Notīra formu
+            this.form = { nickname: "", email: "", subject: "", message: "" }; // Notīra formu
         },
     },
 };
 </script>
 
 <style scoped>
-/* Galvenais konteiners */
-.support-page {
-    max-width: 800px; /* Maksimālais platums */
-    margin: 0 auto; /* Centrēšana */
-    padding: 20px; /* Iekšējā atstarpe */
-    font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-    line-height: 1.6; /* Teksta augstums */
-    color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-}
+    /* Galvenais konteiners */
+    .support-page {
+        max-width: 800px; /* Maksimālais platums */
+        margin: 0 auto; /* Centrēšana */
+        padding: 20px; /* Iekšējā atstarpe */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+        line-height: 1.6; /* Teksta augstums */
+        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+    }
 
-/* Apraksta stils */
-.main-content p {
-    margin-top: -10px; /* Atstarpe no augšas */
-    font-size: 1.0rem; /* Teksta izmērs */
-    margin-bottom: 25px; /* Atstarpe no apakšas */
-}
+    /* Kontaktformas stils */
+    .contact-form {
+        background-color: #e4a27c; /* Fona krāsa */
+        padding: 20px; /* Iekšējā atstarpe */
+        border-radius: 8px; /* Noapaļotie stūri */
+        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */
+    }
 
-/* Virsraksta stils */
-h1 {
-    font-size: 1.7rem; /* Teksta izmērs */
-    font-weight: bold; /* Treknraksts */
-    text-align: center; /* Centrē tekstu */
-    margin-top: 0; /* Atstarpe no augšas */
-    padding: 60px; /* Iekšējā atstarpe */
-}
+    /* Apraksta stils */
+    .main-content p {
+        margin-top: -10px; /* Atstarpe no augšas */
+        font-size: 1.0rem; /* Teksta izmērs */
+        margin-bottom: 25px; /* Atstarpe no apakšas */
+    }
 
-/* Apakšvirsraksta stils */
-h2 {
-    font-weight: bold; /* Treknraksts */
-    font-size: 1.4rem; /* Teksta izmērs */
-    margin-top: 20px; /* Atstarpe no augšas */
-    margin-bottom: 25px; /* Atstarpe no apakšas */
-}
+    /* Virsraksta stils */
+    h1 {
+        font-size: 1.7rem; /* Teksta izmērs */
+        font-weight: bold; /* Treknraksts */
+        text-align: center; /* Centrē tekstu */
+        margin-top: 0; /* Atstarpe no augšas */
+        padding: 60px; /* Iekšējā atstarpe */
+    }
 
-/* Kontaktformas stils */
-.contact-form {
-    background-color: #e4a27c; /* Fona krāsa */
-    padding: 20px; /* Iekšējā atstarpe */
-    border-radius: 8px; /* Noapaļotie stūri */
-    border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-    box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */
-}
+    /* Apakšvirsraksta stils */
+    h2 {
+        font-weight: bold; /* Treknraksts */
+        font-size: 1.4rem; /* Teksta izmērs */
+        margin-top: 20px; /* Atstarpe no augšas */
+        margin-bottom: 25px; /* Atstarpe no apakšas */
+    }
 
-/* Formas grupu stils */
-.form-group {
-    margin-bottom: 15px; /* Atstarpe starp formu grupām */
-}
+    /* Formas grupu stils */
+    .form-group {
+        margin-bottom: 15px; /* Atstarpe starp formu grupām */
+    }
 
-/* Etiķešu stils */
-label {
-    display: block; /* Parāda kā bloku elementu */
-    margin-bottom: 5px; /* Atstarpe no apakšas */
-    font-weight: bold; /* Treknraksts */
-}
+    /* Etiķešu stils */
+    label {
+        display: block; /* Parāda kā bloku elementu */
+        margin-bottom: 5px; /* Atstarpe no apakšas */
+        font-weight: bold; /* Treknraksts */
+    }
 
-/* Opciju stils */
-.subject option {
-    background-color: white; /* Fona krāsa opcijām */
-    color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-}
+    /* Opciju stils */
+    .subject option {
+        background-color: white; /* Fona krāsa opcijām */
+        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+    }
 
-/* Ievades lauku stils */
-input,
-select,
-textarea {
-    width: 100%; /* Pilns platums */
-    padding: 10px; /* Iekšējā atstarpe */
-    border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-    border-radius: 4px; /* Noapaļotie stūri */
-    font-size: 1rem; /* Teksta izmērs */
-}
+    /* Ievades lauku stils */
+    input,
+    select,
+    textarea {
+        width: 100%; /* Pilns platums */
+        padding: 10px; /* Iekšējā atstarpe */
+        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+        border-radius: 4px; /* Noapaļotie stūri */
+        font-size: 1rem; /* Teksta izmērs */
+    }
 
-/* Teksta lauka stils */
-textarea {
-    resize: vertical; /* Atļauj vertikālo izmēru maiņu */
-}
+    /* Teksta lauka stils */
+    textarea {
+        resize: vertical; /* Atļauj vertikālo izmēru maiņu */
+    }
 
-/* Fokusa stils */
-select:focus,
-textarea:focus,
-input:focus {
-    outline: none; /* Noņem noklusēto fokusu */
-    box-shadow: none; /* Noņem ēnu */
-    background-color: white; /* Fona krāsa */
-    border-color: rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-}
+    /* Fokusa stils */
+    select:focus,
+    textarea:focus,
+    .input:focus {
+        outline: none; /* Noņem noklusēto fokusu */
+        box-shadow: none; /* Noņem ēnu */
+        background-color: #ffd9c6; /* Fona krāsa */
+        border-color: rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+    }
 
-/* Pogas stils */
-button {
-    background-color: #c58667; /* Fona krāsa */
-    color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-    border: 2px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-    padding: 5px 25px; /* Iekšējā atstarpe */
-    border-radius: 4px; /* Noapaļotie stūri */
-    font-size: 1.0rem; /* Teksta izmērs */
-    cursor: pointer; /* Kursora izskats */
-}
+    /* Pogas stils */
+    button {
+        background-color: #c58667; /* Fona krāsa */
+        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+        border: 2px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+        padding: 5px 25px; /* Iekšējā atstarpe */
+        border-radius: 4px; /* Noapaļotie stūri */
+        font-size: 1.0rem; /* Teksta izmērs */
+        cursor: pointer; /* Kursora izskats */
+    }
 
-/* Pogas stils, kad pele ir virs tās */
-button:hover {
-    background-color: rgba(255, 187, 142, 0.8); /* Fona krāsa */
-}
+    /* Pogas stils, kad pele ir virs tās */
+    button:hover {
+        background-color: #ffc8a9;
+        border-color: #ffc8a9;
+    }
 
-/* Papildu informācijas stils */
-.additional-info p {
-    margin-top: 30px; /* Atstarpe no augšas */
-    font-size: 1.0rem; /* Teksta izmērs */
-    margin-bottom: 25px; /* Atstarpe no apakšas */
-}
+    /* Papildu informācijas stils */
+    .additional-info p {
+        margin-top: 30px; /* Atstarpe no augšas */
+        font-size: 1.0rem; /* Teksta izmērs */
+        margin-bottom: 25px; /* Atstarpe no apakšas */
+    }
 
-/* Saites stils */
-a {
-    text-decoration: none; /* Noņem apakšsvītrojumu */
-    color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
-}
+    /* Saites stils */
+    a {
+        text-decoration: none; /* Noņem apakšsvītrojumu */
+        color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
+    }
+    a:hover{
+        color: rgba(26, 16, 8, 0.8);
+    }
+
+    @media (max-width: 500px) {
+
+        .main-content p,
+        .main-content a {
+            font-size: 0.9rem; /* Teksta izmērs */
+        }
+        h1{
+            font-size: 1.5rem;
+            margin-top: -20px;
+        }
+
+        h2{
+            font-size: 1rem;
+        }
+    }
 </style>

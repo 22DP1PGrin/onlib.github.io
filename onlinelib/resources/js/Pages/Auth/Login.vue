@@ -7,6 +7,10 @@ import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { route } from "ziggy-js";
 
+const goBack = () => {
+    window.history.back();
+};
+
 defineProps({
     canResetPassword: {
         type: Boolean,
@@ -34,6 +38,7 @@ const submit = () => {
 
     <div class="support-page">
         <div class="contact-form">
+            <a class="back" @click="goBack"><-Atpakaļ</a>
             <h1>Pieteikšanās</h1> <!-- Formas virsraksts -->
 
             <div v-if="status" >
@@ -79,9 +84,8 @@ const submit = () => {
                 </div>
 
                 <!-- Iesniegšanas poga un saite uz paroles atiestatīšanu -->
-                <div class="form-group flex items-center justify-end">
+                <div class="form-group form-footer">
                     <Link
-                        v-if="canResetPassword"
                         :href="route('register')"
                     >
                         Nav izveidots konts?
@@ -101,95 +105,102 @@ const submit = () => {
 </template>
 
 <style scoped>
-/* Galvenais konteiners */
-.support-page {
-    max-width: 400px; /* Maksimālais platums */
-    width: 100%; /* Pilns platums */
-    margin: 0 auto; /* Centrēšana */
-    padding: 20px; /* Iekšējā atstarpe */
-    font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-    line-height: 1.6; /* Teksta augstums */
-    color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-    position: absolute; /* Absolūtā pozicionēšana */
-    top: 50%; /* Novietošana 50% no augšas */
-    left: 50%; /* Novietošana 50% no kreisās puses */
-    transform: translate(-50%, -50%); /* Centrēšana */
-}
+    /* Galvenais konteiners */
+    .support-page {
+        max-width: 400px; /* Maksimālais platums */
+        width: 100%; /* Pilns platums */
+        margin: 0 auto; /* Centrēšana */
+        padding: 20px; /* Iekšējā atstarpe */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+        line-height: 1.6; /* Teksta augstums */
+        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+        position: absolute; /* Absolūtā pozicionēšana */
+        top: 50%; /* Novietošana 50% no augšas */
+        left: 50%; /* Novietošana 50% no kreisās puses */
+        transform: translate(-50%, -50%); /* Centrēšana */
+    }
 
-/* Virsraksta stils */
-h1 {
-    font-size: 1.7rem; /* Teksta izmērs */
-    font-weight: bold; /* Treknraksts */
-    text-align: center; /* Centrē tekstu */
-    margin-top: 12px; /* Atstarpe no augšas */
-    padding: 0; /* Iekšējā atstarpe */
-}
+    /* Virsraksta stils */
+    h1 {
+        font-size: 1.7rem; /* Teksta izmērs */
+        font-weight: bold; /* Treknraksts */
+        text-align: center; /* Centrē tekstu */
+        margin-top: 12px; /* Atstarpe no augšas */
+        padding: 0; /* Iekšējā atstarpe */
+    }
 
-/* Kontaktformas stils */
-.contact-form {
-    background-color: #e4a27c; /* Fona krāsa */
-    padding: 20px; /* Iekšējā atstarpe */
-    border-radius: 8px; /* Noapaļotie stūri */
-    border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-    box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */
-}
+    /* Kontaktformas stils */
+    .contact-form {
+        background-color: #e4a27c; /* Fona krāsa */
+        padding: 20px; /* Iekšējā atstarpe */
+        border-radius: 8px; /* Noapaļotie stūri */
+        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */
+    }
 
-/* Formas grupu stils */
-.form-group {
-    margin-bottom: 15px; /* Atstarpe starp formu grupām */
-    color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-}
+    /* Formas grupu stils */
+    .form-group {
+        margin-bottom: 15px; /* Atstarpe starp formu grupām */
+        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+    }
 
-.label {
-    color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-    font-weight: normal; /* Normāls fonta stils */
-}
+    .label {
+        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+        font-weight: normal; /* Normāls fonta stils */
+    }
 
-/* Ievades lauku stils */
-.input {
-    width: 100%; /* Pilns platums */
-    padding: 10px; /* Iekšējā atstarpe */
-    border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-    border-radius: 4px; /* Noapaļotie stūri */
-    font-size: 1rem; /* Teksta izmērs */
-}
+    /* Ievades lauku stils */
+    .input {
+        width: 100%; /* Pilns platums */
+        padding: 10px; /* Iekšējā atstarpe */
+        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+        border-radius: 4px; /* Noapaļotie stūri */
+        font-size: 1rem; /* Teksta izmērs */
+    }
 
-/* Fokusa stils */
-.input:focus {
-    outline: none; /* Noņem noklusēto fokusu */
-    box-shadow: none; /* Noņem ēnu */
-    background-color: white; /* Fona krāsa */
-    border-color: rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-}
+    /* Fokusa stils */
+    .input:focus {
+        outline: none; /* Noņem noklusēto fokusu */
+        box-shadow: none; /* Noņem ēnu */
+        background-color: #ffd9c6; /* Fona krāsa */
+        border-color: rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+    }
 
-.tick{
-    color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+    .tick{
+        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
 
-}
-/* Pogas stils */
-button {
-    background-color: #c58667; /* Fona krāsa */
-    font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-    color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-    border: 2px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-    padding: 5px 25px; /* Iekšējā atstarpe */
-    border-radius: 4px; /* Noapaļotie stūri */
-    font-size: 1.0rem; /* Teksta izmērs */
-    cursor: pointer; /* Kursora izskats */
-}
+    }
+    /* Pogas stils */
+    button {
+        background-color: #c58667; /* Fona krāsa */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+        border: 2px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+        padding: 5px 25px; /* Iekšējā atstarpe */
+        border-radius: 4px; /* Noapaļotie stūri */
+        font-size: 1.0rem; /* Teksta izmērs */
+        cursor: pointer; /* Kursora izskats */
+        transition: background-color 0.3s, border-color 0.3s;
+    }
 
-/* Pogas stils, kad pele ir virs tās */
-button:hover {
-    background-color: rgba(255, 187, 142, 0.8); /* Fona krāsa */
-}
+    /* Pogas stils, kad pele ir virs tās */
+    button:hover {
+        background-color: #ffc8a9;
+        border-color: #ffc8a9;;
+    }
+    .form-footer{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    /* Saites stils */
+    a {
+        text-decoration: none; /* Noņem apakšsvītrojumu */
+        color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
+        font-size: 14px;
+    }
 
-/* Saites stils */
-a {
-    text-decoration: none; /* Noņem apakšsvītrojumu */
-    color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
-}
-
-a:hover {
-    color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
-}
+    a:hover{
+        color: #ffc8a9; /* Teksta krāsa */
+    }
 </style>
