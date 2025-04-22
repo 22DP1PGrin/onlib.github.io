@@ -72,7 +72,7 @@ export default {
             </div>
         </div>
     </div>
-    <!-- Lapas kājene -->
+
     <Footer/>
 </template>
 
@@ -104,7 +104,7 @@ export default {
 
     .item {
         border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-        background-color: #c58667;
+        background-color: #e4a27c;
         border-radius: 8px; /* Noapaļotas malas */
         text-align: center;
         box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 10px; /* Ēna*/
@@ -116,7 +116,6 @@ export default {
         margin-bottom: 10px;
     }
 
-    /* Vienības nosaukuma stils */
     .title {
         color: rgba(26, 16, 8, 0.8);
         font-family: Tahoma, Helvetica, sans-serif;

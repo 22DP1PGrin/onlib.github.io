@@ -116,7 +116,7 @@
         color: rgba(26, 16, 8, 0.8);
         font-family: Tahoma, Helvetica, sans-serif;
         border: 1px solid rgba(26, 16, 8, 0.8);
-        background-color: #c58667;
+        background-color: #e4a27c;
         border-radius: 10px; /* Noapaļoti stūri */
         box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */
         padding: 20px;

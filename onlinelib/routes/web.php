@@ -5,6 +5,7 @@ use App\Http\Controllers\GenreController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SupportController;
 use App\Http\Controllers\UserBookController;
+use App\Models\TechnicalSupportForm;
 use App\Models\UserBook;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
@@ -116,5 +117,24 @@ Route::get('/UserControl', [ProfileController::class, 'showUsers'])
 Route::middleware(['auth', 'can:Admin'])->group(function () {
     Route::delete('/users/{user}', [ProfileController::class, 'delete'])->name('users.destroy');
 });
+
+Route::get('/Forms', [SupportController::class, 'showProblems'])
+    ->middleware('can:Admin')
+    ->name('problems');
+
+Route::get('/Forms/{id}', [SupportController::class, 'showForm'])
+    ->middleware('can:Admin')
+    ->name('problems.show');
+
+Route::delete('/Forms/{id}', [SupportController::class, 'destroy'])
+    ->middleware('can:Admin')
+    ->name('problems.destroy');
+
+Route::get('/BookList', [UserBookController::class, 'showAll'])
+    ->middleware('can:Admin')
+    ->name('book.lists');
+
+Route::delete('/books/{id}', [UserBookController::class, 'destroyBook'])->name('books.destroy');
+
 require __DIR__.'/auth.php';
 

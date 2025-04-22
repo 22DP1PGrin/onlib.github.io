@@ -229,7 +229,7 @@
         color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
         font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
         border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-        background-color: #c58667; /* Fona krāsa */
+        background-color: #e4a27c; /* Fona krāsa */
         border-radius: 10px; /* Apmales noapaļojums */
         padding: 30px; /* Iekšējā atstarpe */
         box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */
@@ -345,7 +345,7 @@
         padding: 20px;
         font-family: Tahoma, Helvetica, sans-serif;
         border: 1px solid rgba(26, 16, 8, 0.8);
-        background-color: #c58667;
+        background-color: #e4a27c;
         border-radius: 10px;
         box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px;
     }

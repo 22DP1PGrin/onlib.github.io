@@ -179,7 +179,7 @@ export default {
 
     .work-item {
         border: 1px solid rgba(26, 16, 8, 0.8);
-        background-color: #c58667;
+        background-color: #e4a27c;
         padding: 20px;
         border-radius: 4px;
         box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px;
@@ -193,7 +193,7 @@ export default {
         font-size: 1.1rem;
     }
 
-    /* IKONAS STILI */
+
     .new .fa {
         text-align: center;
         align-items: center;
@@ -202,14 +202,13 @@ export default {
         font-size: 3rem;
     }
 
-    /* TEKSTA STILI */
+
     .description {
         font-size: 1rem;
     }
     .created {
         font-size: 0.9rem;
     }
-
 
     .work-meta {
         display: flex;

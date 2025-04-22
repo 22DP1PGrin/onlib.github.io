@@ -5,6 +5,7 @@
     import Footer from "@/Components/Footer.vue";
     import TextInput from "@/Components/TextInput.vue";
     import InputError from "@/Components/InputError.vue";
+    import {route} from "ziggy-js";
 
     export default {
         setup() {
@@ -98,7 +99,6 @@
             handleDeleteAccount() {
                 if (confirm('Vai tiešām vēlaties dzēst kontu?\nŠī darbība ir neatgriezeniska.')) {
                     this.$inertia.delete(route('profile.destroy'), {
-                        preserveScroll: true,
                         data: {
                             password: this.deletePassword
                         },
@@ -284,7 +284,7 @@
 
     .settings-section {
         border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-        background-color: #c58667;
+        background-color: #e4a27c;
         box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna  */
         border-radius: 4px; /* Noapaļotie stūri */
         padding: 20px;

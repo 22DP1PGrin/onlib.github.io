@@ -156,7 +156,7 @@
         color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
         font-family: Tahoma, Helvetica, sans-serif; /* Fonta stils */
         border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-        background-color: #c58667; /* Fona krāsa */
+        background-color: #e4a27c; /* Fona krāsa */
         border-radius: 10px; /* Noapaļoti stūri */
         padding: 30px; /* Iekšējais piepildījums */
         box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */

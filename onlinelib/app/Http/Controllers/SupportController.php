@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\TechnicalSupportForm;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class SupportController extends Controller
 {
@@ -34,5 +36,34 @@ class SupportController extends Controller
             // Ja notika kļūda, atgriežam kļūdas ziņojumu
             return response()->json(['error' => 'Radās kļūda: ' . $e->getMessage()], 500);
         }
+    }
+
+    // Atgriež visu tehnisko atbalsta pieteikumu sarakstu
+    public function showProblems()
+    {
+        $technical_support_form = TechnicalSupportForm::latest()->get();
+
+        return Inertia::render('Control/Problems', [
+            'technical_support_form' => $technical_support_form,
+        ]);
+    }
+
+    // Atgriež konkrēta pieteikuma detalizētu informāciju
+    public function showForm($id)
+    {
+        $form = TechnicalSupportForm::findOrFail($id);
+
+        return Inertia::render('Control/ProblemInfo', [
+            'form' => $form,
+        ]);
+    }
+
+    // Dzēš konkrētu tehnisko atbalsta pieteikumu
+    public function destroy($id)
+    {
+        $form = TechnicalSupportForm::findOrFail($id);
+        $form->delete();
+
+        return redirect()->route('problems')->with('success', 'Pieteikums dzēsts.');
     }
 }

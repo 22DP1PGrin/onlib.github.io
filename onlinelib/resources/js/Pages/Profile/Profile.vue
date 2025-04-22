@@ -36,6 +36,14 @@
                 router.get(route('users')); // Pāriet uz lietotāju sarakstu
             };
 
+            const GoToForm = () => {
+                router.get(route('problems')); // Pāriet uz lietotāju sarakstu
+            };
+
+            const GoToBookList = () => {
+                router.get(route('book.lists')); // Pāriet uz grāmatu sarakstu
+            };
+
             // Atgriež visus datus un metodes, lai izmantotu šablonā
             return {
                 user,
@@ -45,7 +53,9 @@
                 goToEdit,
                 GoToWatch,
                 GoToCreate,
-                GoToUser
+                GoToUser,
+                GoToForm,
+                GoToBookList
             };
         },
         components: {
@@ -156,12 +166,12 @@
                             <span class="link-text">Lietotāji</span>
                         </div>
                         <!-- Jautājumu pārvaldības saite -->
-                        <div class="bookmark-link">
+                        <div class="bookmark-link" @click="GoToForm">
                             <i class="fa">&#xf0ad;</i> <!-- Dokumenta ikona -->
                             <span class="link-text">Lietotāju jautājumi</span>
                         </div>
                         <!-- Visu stāstu pārvaldības saite -->
-                        <div class="bookmark-link">
+                        <div class="bookmark-link" @click="GoToBookList">
                             <i class="fa">&#xf2ba;</i> <!-- Grāmatu plaukta ikona -->
                             <span class="link-text">Visi stāsti</span>
                         </div>
@@ -211,7 +221,7 @@
 
     .content-panel {
         border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-        background-color: #c58667;
+        background-color: #e4a27c;
         border-radius: 10px; /* Noapaļotie stūri */
         padding: 30px; /* Iekšējais atstarpe */
         box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */

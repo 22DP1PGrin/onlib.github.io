@@ -164,4 +164,23 @@ class UserBookController extends Controller
         // Atgriežam ziņu par veiksmīgu dzēšanu
         return response()->json(['message' => 'Stāsts un visas nodaļas tika veiksmīgi dzēstas!']);
     }
+
+    //Atgriež visu lietotāju grāmatu sarakstu
+    public function showAll()
+    {
+        $book = UserBook::with('user')->get();
+
+        return Inertia::render('Control/BooksList', [
+            'book' => $book,
+        ]);
+    }
+
+    //Dzēš konkrētu lietotāja grāmatu
+    public function destroyBook($id)
+    {
+        $book = UserBook::findOrFail($id);
+        $book->delete();
+
+        return redirect()->back()->with('success', 'Grāmata veiksmīgi dzēsta.');
+    }
 }

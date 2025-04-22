@@ -17,12 +17,14 @@ use Illuminate\Validation\ValidationException;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
+
+
+    // Atgriež lietotāja iestatījumu skatu
     public function settings(){
         return Inertia::render('Profile/Settings');
     }
+
+    // Atgriež lietotāja profila rediģēšanas skatu
     public function edit(Request $request): Response
     {
         return Inertia::render('Profile/Edit', [
@@ -31,9 +33,7 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Update the user's profile information.
-     */
+    // Atjaunina lietotāja profila informāciju
     public function update(Request $request)
     {
         $user = Auth::user();
@@ -65,9 +65,7 @@ class ProfileController extends Controller
         }
     }
 
-    /**
-     * Delete the user's account.
-     */
+    // Dzēš lietotāja kontu
     public function destroy(Request $request): RedirectResponse
     {
         $user = $request->user();
@@ -82,6 +80,7 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
+    // Atjaunina lietotāja paroli
     public function updatePassword(Request $request)
     {
         $request->validate([
@@ -106,6 +105,7 @@ class ProfileController extends Controller
         return back()->with('success', 'Parole veiksmīgi nomainīta!');
     }
 
+    // Atgriež lietotāja profila skatu ar grāmatu skaitu
     public function profile()
     {
         $user = auth()->user();
@@ -116,6 +116,8 @@ class ProfileController extends Controller
             'booksCount' => $booksCount,
         ]);
     }
+
+    // Atgriež visu parasto lietotāju sarakstu (administratora funkcija)
     public function showUsers()
     {
         $users = User::where('role', 'user')->get();
@@ -124,6 +126,8 @@ class ProfileController extends Controller
             'users' => $users,
         ]);
     }
+
+    // Dzēš konkrētu lietotāju (administratora funkcija)
     public function delete(User $user)
     {
 

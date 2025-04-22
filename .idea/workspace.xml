@@ -5,34 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3e76eb8-75aa-48f5-a2ef-f4cf9daec5ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ChapterController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/GenreController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/app/Models/Genre.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Settings.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditChapter.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditStory.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/NewChapter.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/NewStory.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/StoryList.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/BooksList.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/ProblemInfo.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Problems.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/Auth/RegisteredUserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/Auth/RegisteredUserController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ProfileController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ProfileController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Providers/AppServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Providers/AppServiceProvider.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/config/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/config/app.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/database/migrations/0001_01_01_000000_create_users_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/database/migrations/0001_01_01_000000_create_users_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/database/seeders/DatabaseSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/database/seeders/DatabaseSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Navbar.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Login.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Register.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Dashboard.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/FAQ.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/FAQ.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Profile.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TechnicalSupport.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TechnicalSupport.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Welcome.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/SupportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/SupportController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/UserBookController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/UserBookController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Profile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Profile.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Settings.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Settings.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditChapter.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditChapter.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditStory.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditStory.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/NewChapter.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/NewChapter.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/NewStory.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/NewStory.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/StoryList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/StoryList.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -286,7 +273,8 @@
       <workItem from="1744823784685" duration="24018000" />
       <workItem from="1745162068175" duration="65735000" />
       <workItem from="1745330901369" duration="19000" />
-      <workItem from="1745330930643" duration="7718000" />
+      <workItem from="1745330930643" duration="8302000" />
+      <workItem from="1745340012035" duration="9479000" />
     </task>
     <servers />
   </component>

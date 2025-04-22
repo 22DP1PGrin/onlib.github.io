@@ -112,7 +112,7 @@
         color: rgba(26, 16, 8, 0.8);
         font-family: Tahoma, Helvetica, sans-serif;
         border: 1px solid rgba(26, 16, 8, 0.8); /* Apmale */
-        background-color: #c58667; /* Fona krāsa */
+        background-color: #e4a27c; /* Fona krāsa */
         border-radius: 10px; /* Noapaļoti stūri */
         box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */
         padding: 20px
