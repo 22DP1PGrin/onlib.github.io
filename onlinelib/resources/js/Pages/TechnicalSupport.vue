@@ -1,3 +1,52 @@
+<script>
+// Importējam nepieciešamos komponentus
+import Navbar from "@/components/Navbar.vue";
+import Footer from "@/components/Footer.vue";
+
+export default {
+    name: "SupportPage",
+    components: {
+        Navbar, // Reģistrējam Navigācijas joslu
+        Footer, // Reģistrējam Kājeni
+    },
+    data() {
+        return {
+            // Formas dati
+            form: {
+                nickname: "", // Lietotāja vārds
+                email: "", // Lietotāja e-pasta adrese
+                subject: "", // Tēma
+                problem: "", // Ziņojums
+            },
+        };
+    },
+    methods: {
+        submitForm() {
+            // Nosūtīt formas datus uz serveri, izmantojot POST pieprasījumu
+            axios.post('/support', this.form)
+                .then(response => {
+                    // Ja pieprasījums ir veiksmīgs, izvadīt atbildi konsolē un parādīt apstiprinājuma paziņojumu
+                    console.log(response.data.problem);
+                    alert("Paldies par jūsu ziņojumu! Mēs ar jums sazināsimies drīz.");
+                    // Notīrīt formas laukus pēc veiksmīgas iesniegšanas
+                    this.form = { nickname: "", email: "", subject: "", problem: "" };
+                })
+                .catch(error => {
+                    // Apstrādāt kļūdas gadījumus
+                    if (error.response) {
+                        // Ja serveris atgriež kļūdas atbildi
+                        console.error('Servera atbilde:', error.response.data);
+                        alert('Radās kļūda: ' + error.response.data.problem);
+                    } else {
+                        // Citas kļūdas (piemēram, tīkla problēmas)
+                        console.error('Kļūda:', error);
+                    }
+                });
+        }
+    },
+};
+</script>
+
 <template>
     <!-- Navigācijas josla -->
     <Navbar />
@@ -20,7 +69,7 @@
                 <!-- Vārds -->
                 <div class="form-group">
                     <label for="name">Segvārds:</label>
-                    <input type="text" class="input" v-model="form.name" required autocomplete="given-name" />
+                    <input type="text" class="input" v-model="form.nickname" required autocomplete="given-name" />
                 </div>
 
                 <!-- E-pasta adrese -->
@@ -34,17 +83,17 @@
                     <label for="subject">Tēma:</label>
                     <select class="subject" v-model="form.subject" required>
                         <option value="" disabled>Izvēlieties tēmu</option>
-                        <option value="tehniskas_problemas">Tehniskas problēmas</option>
-                        <option value="konts_un_pieteiksanas">Konts un pieteikšanās</option>
-                        <option value="satura_jautajumi">Satura jautājumi</option>
-                        <option value="cits">Cits</option>
+                        <option value="Tehniskas problēmas">Tehniskas problēmas</option>
+                        <option value="Konts un pieteikšanās">Konts un pieteikšanās</option>
+                        <option value="Satura jautājumi">Satura jautājumi</option>
+                        <option value="Satura jautājumi">Cits</option>
                     </select>
                 </div>
 
                 <!-- Ziņojums -->
                 <div class="form-group">
                     <label for="message">Ziņojums:</label>
-                    <textarea id="message" v-model="form.message" rows="5" required></textarea>
+                    <textarea id="message" v-model="form.problem" rows="5" required></textarea>
                 </div>
 
                 <!-- Iesniegt pogu -->
@@ -67,38 +116,7 @@
     <Footer />
 </template>
 
-<script>
-// Importējam nepieciešamos komponentus
-import Navbar from "@/components/Navbar.vue";
-import Footer from "@/components/Footer.vue";
 
-export default {
-    name: "SupportPage",
-    components: {
-        Navbar, // Reģistrējam Navigācijas joslu
-        Footer, // Reģistrējam Kājeni
-    },
-    data() {
-        return {
-            // Formas dati
-            form: {
-                nickname: "", // Lietotāja vārds
-                email: "", // Lietotāja e-pasta adrese
-                subject: "", // Tēma
-                message: "", // Ziņojums
-            },
-        };
-    },
-    methods: {
-        // Formas iesniegšanas metode
-        submitForm() {
-            console.log("Forma iesniegta:", this.form); // Izvada formas datus konsolē
-            alert("Paldies par jūsu ziņojumu! Mēs ar jums sazināsimies drīz."); // Parāda paziņojumu
-            this.form = { nickname: "", email: "", subject: "", message: "" }; // Notīra formu
-        },
-    },
-};
-</script>
 
 <style scoped>
     /* Galvenais konteiners */

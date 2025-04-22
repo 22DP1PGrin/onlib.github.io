@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('nickname')->unique();
             $table->string('password');
             $table->enum('role', ['admin', 'user'])->default('user');
+            $table->string('bio')->nullable();
             $table->timestamps();
         });
 

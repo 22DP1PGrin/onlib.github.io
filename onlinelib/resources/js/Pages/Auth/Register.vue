@@ -156,6 +156,7 @@ const submit = () => {
         font-weight: bold; /* Treknraksts */
         text-align: center; /* Centrē tekstu */
         margin-top: 12px; /* Atstarpe no augšas */
+        margin-bottom: 10px;
         padding: 0; /* Iekšējā atstarpe */
     }
 
@@ -182,6 +183,7 @@ const submit = () => {
     .label{
         color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
         font-weight: normal; /* Normāls fonta stils */
+        font-size: 1.0rem;
     }
 
     /* Etiķešu stils */
@@ -208,6 +210,9 @@ const submit = () => {
         border-color: rgba(26, 16, 8, 0.8); /* Apmales krāsa */
     }
 
+    .mt-2{
+        font-size: 1rem;
+    }
     /* Pogas stils */
     button {
         background-color: #c58667; /* Fona krāsa */
@@ -227,23 +232,34 @@ const submit = () => {
         border-color: #ffc8a9;
     }
 
-    /* Papildu informācijas stils */
-    .additional-info p {
-        margin-top: 30px; /* Atstarpe no augšas */
-        font-size: 1.0rem; /* Teksta izmērs */
-        margin-bottom: 25px; /* Atstarpe no apakšas */
-    }
 
     /* Saites stils */
     a {
         text-decoration: underline !important;
         color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
-        font-size: 14px;
+        font-size: 1rem;
         cursor: pointer; /* Kursora izskats */
     }
 
     a:hover{
         color: #ffc8a9; /* Teksta krāsa */
     }
+    @media (max-width: 500px) {
+        .main-content p,
+        .mt-2,
+        .label,
+        input::placeholder,
+        a
+        {
+            font-size: 0.9rem; /* Teksta izmērs */
+        }
+        h1{
+            font-size: 1.5rem;
+        }
 
+        button{
+            font-size: 0.9rem;
+            padding: 5px 18px;
+        }
+    }
 </style>

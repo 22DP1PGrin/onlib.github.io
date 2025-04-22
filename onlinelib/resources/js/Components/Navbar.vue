@@ -10,6 +10,14 @@ export default {
         // Pārbauda, vai lietotājs ir pieslēdzies (pārvērš vērtību par boolean)
         const isLoggedIn = computed(() => !!user.value)
 
+        const handleWritingClick = (e) => {
+            if (!isLoggedIn.value) {
+                router.get('/login');
+            } else {
+                router.get('/StoryList');
+            }
+        };
+
         // Izrakstīšanās funkcija
         const logout = () => {
             router.post(route('logout'), {}, {
@@ -24,6 +32,7 @@ export default {
         return {
             user,
             isLoggedIn,
+            handleWritingClick,
             logout
         };
     },
@@ -92,7 +101,14 @@ export default {
         <ul class="marks">
             <li><a class="pressed1nav" href="../html/Library.html"><i class="fa">&#xf02d;</i> Bibliotēka</a></li> <!-- Saite uz lapu "Bibliotēka" -->
             <li><a class="pressed1nav" href="../html/Bookmarks.html"><i class="fa">&#xf02e;</i> Grāmatzīmes</a></li> <!-- Saite uz lapu "Grāmatzīmes" -->
-            <li><a class="pressed1nav"><i class="fa">&#xf040;</i> Rakstīšana</a> </li><!-- Saite uz lapu "Rakstīšana" -->
+            <li>
+                <a
+                    class="pressed1nav"
+                    @click.prevent="handleWritingClick"
+                >
+                    <i class="fa">&#xf040;</i> Rakstīšana
+                </a>
+            </li><!-- Saite uz lapu "Rakstīšana" -->
         </ul>
 
         <div class="account"> <!-- Bloks konta pārvaldīšanai -->
@@ -112,7 +128,6 @@ export default {
             <template v-else>
                 <a class="pressed2" href="/profile"><i class="fa profile-icon">&#xf2be;</i> {{ user.nickname }}</a>
                 <a class="pressed3" href="/profile"> <i class="fa">&#xf2be; <br></i></a>
-                <a class="pressed2" @click.prevent="logout"><i class="fa">&#xf08b;</i> Iziet</a>
             </template>
         </div>
 
@@ -127,7 +142,14 @@ export default {
             <ul>
                 <li><a class="pressed1" href="../html/Library.html"><i style="font-size:16px" class="fa">&#xf02d;</i> Bibliotēka</a></li> <!-- Saite uz lapu "Bibliotēka" -->
                 <li><a class="pressed1" href="../html/Bookmarks.html"><i style="font-size:16px;" class="fa">&#xf02e;</i> Grāmatzīmes</a></li> <!-- Saite uz lapu "Grāmatzīmes" -->
-                <li><a class="pressed1"><i class="fa">&#xf040;</i> Rakstīšana</a> </li><!-- Saite uz lapu "Rakstīšana" -->
+                <li>
+                    <a
+                        class="pressed1nav"
+                        @click.prevent="handleWritingClick"
+                    >
+                        <i class="fa">&#xf040;</i> Rakstīšana
+                    </a>
+                </li><!-- Saite uz lapu "Rakstīšana" -->
             </ul>
         </div>
     </nav>
@@ -326,7 +348,7 @@ export default {
         background-color: #c58667;
         border: 2px solid rgba(26, 16, 8, 0.8); /*apmales vērtības */
         border-radius: 20px;
-        padding: 0; /* Iekšējās atstarpes */
+        padding: 1px; /* Iekšējās atstarpes */
         cursor: pointer; /* Peles formāts */
         outline: none; /* Noņemam noklusēto apmales stāvokli */
         margin-right: 7px; /* Atstarpe no labās puses */

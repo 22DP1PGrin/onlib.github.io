@@ -10,17 +10,17 @@
             <!-- Jautājums 1: Kā reģistrēties? -->
                 <h2>1. Kā reģistrēties platformā?</h2>
                 <p>
-                    Lai reģistrētos datorā, noklikšķiniet uz pogas "Reģistrācija" lapas augšējā labajā stūrī. Jums būs jāievada savs vārds, uzvārds, segvārds, e-pasta adrese un jāizveido drošs parole.
+                    Lai reģistrētos datorā, noklikšķiniet uz pogas <a href="/registerp">"Reģistrācija"</a> lapas augšējā labajā stūrī. Jums būs jāievada savs vārds, uzvārds, segvārds, e-pasta adrese un jāizveido drošs parole.
                     Lai reģistrētos telefonā, augšējā labajā stūrī ir jānoklikšķina uz iemiesojuma, kas atrodas blakus meklēšanas pogai.
                 </p>
 
             <!-- Jautājums 2: Kā publicēt savu darbu? -->
                 <h2>2. Kā publicēt savu darbu?</h2>
                 <p>
-                    Lai publicētu savu darbu, pieteicieties savā kontā un noklikšķiniet uz pogas <a href="#jflf">"Rakstīšana"</a>, kas atrodas augšējā kreisajā stūrī.
+                    Lai publicētu savu darbu, pieteicieties savā kontā un noklikšķiniet uz pogas <a href="/Writing/StoryList">"Rakstīšana"</a>, kas atrodas augšējā kreisajā stūrī.
                     Tiks atvērts visu jūsu stāstu saraksts.
                     Noklikšķiniet uz stāsta, kas jūs interesē.
-                    Atvērsies visa informācija par stāstu un apakšā varēsi atrast pogu "Pievienot nodaļu".
+                    Atvērsies visa informācija par stāstu un varēsi atrast pogu "Pievienot nodaļu".
                     Ja vēlaties sākt jaunu stāstu, noklikšķiniet uz pogas "Izveidot stāstu" un aizpildiet visus nepieciešamos laukus.
                 </p>
                 <p>
@@ -31,7 +31,7 @@
             <!-- Jautājums 3: Kā atsaukt publicētu darbu? -->
                 <h2>3. Kā atsaukt publicētu darbu?</h2>
                 <p>
-                    Lai atsauktu publicētu darbu, Noklikšķiniet uz profila ikonas augšējā labajā stūrī un atlasiet "Mani darbi", lai atrastu stāstus un atrodiet darbu, kuru vēlaties noņemt.
+                    Lai atsauktu publicētu darbu, Noklikšķiniet uz profila ikonas augšējā labajā stūrī un atlasiet "Mani literārie darbi",pēc tam nospiediet pogu "Rediģēt esošos darbus", lai atrastu stāstus un atrodiet darbu, kuru vēlaties noņemt.
                     Noklikšķiniet uz opcijas "Dzēst".
                 </p>
             <p>Lūdzu, ņemiet vērā, ka šī darbība ir neatgriezeniska.</p>
@@ -49,32 +49,38 @@
                     Noklikšķiniet uz meklēšanas pogas augšējā labajā stūrī.
                     Tiks atvērta meklēšanas josla, kurā varēsiet ievadīt grāmatas nosaukumu.
                 </p>
-
             <!-- Jautājums 5: Kā dzēst savu kontu? -->
-            <h2>5. Kā dzēst savu kontu?</h2>
+            <h2>5. Kā iziet no konta?</h2>
+            <p>
+                Noklikšķiniet uz profila ikonas un noklikšķiniet uz pogas "Rediģēt profilu". Tur jūs atradīsit opciju "Iziet".
+            </p>
+            <p>Lūdzu, ņemiet vērā, ka jūsu konts un visi saistītie dati tiks neatgriezeniski dzēsti.</p>
+
+            <!-- Jautājums 6: Kā dzēst savu kontu? -->
+            <h2>6. Kā dzēst savu kontu?</h2>
             <p>
                 Lai izdzēstu savu kontu, noklikšķiniet uz profila ikonas un noklikšķiniet uz pogas "Rediģēt profilu".
                 Tur jūs atradīsit opciju "Dzēst kontu".
             </p>
             <p>Lūdzu, ņemiet vērā, ka jūsu konts un visi saistītie dati tiks neatgriezeniski dzēsti.</p>
 
-        <!-- Jautājums 6: Kā mainīt paroli? -->
-            <h2>6. Kā mainīt paroli?</h2>
+        <!-- Jautājums 7: Kā mainīt paroli? -->
+            <h2>7. Kā mainīt paroli?</h2>
             <p>
                 Lai mainītu paroli, noklikšķiniet uz profila ikonas un noklikšķiniet uz pogas "Rediģēt profilu".
                 Tur atradīsiet opciju "Mainīt paroli".
                 Ievadiet savu pašreizējo paroli un izvēlieties jaunu drošu paroli.
             </p>
 
-        <!-- Jautājums 7: Kā iesniegt sūdzību par saturu? -->
-            <h2>7. Kā iesniegt sūdzību par saturu?</h2>
+        <!-- Jautājums 8: Kā iesniegt sūdzību par saturu? -->
+            <h2>8. Kā iesniegt sūdzību par saturu?</h2>
             <p>
                 Ja uzskatāt, ka kāds saturs pārkāpj mūsu noteikumus, lūdzu, sazinieties ar mums, izmantojot <a href="/technicalsupport">Tehnisko atbalstu</a>.
             </p>
             <p>Visu nepieciešamo informāciju var atrast sadaļā <a href="/dmcapolicy">"DMCA politika"</a></p>
 
-            <!-- Jautājums 8: Citi jautājumi -->
-                <h2>8. Citi jautājumi</h2>
+            <!-- Jautājums 9: Citi jautājumi -->
+                <h2>9. Citi jautājumi</h2>
                 <p>
                     Ja jums ir jautājumi vai problēmas, lūdzu, sazinieties ar mums, izmantojot mūsu <a href="/technicalsupport">Tehnisko atbalstu</a>.
                     Mēs centīsimies atbildēt 24 stundu laikā.
