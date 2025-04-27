@@ -120,7 +120,9 @@ class ProfileController extends Controller
     // Atgriež visu parasto lietotāju sarakstu (administratora funkcija)
     public function showUsers()
     {
-        $users = User::where('role', 'user')->get();
+        $users = User::where('role', 'user')
+            ->orderBy('nickname', 'asc')
+            ->get();
 
         return Inertia::render('Control/Users', [
             'users' => $users,
@@ -135,6 +137,17 @@ class ProfileController extends Controller
 
         return redirect()->route('users')
             ->with('success', 'Lietotājs veiksmīgi dzēsts!');
+    }
+
+    public function Watch($id)
+    {
+
+        $users = User::findOrFail($id);
+
+        // Atgriežam skatu ar grāmatas datiem un iespējām rediģēt
+        return Inertia::render('Control/UserInfo', [
+            'users' => $users,
+        ]);
     }
 
 }

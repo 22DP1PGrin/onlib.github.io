@@ -12,7 +12,7 @@ class GenreController extends Controller
     public function index()
     {
         // Iegūstam visus žanrus no datu bāzes
-        $genres = \App\Models\Genre::all();
+        $genres = Genre::all();
 
         // Ja žanru saraksts ir tukšs, izmetam izņēmumu
         if ($genres->isEmpty()) {

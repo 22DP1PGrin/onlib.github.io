@@ -99,7 +99,7 @@ export default {
         <a href="/" class="SmallLogo"><img src="../../../public/images/Logo2.0.jpg" ></a> <!-- Saite uz sākumlapu un mazo logo -->
 
         <ul class="marks">
-            <li><a class="pressed1nav" href="../html/Library.html"><i class="fa">&#xf02d;</i> Bibliotēka</a></li> <!-- Saite uz lapu "Bibliotēka" -->
+            <li><a class="pressed1nav" href="/Library"><i class="fa">&#xf02d;</i> Bibliotēka</a></li> <!-- Saite uz lapu "Bibliotēka" -->
             <li><a class="pressed1nav" href="../html/Bookmarks.html"><i class="fa">&#xf02e;</i> Grāmatzīmes</a></li> <!-- Saite uz lapu "Grāmatzīmes" -->
             <li>
                 <a
@@ -140,7 +140,7 @@ export default {
         <!-- Hamburger menu -->
         <div class="navbar-links">
             <ul>
-                <li><a class="pressed1" href="../html/Library.html"><i style="font-size:16px" class="fa">&#xf02d;</i> Bibliotēka</a></li> <!-- Saite uz lapu "Bibliotēka" -->
+                <li><a class="pressed1" href="/Library"><i style="font-size:16px" class="fa">&#xf02d;</i> Bibliotēka</a></li> <!-- Saite uz lapu "Bibliotēka" -->
                 <li><a class="pressed1" href="../html/Bookmarks.html"><i style="font-size:16px;" class="fa">&#xf02e;</i> Grāmatzīmes</a></li> <!-- Saite uz lapu "Grāmatzīmes" -->
                 <li>
                     <a

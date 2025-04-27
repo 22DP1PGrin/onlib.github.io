@@ -102,7 +102,7 @@ export default {
                     <!-- Jauna stāsta izveides sadaļa -->
                     <div class="new_section">
                         <div class="new" @click="GoToCreate">
-                            <h2>Izveidojiet jaunu stāstu</h2>
+                            <h2>Izveidot jaunu stāstu</h2>
                             <i class="fa">&#xf055;</i>
                         </div>
                     </div>
@@ -193,7 +193,6 @@ export default {
         font-size: 1.1rem;
     }
 
-
     .new .fa {
         text-align: center;
         align-items: center;
@@ -201,7 +200,6 @@ export default {
         margin-top: 0;
         font-size: 3rem;
     }
-
 
     .description {
         font-size: 1rem;
@@ -254,7 +252,8 @@ export default {
             font-size: 1.5rem;
         }
 
-        .work-item h2 {
+        .work-item h2,
+        .new h2{
             font-size: 1rem;
         }
         .new .fa{

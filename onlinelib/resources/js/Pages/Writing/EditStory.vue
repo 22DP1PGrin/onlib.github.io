@@ -447,7 +447,7 @@
             gap: 3px;
         }
         .chapter-item button {
-            margin-left: 3px; /* Отступ между кнопками */
+            margin-left: 3px;
         }
 
         .delete-btn {

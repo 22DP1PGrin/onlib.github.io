@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ChapterController;
+use App\Http\Controllers\ClassicBookController;
+use App\Http\Controllers\ClassicChapterController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SupportController;
@@ -114,6 +116,10 @@ Route::get('/UserControl', [ProfileController::class, 'showUsers'])
     ->middleware('can:Admin')
     ->name('users');
 
+Route::get('/User/{id}/watch', [ProfileController::class, 'Watch'])
+    ->middleware('can:Admin')
+    ->name('users.watch');
+
 Route::middleware(['auth', 'can:Admin'])->group(function () {
     Route::delete('/users/{user}', [ProfileController::class, 'delete'])->name('users.destroy');
 });
@@ -134,7 +140,74 @@ Route::get('/BookList', [UserBookController::class, 'showAll'])
     ->middleware('can:Admin')
     ->name('book.lists');
 
-Route::delete('/books/{id}', [UserBookController::class, 'destroyBook'])->name('books.destroy');
+
+Route::delete('/books/{id}', [UserBookController::class, 'destroyBook'])
+    ->name('books.destroy');
+
+Route::delete('/classic-books/{id}', [ClassicBookController::class, 'destroyBook'])
+    ->middleware('can:Admin')
+    ->name('classic_books.destroy');
+
+
+
+Route::post('/CreateBook', [ClassicBookController::class, 'store'])
+    ->middleware('can:Admin')
+    ->name('classic.store');
+
+Route::get('/CreateBook', [ClassicBookController::class, 'create'])
+    ->middleware('can:Admin')
+    ->name('NewBook');
+
+Route::get('/Classic/{id}/edit', [ClassicBookController::class, 'editClassic'])
+    ->middleware('can:Admin')
+    ->name('EditClassicBook');
+
+Route::put('/Classic/{id}', [ClassicBookController::class, 'updateClassic'])
+    ->middleware('can:Admin')
+    ->name('classic.books.update');
+
+
+
+Route::get('/NewClassicChapter', function () {
+    return Inertia::render('Control/NewClassicChapter');
+})->name('NewClassicChapter')->middleware('can:Admin');
+
+Route::get('/Classic/{book}/chapters/create', [ClassicChapterController::class, 'create'])
+    ->middleware('can:Admin')
+    ->name('classic_chapters.create');
+
+Route::post('/Classic_chapters', [ClassicChapterController::class, 'store'])
+    ->middleware('can:Admin')
+    ->name('classic.chapters.store');
+
+Route::get('/classic-chapters/{chapter}/edit', [ClassicChapterController::class, 'edit'])
+    ->middleware('can:Admin')
+    ->name('classic.chapters.edit');
+
+Route::put('/classic-chapters/{chapter}', [ClassicChapterController::class, 'update'])
+    ->middleware('can:Admin')
+    ->name('classic.chapters.update');
+
+Route::delete('/classic-chapters/{id}', [ClassicChapterController::class, 'destroy'])
+    ->middleware('can:Admin')
+    ->name('classic.chapters.destroy');
+
+
+
+Route::get('/Library', [ClassicBookController::class, 'showAll'])->name('library');
+
+Route::get('/Classic/{bookId}', [ClassicBookController::class, 'showInfo'])
+    ->name('ClassicRead');
+
+Route::get('/Classic/{bookId}/Read/{chapterId}', [ClassicChapterController::class, 'showContent'])
+    ->name('ClassicContent');
+
+Route::get('/User/{bookId}', [UserBookController::class, 'showInfo'])
+    ->name('UserRead');
+
+Route::get('/User/{bookId}/Read/{chapterId}', [ChapterController::class, 'showContent'])
+    ->name('UserContent');
+
 
 require __DIR__.'/auth.php';
 

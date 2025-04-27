@@ -28,12 +28,12 @@ class UserBook extends Model
     // Attiecības ar nodaļām: katrai grāmatai var būt daudzas nodaļas
     public function chapters()
     {
-        return $this->hasMany(BookChapter::class, 'book_id'); // Grāmatai ir vairākas nodaļas
+        return $this->hasMany(UserBookChapter::class, 'book_id'); // Grāmatai ir vairākas nodaļas
     }
 
     // Attiecības ar žanriem: grāmata var piederēt vairākiem žanriem
     public function genres()
     {
-        return $this->belongsToMany(Genre::class, 'book_genre', 'book_id', 'genre_id'); // Grāmatai var būt vairāki žanri
+        return $this->belongsToMany(Genre::class, 'user_book_genre', 'book_id', 'genre_id'); // Grāmatai var būt vairāki žanri
     }
 }

@@ -11,31 +11,29 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_books', function (Blueprint $table) {
+        Schema::create('classic_book', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
             $table->string('name', 255);
             $table->text('description');
             $table->enum('age_limit', ['0+', '6+', '12+', '16+', '18+'])->default('0+');
-            $table->enum('status', ['Procesā', 'Pabeigts', 'Pamests'])->default('Procesā');
+            $table->string('Author_name', 255);
+            $table->string('Author_surname', 255);
+            $table->integer('Year_publication');
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-
         });
 
-        Schema::create('user_book_genre', function (Blueprint $table) {
+        Schema::create('classic_book_genre', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('book_id');
             $table->unsignedBigInteger('genre_id');
 
-            $table->foreign('book_id')->references('id')->on('user_books')->onDelete('cascade');
+            $table->foreign('book_id')->references('id')->on('classic_book')->onDelete('cascade');
 
             $table->foreign('genre_id')->references('id')->on('genres')->onDelete('cascade');
 
         });
 
-        Schema::create('user_book_chapters', function (Blueprint $table) {
+        Schema::create('classic_book_chapters', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('book_id');
             $table->string('name', 255);
@@ -43,9 +41,8 @@ return new class extends Migration
             $table->unsignedInteger('order')->default(0);
             $table->timestamps();
 
-            $table->foreign('book_id')->references('id')->on('user_books')->onDelete('cascade');
+            $table->foreign('book_id')->references('id')->on('classic_book')->onDelete('cascade');
         });
-
     }
 
     /**
@@ -53,10 +50,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_book_genre');
-        Schema::dropIfExists('user_book_chapters');
-        Schema::dropIfExists('user_books');
-
-
+        Schema::dropIfExists('classic_book_genre');
+        Schema::dropIfExists('classic_book_chapters');
+        Schema::dropIfExists('classic_book');
     }
 };

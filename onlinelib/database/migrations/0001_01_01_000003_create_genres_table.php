@@ -17,16 +17,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('book_genre', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('book_id');
-            $table->unsignedBigInteger('genre_id');
-
-            $table->foreign('book_id')->references('id')->on('user_books')->onDelete('cascade');
-
-            $table->foreign('genre_id')->references('id')->on('genres')->onDelete('cascade');
-
-        });
     }
 
 
@@ -35,7 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('book_genre');
         Schema::dropIfExists('genres');
 
     }

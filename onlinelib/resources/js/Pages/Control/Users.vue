@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { usePage, router } from "@inertiajs/vue3";
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
+import {route} from "ziggy-js";
 
 export default {
     components: {
@@ -17,7 +18,7 @@ export default {
                 router.delete(route('users.destroy', userId), {
                     onSuccess: () => {
                         // Pēc veiksmīgas dzēšanas varat pievienot papildus darbības
-                        console.log('Lietotājs veiksmīgi dzēsts');
+                        alert('Lietotājs veiksmīgi dzēsts!');
                     },
                     onError: (errors) => {
                         console.error('Kļūda dzēšot lietotāju:', errors);
@@ -26,9 +27,14 @@ export default {
             }
         };
 
+        const GoToWatch = (userId) => {
+            router.get(route('users.watch', { id: userId }));
+        };
+
         return {
             users,
             deleteUser,
+            GoToWatch
         };
     },
 };
@@ -60,10 +66,8 @@ export default {
 
                         <div class="buttons-container">
                             <!-- Lietotāja dzēšanas poga -->
-                            <button
-                                class="delete-btn"
-                                @click="deleteUser(user.id)"
-                            >
+                            <button class="watch-btn" @click="GoToWatch(user.id)">Apskatīt</button>
+                            <button class="delete-btn" @click="deleteUser(user.id)">
                                 Dzēst
                             </button>
                         </div>
@@ -123,10 +127,27 @@ export default {
         font-weight: bold;
     }
 
+    .buttons-container {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+    .chapter-item button {
+        margin-left: 3px;
+    }
+
     .delete-btn {
         padding: 3px 15px;
         border: 2px solid rgba(35, 11, 11, 0.8);
         background-color: #714e3e;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s; /* Pāreja uz mainīgām īpašībām */
+    }
+    .watch-btn{
+        background-color: #c58667;
+        border: 2px solid rgba(26, 16, 8, 0.8);
+        padding: 3px 12px;
         border-radius: 4px;
         cursor: pointer;
         transition: all 0.3s; /* Pāreja uz mainīgām īpašībām */
@@ -145,8 +166,16 @@ export default {
             font-size: 1rem;
         }
 
+        .buttons-container {
+            gap: 3px;
+        }
+
         .delete-btn {
             padding: 3px 12px;
+            font-size: 0.9rem;
+        }
+        .watch-btn{
+            padding: 3px 9px;
             font-size: 0.9rem;
         }
 

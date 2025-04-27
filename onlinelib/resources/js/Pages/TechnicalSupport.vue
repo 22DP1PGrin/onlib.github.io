@@ -215,6 +215,7 @@ export default {
         border-radius: 4px; /* Noapaļotie stūri */
         font-size: 1.0rem; /* Teksta izmērs */
         cursor: pointer; /* Kursora izskats */
+        transition: all 0.3s;
     }
 
     /* Pogas stils, kad pele ir virs tās */

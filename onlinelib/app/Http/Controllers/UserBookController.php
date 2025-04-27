@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClassicBook;
+use App\Models\User;
 use App\Models\UserBook;
 use App\Models\Genre;
 use Illuminate\Http\Request;
@@ -15,8 +17,9 @@ class UserBookController extends Controller
     {
         // Saņemam visus lietotāja grāmatas
         $works = UserBook::where('user_id', auth()->id()) // Meklējam grāmatas pēc lietotāja ID
-        ->select('id', 'name', 'description', 'created_at') // Atlasa tikai vajadzīgos laukus
-        ->get();
+            ->select('id', 'name', 'description', 'created_at') // Atlasa tikai vajadzīgos laukus
+            ->orderBy('name', 'asc')
+            ->get();
 
         // Atgriežam skatu ar visām grāmatām
         return Inertia::render('Writing/StoryList', [
@@ -165,13 +168,16 @@ class UserBookController extends Controller
         return response()->json(['message' => 'Stāsts un visas nodaļas tika veiksmīgi dzēstas!']);
     }
 
-    //Atgriež visu lietotāju grāmatu sarakstu
+    //Atgriež visu grāmatu sarakstu
     public function showAll()
     {
-        $book = UserBook::with('user')->get();
-
+        $book = UserBook::with('user')
+            ->orderBy('name', 'asc')
+            ->get();
+        $classicBooks = ClassicBook::orderBy('name', 'asc') ->get();
         return Inertia::render('Control/BooksList', [
             'book' => $book,
+            'classicBooks' => $classicBooks,
         ]);
     }
 
@@ -183,4 +189,23 @@ class UserBookController extends Controller
 
         return redirect()->back()->with('success', 'Grāmata veiksmīgi dzēsta.');
     }
+
+    // Metode, kas parāda visu informāciju par stāstu
+    public function showInfo($id)
+    {
+        // Atrodam grāmatu ar visiem saistītajiem datiem
+        $book = UserBook::with(['genres', 'chapters', 'user'=> function($query) {
+        }])
+            ->findOrFail($id);
+
+        // Atgriežam rediģēšanas skatu ar nepieciešamajiem datiem
+        return Inertia::render('Reading/UserBook', [
+            'book' => $book,
+            'genres' => $book->genres,
+            'chapters' => $book->chapters,
+            'user' => $book->user
+        ]);
+    }
+
+
 }

@@ -51,7 +51,7 @@ class SupportController extends Controller
     // Atgriež konkrēta pieteikuma detalizētu informāciju
     public function showForm($id)
     {
-        $form = TechnicalSupportForm::findOrFail($id);
+        $form = TechnicalSupportForm::orderBy('nickname', 'asc') ->get();
 
         return Inertia::render('Control/ProblemInfo', [
             'form' => $form,

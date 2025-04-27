@@ -4,21 +4,35 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c3e76eb8-75aa-48f5-a2ef-f4cf9daec5ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/BooksList.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/ProblemInfo.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Problems.vue" afterDir="false" />
+    <list default="true" id="c3e76eb8-75aa-48f5-a2ef-f4cf9daec5ed" name="Changes" comment="return view('example_vue', compact('story'));">
+      <change afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ClassicBookController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/ClassicEdit.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/EditClassicChapter.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/NewClassicBook.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/NewClassicChapter.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/UserInfo.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ClassicBook.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ClassicContent.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/Library.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/UserBook.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/UserContent.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ChapterController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ChapterController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/GenreController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/GenreController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ProfileController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ProfileController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/SupportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/SupportController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/UserBookController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/UserBookController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/BookChapter.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/UserBookChapter.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/Genre.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/Genre.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/UserBook.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/UserBook.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/database/migrations/2025_04_20_150545_create__users_books.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/database/migrations/2025_04_20_150545_create__users_books.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/database/migrations/2025_04_21_091841_create_genres_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/database/migrations/0001_01_01_000003_create_genres_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/database/seeders/DatabaseSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/database/seeders/DatabaseSeeder.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Navbar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/BooksList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/BooksList.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Profile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Profile.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Settings.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Settings.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditChapter.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditChapter.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TechnicalSupport.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TechnicalSupport.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditStory.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditStory.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/NewChapter.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/NewChapter.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/NewStory.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/NewStory.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/StoryList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/StoryList.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/routes/web.php" afterDir="false" />
     </list>
@@ -27,6 +41,7 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ChangesViewManager" show_ignored="true" />
   <component name="ComposerConfigs">
     <option name="configs">
       <option value="$PROJECT_DIR$/onlinelib/composer.json" />
@@ -274,11 +289,26 @@
       <workItem from="1745162068175" duration="65735000" />
       <workItem from="1745330901369" duration="19000" />
       <workItem from="1745330930643" duration="8302000" />
-      <workItem from="1745340012035" duration="9479000" />
+      <workItem from="1745340012035" duration="10438000" />
+      <workItem from="1745392783906" duration="13214000" />
+      <workItem from="1745406732200" duration="26896000" />
+      <workItem from="1745481304287" duration="30302000" />
+      <workItem from="1745583824128" duration="18360000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/onlinelib/database/seeders/ClassicBooksChapterSeeder.php</url>
+          <line>1024</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
