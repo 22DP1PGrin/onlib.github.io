@@ -208,6 +208,9 @@ Route::get('/User/{bookId}', [UserBookController::class, 'showInfo'])
 Route::get('/User/{bookId}/Read/{chapterId}', [ChapterController::class, 'showContent'])
     ->name('UserContent');
 
+Route::get('/Filter', [ClassicBookController::class, 'filter'])
+    ->name('books.filter');
+
 
 require __DIR__.'/auth.php';
 

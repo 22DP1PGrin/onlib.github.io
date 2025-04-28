@@ -4,62 +4,121 @@
     import Footer from '@/Components/Footer.vue';
     import {router} from "@inertiajs/vue3";
     import {route} from "ziggy-js";
-    import {ref} from "vue";
+    import {ref, watch} from "vue";
 
     // Definē komponenta ievaddatus
-    defineProps({
+    const props = defineProps({
+        hasFilteredResults: Boolean,
         books: Array,
         classicBooks: Array,
         allGenres: Array,
-        ratings: Array
+        ratings: Array,
+        filters: {
+            type: Object,
+            default: () => ({
+                bookType: 'all',
+                ratings: [],
+                genres: [],
+                statuses: []
+            })
+        },
+        statuses: {
+            type: Array,
+            default: () => [
+                {id: 'Procesā', label: 'Procesā'},
+                {id: 'Pabeigts', label: 'Pabeigts'},
+                {id: 'Pamests', label: 'Pamests'}
+            ]
+        }
     });
 
-    const showFilterModal = ref(false);
-    const selectedGenres = ref([]);
-    const selectedRating = ref(null);
+    // Vēro izmaiņas filtriem un atjauno atlasītās vērtības
+    watch(() => props.filters, (newFilters) => {
+        selectedGenres.value = newFilters.genres || [];
+        selectedRatings.value = newFilters.ratings || [];
+        selectedStatuses.value = newFilters.statuses || [];
+        filters.value.bookType = newFilters.bookType || 'all';
+    });
 
-    // Funkcija, kas pārslēdz žanru izvēli
-    const toggleGenre = (genreId) => {
-        const index = selectedGenres.value.indexOf(genreId); // Meklē žanra ID formā
-        if (index === -1) { // Ja žanrs vēl nav izvēlēts
-            selectedGenres.value.push(genreId); // Pievieno žanru
-        } else { // Ja žanrs jau ir izvēlēts
-            selectedGenres.value.splice(index, 1); // Noņem žanru
+    // Mainīgie modāļa loga redzamībai un datiem
+    const showFilterModal = ref(false);
+    const books = ref(props.books);
+    const classicBooks = ref(props.classicBooks);
+
+    // Atlasītie žanri, reitings un statusi
+    const selectedGenres = ref(
+        Array.isArray(props.filters?.genres)
+            ? props.filters.genres.map(g => g.toString())
+            : []
+    );
+    const selectedRatings = ref(props.filters?.ratings || []);
+    const selectedStatuses = ref(props.filters?.statuses || []);
+
+    // Filtri, kas ietver tikai grāmatu tipu
+    const filters = ref({
+        bookType: props.filters?.bookType || 'all',
+    });
+
+    // Funkcija žanra izvēles pārslēgšanai
+    function toggleGenre(id) {
+        const genreId = id.toString(); // Nodrošina, ka ID vienmēr ir string
+        if (selectedGenres.value.includes(genreId)) {
+            selectedGenres.value = selectedGenres.value.filter(g => g !== genreId);
+        } else {
+            selectedGenres.value.push(genreId);
+        }
+    }
+
+    // Funkcija reitinga izvēles pārslēgšanai
+    const toggleRating = (ratingId) => {
+        const index = selectedRatings.value.indexOf(ratingId);
+        if (index === -1) {
+            selectedRatings.value.push(ratingId);
+        } else {
+            selectedRatings.value.splice(index, 1);
         }
     };
 
+    // Funkcija statusa izvēles pārslēgšanai
+    const toggleStatus = (statusId) => {
+        const index = selectedStatuses.value.indexOf(statusId);
+        if (index === -1) {
+            selectedStatuses.value.push(statusId);
+        } else {
+            selectedStatuses.value.splice(index, 1);
+        }
+    };
 
-
-    const filters = ref({
-        rating: null,
-        genre: null,
-        status: null,
-        bookType: 'all'
-    });
-
+    // Funkcija filtru piemērošanai
     const applyFilters = () => {
-        router.get(route('books.filter'), {
-            ...filters.value,
-            genres: selectedGenres.value,
-            rating: selectedRating.value // Добавляем выбранный рейтинг
-        }, {
-            preserveState: true,
-            onSuccess: () => {
-                showFilterModal.value = false;
-            }
+        showFilterModal.value = false; // Aizver modāli pirms pāriešanas
+
+        router.visit(route('books.filter'), {
+            method: 'get',
+            data: {
+                bookType: filters.value.bookType,
+                ratings: selectedRatings.value,
+                genres: selectedGenres.value,
+                statuses: selectedStatuses.value
+            },
+            preserveScroll: true, // Saglabā lapas ritinājuma pozīciju
         });
     };
 
+    // Funkcija filtru atiestatīšanai
     const resetFilters = () => {
-        filters.value = {
-            rating: null,
-            genre: null,
-            status: null,
-            bookType: 'all'
-        };
-        selectedGenres.value = [];
-        selectedRating.value = null;
-        applyFilters();
+        showFilterModal.value = false; // Aizver modāli
+
+        router.visit(route('books.filter'), {
+            method: 'get',
+            data: {
+                bookType: 'all',
+                ratings: [],
+                genres: [],
+                statuses: []
+            },
+            preserveScroll: true
+        });
     };
 
     // Navigācija uz klasiskās grāmatas lasīšanas lapu
@@ -71,7 +130,9 @@
     const GoToReadStory = (UserbookId) => {
         router.get(route('UserRead', { id: UserbookId }));
     };
+
 </script>
+
 
 <template>
 
@@ -81,11 +142,15 @@
     <div class="page-wrapper">
 
         <div class="library-container">
-            <!-- Galvenais virsraksts -->
-            <h1 class="library-title">Bibliotēka</h1>
-            <button class="filter-btn" @click="showFilterModal = true">
-                Filtri
-            </button>
+
+            <div class="library-header">
+                <!-- Galvenais virsraksts -->
+                <h1 class="library-title">Bibliotēka</h1>
+                <!-- Poga filtrešānai -->
+                <button class="filter-btn" @click="showFilterModal = true">
+                    Filtrēt
+                </button>
+            </div>
 
             <!-- Filtrēšanas modālais logs -->
             <div v-if="showFilterModal" class="modal-overlay" @click.self="showFilterModal = false">
@@ -102,14 +167,14 @@
                     </div>
 
                     <div class="filter-group">
-                        <label>Vērtējums:</label>
+                        <label>Vecuma ierobežojums:</label>
                         <div class="rating-options">
                             <div
                                 v-for="ratingItem in ratings"
                                 :key="ratingItem.id"
                                 class="rating-checkbox"
-                                :class="{ 'selected': selectedRating === ratingItem.id }"
-                                @click="selectedRating = selectedRating === ratingItem.id ? null : ratingItem.id"
+                                :class="{ 'selected': selectedRatings.includes(ratingItem.id) }"
+                                @click="toggleRating(ratingItem.id)"
                             >
                                 {{ ratingItem.label }}
                             </div>
@@ -123,7 +188,7 @@
                                 v-for="genre in allGenres"
                                 :key="genre.id"
                                 class="genre-checkbox"
-                                :class="{ 'selected': selectedGenres.includes(genre.id) }"
+                                :class="{ 'selected': selectedGenres.includes(genre.id.toString()) }"
                                 @click="toggleGenre(genre.id)"
                             >
                                 {{ genre.name }}
@@ -131,24 +196,34 @@
                         </div>
                     </div>
 
-
-                    <div class="filter-group">
-                        <label>Statuss (lietotāju grāmatām):</label>
-                        <select v-model="filters.status">
-                            <option :value="null">Visi statusi</option>
-                        </select>
-                    </div>
+                        <div class="filter-group" v-if="filters.bookType !== 'classic'">
+                            <label>Statusi:</label>
+                            <div class="status-options">
+                                <div v-for="status in statuses"
+                                     :key="status.id"
+                                     @click="toggleStatus(status.id)"
+                                     :class="{ 'selected': selectedStatuses.includes(status.id) }"
+                                     class="status-option">
+                                    {{ status.label }}
+                                </div>
+                            </div>
+                        </div>
 
                     <div class="modal-actions">
-                        <button class="cancel-btn" @click="showFilterModal = false">Atcelt</button>
-                        <button class="reset-btn" @click="resetFilters">Atiestatīt</button>
-                        <button class="apply-btn" @click="applyFilters">Piemērot</button>
+                        <button class="reset-btn" @click="resetFilters">
+                            Atiestatīt
+                        </button>
+                        <button class="apply-btn" @click="applyFilters">
+                            Lietot
+                        </button>
                     </div>
                 </div>
             </div>
 
+
+
             <!-- Klasisko grāmatu sadaļa -->
-            <section class="book-section">
+            <section class="book-section" v-if="filters.bookType !== 'user' && classicBooks.length">
                 <h2 class="section-title">Klasiskās grāmatas</h2>
 
                 <!-- Paziņojums, ja nav grāmatu -->
@@ -199,7 +274,7 @@
             </section>
 
             <!-- Lietotāju grāmatu sadaļa -->
-            <section class="book-section">
+            <section class="book-section" v-if="filters.bookType !== 'classic' && books.length">
                 <h2 class="section-title">Lietotāju grāmatas</h2>
 
                 <!-- Paziņojums, ja nav grāmatu -->
@@ -249,6 +324,9 @@
                     </div>
                 </div>
             </section>
+            <div v-if="!hasFilteredResults" class="empty-message">
+                <p>Nav atrastas grāmatas vai citi stāsti, kas atbilstu jūsu filtram.</p>
+            </div>
         </div>
         <Footer />
     </div>
@@ -271,9 +349,31 @@
         flex: 1; /* Izplešas atlikušajā telpā */
     }
 
+    .library-header {
+        display: flex; /* Izmanto flex izkārtojumu */
+        flex-direction: column; /* Elementus novieto vertikāli */
+        align-items: center; /* Centrē elementus horizontāli */
+        margin-bottom: 30px; /* Apakšējā atstarpe */
+    }
+
+    /* Filtrēšanas pogas stils */
+    .filter-btn {
+        padding: 5px 20px; /* Iekšējās atstarpes (vertikālā/horizontālā) */
+        background-color: #c58667; /* Pogas fona krāsa */
+        border: 2px solid rgba(26, 16, 8, 0.8); /* Pogas apmale */
+        border-radius: 4px; /* Noapaļoti stūri */
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: Tahoma, Helvetica, sans-serif;
+        display: inline-block; /* Bloka elements, bet var būt citos elementos */
+        margin: 0 auto; /* Automātiskas atstarpes no sāniem (centrēšana) */
+        margin-bottom: 20px;
+        font-size: 1rem;
+    }
+
     .library-title {
         font-size: 1.7rem;
-        margin: 32px 0 40px; /* Ārējās atstarpes */
+        margin: 32px 0 20px; /* Ārējās atstarpes */
         text-align: center; /* Centrēts teksts */
         color: rgba(26, 16, 8, 0.8);
         font-family: Tahoma, Helvetica, sans-serif;
@@ -411,106 +511,100 @@
         font-size: 1rem;
     }
 
-    .read-btn:hover {
+    button:hover {
         background-color: #ffc8a9;
         border-color: #ffc8a9;
     }
 
-    .header-with-filter {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
 
-    .filter-btn {
-        padding: 8px 16px;
-        background-color: #c58667;
-        border: 2px solid rgba(26, 16, 8, 0.8);
-        border-radius: 4px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-family: Tahoma, Helvetica, sans-serif;
-    }
-
-    .filter-btn:hover {
-        background-color: #ffc8a9;
-        border-color: #ffc8a9;
-    }
-
+    /* Modālā loga pārklājuma stils */
     .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        position: fixed; /* Fiksēta pozīcija */
+        top: 0; /* Augšā ekrāna */
+        left: 0; /* Kreisā malā */
+        right: 0; /* Labā malā */
+        bottom: 0; /* Apakšā ekrāna */
         background-color: rgba(0, 0, 0, 0.5);
         display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
+        justify-content: center; /* Centrē horizontāli */
+        align-items: center; /* Centrē vertikāli */
+        z-index: 1000; /* Pārklāj citus elementus */
     }
 
+    /* Modālā loga satura konteiners */
     .modal-content {
+        border: 1px solid rgba(26, 16, 8, 0.8);
         background-color: #e4a27c;
-        padding: 25px;
         border-radius: 8px;
-        width: 90%;
-        max-width: 500px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 20px rgba(63, 31, 4, 0.8);
+        padding: 20px;
+        width: 90%; /* Platums 90% no ekrāna */
+        max-width: 500px; /* Maksimālais platums */
+        max-height: 80vh; /* Maksimālais augstums 80% no ekrāna */
+        overflow-y: auto; /* Vertikālais ritināšanas josla */
+        scrollbar-width: thin; /* Plāna ritjosla */
+        scrollbar-color: #e4a27c #ffd9c6; /* Ritjoslas krāsas */
     }
 
+    /* Modālā loga virsraksts */
     .modal-content h3 {
-        margin-top: 0;
+        margin-top: 0; /* Bez augšējās atstarpes */
         color: rgba(26, 16, 8, 0.8);
         text-align: center;
+        font-size: 1.1rem;
+        font-weight: bold; /* Treknraksts */
+        margin-bottom: 10px;
     }
 
+    /* Filtru grupas konteiners */
     .filter-group {
-        margin-bottom: 15px;
+        margin-bottom: 12px;
     }
 
+    /* Filtru grupu nosaukumi */
     .filter-group label {
-        display: block;
+        display: block; /* Bloka elements */
         margin-bottom: 5px;
         font-weight: bold;
         color: rgba(26, 16, 8, 0.8);
+        font-size: 1.1rem;
     }
 
+    /* Izvēlņu lauki */
     .filter-group select {
-        width: 100%;
+        width: 100%; /* Pilns platums */
         padding: 8px;
         border: 1px solid rgba(26, 16, 8, 0.8);
         border-radius: 4px;
-        background-color: #ffd9c6;
+        background-color: white;
     }
 
-    /* Добавляем стили для рейтингов аналогично жанрам */
+    /* Fokusēta izvēlne */
+    .filter-group select:focus {
+        outline: none;
+        box-shadow: none;
+        background-color: #ffc8a9;
+    }
+
     .rating-options {
         display: flex;
-        flex-wrap: wrap;
+        flex-wrap: wrap; /* Aptver vairākās rindās */
         gap: 10px;
         margin-top: 8px;
     }
 
     .rating-checkbox {
         background-color: #ffd9c6;
-        padding: 8px 12px;
+        padding: 4px 10px;
         border-radius: 4px;
         cursor: pointer;
         transition: all 0.3s ease;
         font-size: 1rem;
-        border: 1px solid rgba(26, 16, 8, 0.3);
     }
+
 
     .rating-checkbox.selected {
-        background-color: #c58667;
-        color: white;
-        border-color: rgba(26, 16, 8, 0.8);
-    }
-
-    .rating-checkbox:hover {
-        background-color: #e4a27c;
+        background-color: #ffc8a9;
     }
 
     .genre-options {
@@ -522,50 +616,69 @@
 
     .genre-checkbox {
         background-color: #ffd9c6;
-        padding: 8px 12px;
+        padding: 6px 12px;
         border-radius: 4px;
         cursor: pointer;
         transition: 0.3s;
         font-size: 1rem;
     }
 
-
     .genre-checkbox.selected {
         background-color: #ffc8a9;
     }
 
+    .status-options {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+        flex-wrap: wrap; /* Aptver vairākās rindās */
+    }
+
+    .status-option {
+        background-color: #ffd9c6;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer; /* Roka kursors */
+        transition: all 0.3s; /* Pārejas efekts */
+        font-size: 1rem;
+    }
+
+    .status-option.selected {
+        background-color: #ffc8a9;
+    }
 
     .modal-actions {
         display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 20px;
+        justify-content: flex-end; /* Izlīdzina pa labi */
+        gap: 10px; /* Atstarpe starp pogām */
+        margin-top: 30px;
     }
 
     .modal-actions button {
-        padding: 8px 16px;
+        padding: 5px 18px;
         border-radius: 4px;
         cursor: pointer;
         transition: all 0.3s ease;
+        font-size: 1rem;
     }
 
-    .cancel-btn {
-        background-color: #f1f1f1;
-        border: 1px solid #ccc;
-    }
 
     .reset-btn {
-        background-color: #ffd9c6;
-        border: 1px solid rgba(26, 16, 8, 0.8);
+        border: 2px solid rgba(35, 11, 11, 0.8);
+        background-color: #714e3e;
     }
 
     .apply-btn {
-        background-color: #c58667;
-        border: 1px solid rgba(26, 16, 8, 0.8);
-        color: white;
+        background-color: #c58667; /* Fona krāsa */
+        border: 2px solid rgba(26, 16, 8, 0.8); /* Apmale */
     }
 
+
     @media (max-width: 600px) {
+        .filter-btn {
+            padding: 3px 16px; /* Iekšējās atstarpes (vertikālā/horizontālā) */
+            font-size: 0.9rem;
+        }
 
         .library-title {
             font-size: 1.5rem;
@@ -619,6 +732,37 @@
 
         .read-btn {
             padding: 8px;
+            font-size: 0.9rem;
+        }
+
+        /*Modalais logs filtrešānai*/
+
+        .modal-content h3 {
+            font-size: 1rem;
+        }
+
+        .filter-group label {
+            font-size: 1rem;
+        }
+
+
+        .rating-checkbox {
+            padding: 3px 8px;
+            font-size: 0.9rem;
+        }
+
+        .genre-checkbox {
+            padding: 5px 10px;
+            font-size: 0.9rem;
+        }
+
+        .status-option {
+            padding: 5px 10px;
+            font-size: 0.9rem;
+        }
+
+        .modal-actions button {
+            padding: 3px 15px;
             font-size: 0.9rem;
         }
 

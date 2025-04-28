@@ -169,12 +169,12 @@ class ClassicBookController extends Controller
 
         // Iegūst visus žanrus
         $allGenres = Genre::orderBy('name', 'asc')->get();
-        $rating = [
-        ['id' => '0+', 'label' => '0+ '],
-        ['id' => '6+', 'label' => '6+'],
-        ['id' => '12+', 'label' => '12+'],
-        ['id' => '16+', 'label' => '16+'],
-        ['id' => '18+', 'label' => '18+'],
+        $ratings = [
+            ['id' => '0+', 'label' => '0+'],
+            ['id' => '6+', 'label' => '6+'],
+            ['id' => '12+', 'label' => '12+'],
+            ['id' => '16+', 'label' => '16+'],
+            ['id' => '18+', 'label' => '18+'],
         ];
 
         // Atgriež Inertia skatu ar abu veidu grāmatu kolekcijām
@@ -182,7 +182,7 @@ class ClassicBookController extends Controller
             'books' => $books,
             'classicBooks' => $classicBooks,
             'allGenres' => $allGenres,
-            'rating' => $rating,
+            'ratings' => $ratings,
         ]);
     }
 
@@ -199,6 +199,90 @@ class ClassicBookController extends Controller
             'book' => $book,
             'genres' => $book->genres,
             'chapters' => $book->chapters
+        ]);
+    }
+
+    //Metode filtrešānai
+    public function filter(Request $request)
+    {
+        // Inicializējam vaicājumus ar relācijām
+        $query = UserBook::query()->with(['user', 'genres']);
+        $classicQuery = ClassicBook::query()->with('genres');
+
+        // Lietotāju grāmatu filtrēšana (ja nav atlasīts tikai klasiskās)
+        if ($request->bookType !== 'classic') {
+            // Filtrē pēc vecuma ierobežojuma
+            if ($request->ratings) {
+                $query->whereIn('age_limit', $request->ratings);
+            }
+
+            // Filtrē pēc žanriem
+            if (!empty($request->genres)) {
+                $query->whereHas('genres', function($q) use ($request) {
+                    $q->whereIn('genres.id', $request->genres); // Precīzi norādam tabulu
+                });
+            }
+
+            // Filtrē pēc statusa (tikai lietotāju grāmatām)
+            if (!empty($request->statuses)) {
+                $query->whereIn('status', $request->statuses);
+            }
+        }
+
+        // Klasisko grāmatu filtrēšana (ja nav atlasīts tikai lietotāju grāmatas)
+        if ($request->bookType !== 'user') {
+            // Filtrē pēc vecuma ierobežojuma
+            if ($request->ratings) {
+                $classicQuery->whereIn('age_limit', $request->ratings);
+            }
+
+            // Filtrē pēc žanriem
+            if (!empty($request->genres)) {
+                $classicQuery->whereHas('genres', function($q) use ($request) {
+                    $q->whereIn('genres.id', $request->genres); // Precīzi norādam tabulu
+                });
+            }
+        }
+
+        // Atgriežam Inertia skatu ar filtrētajiem rezultātiem
+        return Inertia::render('Reading/Library', [
+            // Filtrētās lietotāju grāmatas (ja nav atlasīts tikai klasiskās)
+            'books' => $request->bookType === 'classic' ? [] : $query->get(),
+
+            // Filtrētās klasiskās grāmatas (ja nav atlasīts tikai lietotāju grāmatas)
+            'classicBooks' => $request->bookType === 'user' ? [] : $classicQuery->get(),
+
+            // Visi pieejamie žanri (sakārtoti pēc nosaukuma)
+            'allGenres' => Genre::orderBy('name')->get(),
+
+            // Vecuma ierobežojumu opcijas
+            'ratings' => [
+                ['id' => '0+', 'label' => '0+'],
+                ['id' => '6+', 'label' => '6+'],
+                ['id' => '12+', 'label' => '12+'],
+                ['id' => '16+', 'label' => '16+'],
+                ['id' => '18+', 'label' => '18+'],
+            ],
+
+            // Statusu opcijas (tikai lietotāju grāmatām)
+            'statuses' => [
+                ['id' => 'Procesā', 'label' => 'Procesā'],
+                ['id' => 'Pabeigts', 'label' => 'Pabeigts'],
+                ['id' => 'Pamests', 'label' => 'Pamests'],
+            ],
+
+            // Aktīvie filtri (tiek izmantoti, lai atjauninātu saskarni)
+            'filters' => [
+                'bookType' => $request->bookType ?? 'all', // Grāmatu tips
+                'ratings' => $request->ratings ?? [], // Atlasītie vērtējumi
+                'genres' => is_array($request->genres)
+                    ? array_map('strval', $request->genres) // Pārveidojam žanru ID par string
+                    : [], // Atlasītie žanri
+                'statuses' => $request->statuses ?? [] // Atlasītie statusi
+
+            ],
+             'hasFilteredResults' => ($request->bookType !== 'classic' && $query->count() > 0) ||
+                 ($request->bookType !== 'user' && $classicQuery->count() > 0)
         ]);
     }
 }
