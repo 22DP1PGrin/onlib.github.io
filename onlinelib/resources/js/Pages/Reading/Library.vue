@@ -4,7 +4,7 @@
     import Footer from '@/Components/Footer.vue';
     import {router} from "@inertiajs/vue3";
     import {route} from "ziggy-js";
-    import {ref, watch} from "vue";
+    import {computed, ref, watch} from "vue";
 
     // Definē komponenta ievaddatus
     const props = defineProps({
@@ -29,7 +29,8 @@
                 {id: 'Pabeigts', label: 'Pabeigts'},
                 {id: 'Pamests', label: 'Pamests'}
             ]
-        }
+        },
+
     });
 
     // Vēro izmaiņas filtriem un atjauno atlasītās vērtības
@@ -38,6 +39,7 @@
         selectedRatings.value = newFilters.ratings || [];
         selectedStatuses.value = newFilters.statuses || [];
         filters.value.bookType = newFilters.bookType || 'all';
+
     });
 
     // Mainīgie modāļa loga redzamībai un datiem
@@ -53,6 +55,32 @@
     );
     const selectedRatings = ref(props.filters?.ratings || []);
     const selectedStatuses = ref(props.filters?.statuses || []);
+
+
+    const getBookRating = (book) => {
+        const avg = book.ratings_avg_grade !== null && book.ratings_avg_grade !== undefined
+            ? parseFloat(book.ratings_avg_grade).toFixed(1)
+            : '0.0';
+
+        const count = book.ratings_count || 0;
+
+        return {
+            average: avg,
+            count: count
+        };
+    };
+
+    const formattedRatingsCount = (count) => {
+        if (typeof count !== 'number' || isNaN(count)) {
+            return '0';
+        }
+
+        if (count >= 1000) {
+            return (count / 1000).toFixed(1) + 'k';
+        }
+        return count.toString();
+    };
+
 
     // Filtri, kas ietver tikai grāmatu tipu
     const filters = ref({
@@ -138,7 +166,6 @@
 
     <Navbar />
 
-
     <div class="page-wrapper">
 
         <div class="library-container">
@@ -155,6 +182,11 @@
             <!-- Filtrēšanas modālais logs -->
             <div v-if="showFilterModal" class="modal-overlay" @click.self="showFilterModal = false">
                 <div class="modal-content">
+
+                    <button class="close-button" @click="showFilterModal = false">
+                        <i class="fa">&#xf00d;</i>
+                    </button>
+
                     <h3>Filtrēšanas opcijas</h3>
 
                     <div class="filter-group">
@@ -165,7 +197,6 @@
                             <option value="user">Lietotāju grāmatas</option>
                         </select>
                     </div>
-
                     <div class="filter-group">
                         <label>Vecuma ierobežojums:</label>
                         <div class="rating-options">
@@ -220,29 +251,33 @@
                 </div>
             </div>
 
-
-
             <!-- Klasisko grāmatu sadaļa -->
             <section class="book-section" v-if="filters.bookType !== 'user' && classicBooks.length">
                 <h2 class="section-title">Klasiskās grāmatas</h2>
 
-                <!-- Paziņojums, ja nav grāmatu -->
-                <div v-if="classicBooks.length === 0" class="empty-message">
-                    <p>Nav pievienotu klasisko grāmatu</p>
-                </div>
-
-                <div v-else class="books-grid">
+                <div class="books-grid">
                     <div v-for="book in classicBooks" :key="book.id" class="book-card">
                         <div class="book-content">
+
+                            <div v-if="book.current_bookmark?.name" class="bookmark-badge">
+                                {{ book.current_bookmark.name }}
+                            </div>
+
                             <!-- Grāmatas nosaukums -->
                             <h3 class="book-title">{{ book.name }}</h3>
 
                             <!-- Grāmatas apraksts -->
                             <p class="book-description">{{ book.description }}</p>
 
+                            <div class="book-info">
+                                <span class="book"><strong>Vērtējums: </strong>{{ getBookRating(book).average }}<span class="fastar">★</span>
+                                ({{ formattedRatingsCount(getBookRating(book).count) }} atsauksmes)
+                                </span>
+                            </div>
+
                             <!-- Vecuma ierobežojuma informācija -->
                             <div class="book-info">
-                                <span class="info-label">Vērtējums:</span>
+                                <span class="info-label">Vecuma ierobežojums: </span>
                                 <span class="rating-badge">
                                     {{ book.age_limit }}
                                 </span>
@@ -267,6 +302,8 @@
                                     </span>
                                 </div>
                             </div>
+
+
                             <button class="read-btn" @click="GoToReadClassic(book.id)">Lasīt</button>
                         </div>
                     </div>
@@ -277,24 +314,30 @@
             <section class="book-section" v-if="filters.bookType !== 'classic' && books.length">
                 <h2 class="section-title">Lietotāju grāmatas</h2>
 
-                <!-- Paziņojums, ja nav grāmatu -->
-                <div v-if="books.length === 0" class="empty-message">
-                    <p>Nav pievienotu lietotāju grāmatu</p>
-                </div>
 
-                <div v-else class="books-grid">
+                <div class="books-grid">
                     <!-- Atkārtojas katrai grāmatai -->
                     <div v-for="book in books" :key="book.id" class="book-card">
                         <div class="book-content">
+                            <div v-if="book.current_bookmark?.name" class="bookmark-badge">
+                                {{ book.current_bookmark.name }}
+                            </div>
                             <!-- Grāmatas nosaukums -->
                             <h2 class="book-title">{{ book.name }}</h2>
 
                             <!-- Grāmatas apraksts -->
                             <p class="book-description">{{ book.description }}</p>
 
+                            <div class="book-info">
+                                <span class="book"><strong>Vērtējums: </strong>{{ getBookRating(book).average }}<span class="fastar">★</span>
+                                ({{ formattedRatingsCount(getBookRating(book).count) }} atsauksmes)
+                                </span>
+
+                            </div>
+
                             <!-- Vecuma ierobežojuma informācija -->
                             <div class="book-info">
-                                <span class="info-label">Vērtējums: </span>
+                                <span class="info-label">Vecuma ierobežojums: </span>
                                 <span class="rating-badge">
                                     {{ book.age_limit }}
                                 </span>
@@ -324,8 +367,11 @@
                     </div>
                 </div>
             </section>
-            <div v-if="!hasFilteredResults" class="empty-message">
-                <p>Nav atrastas grāmatas vai citi stāsti, kas atbilstu jūsu filtram.</p>
+            <div v-if="(filters.bookType === 'all' && books.length === 0 && classicBooks.length === 0) ||
+           (filters.bookType === 'user' && books.length === 0) ||
+           (filters.bookType === 'classic' && classicBooks.length === 0)"
+                 class="empty-message">
+                <p>Nav pievienotu grāmatu vai stāstu</p>
             </div>
         </div>
         <Footer />
@@ -333,6 +379,7 @@
 </template>
 
 <style scoped>
+
     .page-wrapper {
         font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
         color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
@@ -392,11 +439,20 @@
     }
 
     .empty-message {
-        text-align: center; /* Centrēts teksts */
-        padding: 40px 0; /* Augšējā un apakšējā atstarpe */
+        display: flex;
+        justify-content: center;
+        align-items: center; /* Centrēts teksts */
+        padding: 20px;
+        margin: 20px auto;
         color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-        font-style: italic; /* Kursīvs stils */
-        font-size: 1rem; /* Fonta izmērs */
+        font-size: 1.1rem; /* Fonta izmērs */
+        background-color: #e4a27c;
+        border: 1px solid rgba(26, 16, 8, 0.8); /* Pogas apmale */
+        border-radius: 8px;
+        text-align: center;
+        width: 50%;
+        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 10px;
+        font-weight: bold;
     }
 
     .books-grid {
@@ -406,6 +462,20 @@
         margin-bottom: 50px;
     }
 
+    .bookmark-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: rgba(26, 16, 8, 0.8);
+        padding: 3px 10px; /* Iekšējā atstarpe */
+        background-color: #ffd9c6;
+        box-shadow: 0 2px 4px rgba(63, 31, 4, 0.8);
+        border-radius: 15px;
+        font-size: 0.85rem;
+        transition: all 0.3s;
+
+    }
+
     .book-card {
         border: 1px solid rgba(26, 16, 8, 0.8); /* Apmale */
         background-color: #e4a27c; /* Fona krāsa */
@@ -413,6 +483,7 @@
         box-shadow: 0 6px 15px rgba(63, 31, 4, 0.8); /* Ēna */
         overflow: hidden; /* Pārplūdes slēpšana */
         transition: all 0.3s ease; /* Pārejas efekts */
+        position: relative;
     }
 
     .book-card:hover {
@@ -442,6 +513,7 @@
         color: rgba(26, 16, 8, 0.62);
         margin-bottom: 20px;
         font-size: 1rem;
+        word-wrap: break-word;
     }
 
     .book { /* Papildu teksta stils */
@@ -471,7 +543,6 @@
         box-shadow: 0 2px 4px rgba(63, 31, 4, 0.8);
         border-radius: 15px;
         font-size: 0.85rem;
-        margin-left: -10px;
     }
 
     .book-genres {
@@ -524,7 +595,7 @@
         left: 0; /* Kreisā malā */
         right: 0; /* Labā malā */
         bottom: 0; /* Apakšā ekrāna */
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(26, 16, 8, 0.43);
         display: flex;
         justify-content: center; /* Centrē horizontāli */
         align-items: center; /* Centrē vertikāli */
@@ -533,6 +604,7 @@
 
     /* Modālā loga satura konteiners */
     .modal-content {
+        position: relative;
         border: 1px solid rgba(26, 16, 8, 0.8);
         background-color: #e4a27c;
         border-radius: 8px;
@@ -544,6 +616,36 @@
         overflow-y: auto; /* Vertikālais ritināšanas josla */
         scrollbar-width: thin; /* Plāna ritjosla */
         scrollbar-color: #e4a27c #ffd9c6; /* Ritjoslas krāsas */
+    }
+
+    .close-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        color: rgba(26, 16, 8, 0.8);
+        transition: all 0.3s ease;
+        font-size: 1.2rem;
+        line-height: 1;
+        z-index: 1;
+
+    }
+
+    .close-button:hover {
+        background-color: #e4a27c; /* Fona krāsa */
+        border:none
+    }
+
+    .modal-content .fa{
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
+
+    .modal-content .fa:hover{
+        color: #ffc8a9;
     }
 
     /* Modālā loga virsraksts */
@@ -605,6 +707,10 @@
 
     .rating-checkbox.selected {
         background-color: #ffc8a9;
+    }
+
+    .fastar{
+        font-size: 1.2rem;
     }
 
     .genre-options {
@@ -716,6 +822,10 @@
 
         .book {
             font-size: 0.9rem;
+        }
+
+        .fastar{
+            font-size: 1.1rem;
         }
 
         .rating-badge {

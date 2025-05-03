@@ -1,5 +1,6 @@
 <?php
-
+use App\Http\Controllers\AllBooksController;
+use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\ClassicBookController;
 use App\Http\Controllers\ClassicChapterController;
@@ -20,13 +21,12 @@ use Inertia\Inertia;
 Route::get('/api/is-logged-in', function () {
     return response()->json([
         'isLoggedIn' => auth()->check(),
-        'user' => auth()->user(), // Include the authenticated user
+        'user' => auth()->user(),
     ]);
 });
+Route::get('/', [AllBooksController::class, 'getHomePageBooks'])->name('Home');
 
-Route::get('/', function () {
-    return Inertia::render('HomeView', []);
-})->name('Home');
+Route::get('/search', [AllBooksController::class, 'searchBooks'])->name('search.books');
 
 Route::get('/contentpolicy', function () {
     return Inertia::render('ContentPolicy', []);
@@ -136,7 +136,8 @@ Route::delete('/Forms/{id}', [SupportController::class, 'destroy'])
     ->middleware('can:Admin')
     ->name('problems.destroy');
 
-Route::get('/BookList', [UserBookController::class, 'showAll'])
+
+Route::get('/BookList', [AllBooksController::class, 'showAllList'])
     ->middleware('can:Admin')
     ->name('book.lists');
 
@@ -147,7 +148,6 @@ Route::delete('/books/{id}', [UserBookController::class, 'destroyBook'])
 Route::delete('/classic-books/{id}', [ClassicBookController::class, 'destroyBook'])
     ->middleware('can:Admin')
     ->name('classic_books.destroy');
-
 
 
 Route::post('/CreateBook', [ClassicBookController::class, 'store'])
@@ -169,7 +169,7 @@ Route::put('/Classic/{id}', [ClassicBookController::class, 'updateClassic'])
 
 
 Route::get('/NewClassicChapter', function () {
-    return Inertia::render('Control/NewClassicChapter');
+    return Inertia::render('Control/Books/NewInfo/NewClassicChapter');
 })->name('NewClassicChapter')->middleware('can:Admin');
 
 Route::get('/Classic/{book}/chapters/create', [ClassicChapterController::class, 'create'])
@@ -193,8 +193,7 @@ Route::delete('/classic-chapters/{id}', [ClassicChapterController::class, 'destr
     ->name('classic.chapters.destroy');
 
 
-
-Route::get('/Library', [ClassicBookController::class, 'showAll'])->name('library');
+Route::get('/Library', [AllBooksController::class, 'showAll'])->name('library');
 
 Route::get('/Classic/{bookId}', [ClassicBookController::class, 'showInfo'])
     ->name('ClassicRead');
@@ -208,9 +207,42 @@ Route::get('/User/{bookId}', [UserBookController::class, 'showInfo'])
 Route::get('/User/{bookId}/Read/{chapterId}', [ChapterController::class, 'showContent'])
     ->name('UserContent');
 
-Route::get('/Filter', [ClassicBookController::class, 'filter'])
+
+Route::get('/Filter', [AllBooksController::class, 'filter'])
     ->name('books.filter');
 
+
+Route::post('/classic-books/{book}/rate', [ClassicBookController::class, 'rateBook'])
+    ->name('classic-books.rate')
+    ->middleware('auth');
+
+Route::post('/user-books/{book}/rate', [UserBookController::class, 'rateBook'])
+    ->name('user-books.rate')
+    ->middleware('auth');
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/bookmarks/add', [BookmarkController::class, 'add'])
+        ->name('bookmarks.add');
+    Route::delete('/bookmarks/remove/{bookId}', [BookmarkController::class, 'remove'])
+        ->name('bookmarks.remove');
+
+    Route::get('/bookmarks/read', [BookmarkController::class, 'bookmarkPage'])
+        ->name('bookmarks.read')
+        ->defaults('typeId', 1);
+
+    Route::get('/bookmarks/reading', [BookmarkController::class, 'bookmarkPage'])
+        ->name('bookmarks.reading')
+        ->defaults('typeId', 2);
+
+    Route::get('/bookmarks/dropped', [BookmarkController::class, 'bookmarkPage'])
+        ->name('bookmarks.dropped')
+        ->defaults('typeId', 3);
+
+    Route::get('/bookmarks/planned', [BookmarkController::class, 'bookmarkPage'])
+        ->name('bookmarks.planned')
+        ->defaults('typeId', 4);
+});
 
 require __DIR__.'/auth.php';
 

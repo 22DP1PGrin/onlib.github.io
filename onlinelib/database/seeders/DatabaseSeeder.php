@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             ClassicBooksSeeder::class,
             ClassicBookGenresSeeder::class,
             ClassicBooksChapterSeeder::class,
+            BookmarksType::class,
         ]);
     }
 

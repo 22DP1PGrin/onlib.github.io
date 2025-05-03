@@ -1,6 +1,7 @@
 <script>
 import { usePage, router } from '@inertiajs/vue3'
-import { computed } from 'vue'
+import {computed, ref} from 'vue'
+import {route} from "ziggy-js";
 
 export default {
     setup() {
@@ -10,6 +11,9 @@ export default {
         // Pārbauda, vai lietotājs ir pieslēdzies (pārvērš vērtību par boolean)
         const isLoggedIn = computed(() => !!user.value)
 
+        const searchQuery = ref('')
+
+
         const handleWritingClick = (e) => {
             if (!isLoggedIn.value) {
                 router.get('/login');
@@ -18,22 +22,12 @@ export default {
             }
         };
 
-        // Izrakstīšanās funkcija
-        const logout = () => {
-            router.post(route('logout'), {}, {
-                onSuccess: () => {
-                    // Notīra datus vai pāradresē
-                    window.location.href = '/' // Piespiedu lapas atsvaidzināšana
-                }
-            })
-        }
-
         // Atgriež reakrīvās vērtības un metodes
         return {
             user,
             isLoggedIn,
+            searchQuery,
             handleWritingClick,
-            logout
         };
     },
 
@@ -62,30 +56,46 @@ export default {
 
         },
 
+        performSearch() {
+            if (this.searchQuery.trim()) {
+                router.get(route('search.books'), {
+                    query: this.searchQuery
+                }, {
+                    preserveState: true,
+                    replace: true
+                })
+            }
+        },
+
+        handleKeyPress(e) {
+            if (e.key === 'Enter') this.performSearch()
+        },
+
         // Funkcija, kas iestata meklēšanas funkcionalitāti
         setupSearch() {
-            // Atrod meklēšanas lauku un pogu
-            const search = this.$el.querySelector('.search');
-            const btn = this.$el.querySelector('.btn');
-            const input = this.$el.querySelector('.input');
+            const search = this.$el.querySelector('.search')
+            const btn = this.$el.querySelector('.btn')
+            const input = this.$el.querySelector('.input')
 
-            // Pārbauda, vai poga eksistē
             if (btn) {
-                // Pievieno klikšķa notikumu pogai
                 btn.addEventListener('click', () => {
-                    // Pārbauda, vai ievades lauks ir tukšs
                     if (input.value.trim() === '') {
-                        // Pievieno vai noņem klasi "active", lai parādītu vai paslēptu meklēšanas lauku
-                        search.classList.toggle('active');
-                        // Ja meklēšanas lauks ir aktīvs, fokusē to
+                        search.classList.toggle('active')
                         if (search.classList.contains('active')) {
-                            input.focus();
+                            input.focus()
                         }
                     } else {
-                        // Ja ievades lauks nav tukšs, fokusē to
-                        input.focus();
+                        // Вызываем метод performSearch вместо прямого поиска
+                        this.performSearch()
                     }
-                });
+                })
+
+                // Добавляем обработчик Enter
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.performSearch()
+                    }
+                })
             }
         }
     }
@@ -100,7 +110,7 @@ export default {
 
         <ul class="marks">
             <li><a class="pressed1nav" href="/Library"><i class="fa">&#xf02d;</i> Bibliotēka</a></li> <!-- Saite uz lapu "Bibliotēka" -->
-            <li><a class="pressed1nav" href="../html/Bookmarks.html"><i class="fa">&#xf02e;</i> Grāmatzīmes</a></li> <!-- Saite uz lapu "Grāmatzīmes" -->
+            <li><a class="pressed1nav" href="/bookmarks/read"><i class="fa">&#xf02e;</i> Grāmatzīmes</a></li> <!-- Saite uz lapu "Grāmatzīmes" -->
             <li>
                 <a
                     class="pressed1nav"
@@ -112,12 +122,19 @@ export default {
         </ul>
 
         <div class="account"> <!-- Bloks konta pārvaldīšanai -->
-            <div class="search"> <!-- Meklēšanas josla -->
-                <input type="text" class="input" placeholder="Meklēt grāmatu..."> <!-- Ievades lauks meklēšanai -->
-                <button class="btn">
+            <div class="search">
+                <input
+                    type="text"
+                    class="input"
+                    placeholder="Meklēt grāmatu..."
+                    v-model="searchQuery"
+                    @keypress="handleKeyPress"
+                >
+                <button class="btn" @click="performSearch">
                     <i class="fa bar">&#xf002;</i>
                 </button>
             </div>
+
 
             <template v-if="!isLoggedIn">
                 <a class="pressed2" href="/registerp"><i class="fa">&#xf2bd;</i> Reģistrācija</a>
@@ -141,7 +158,7 @@ export default {
         <div class="navbar-links">
             <ul>
                 <li><a class="pressed1" href="/Library"><i style="font-size:16px" class="fa">&#xf02d;</i> Bibliotēka</a></li> <!-- Saite uz lapu "Bibliotēka" -->
-                <li><a class="pressed1" href="../html/Bookmarks.html"><i style="font-size:16px;" class="fa">&#xf02e;</i> Grāmatzīmes</a></li> <!-- Saite uz lapu "Grāmatzīmes" -->
+                <li><a class="pressed1" href="/bookmarks/read"><i style="font-size:16px;" class="fa">&#xf02e;</i> Grāmatzīmes</a></li> <!-- Saite uz lapu "Grāmatzīmes" -->
                 <li>
                     <a
                         class="pressed1nav"
@@ -167,7 +184,7 @@ export default {
        height: 55px !important;
        margin: 0;  /* Noņem arpusejo atstarpi */
        padding: 0;  /* Noņem iekšējo atstarpi */
-        /* Ēna navigācijas joslas apakšā */
+       box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna navigācijas joslas apakšā */
        background-color: #c58667; /* Fona krāsa */
        flex-grow: 1; /* Izplešas, lai aizpildītu vietu */
    }

@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bookmark;
 use App\Models\ClassicBook;
 use App\Models\ClassicBookChapter;
+use App\Models\ClassicRating;
 use App\Models\Genre;
 use App\Models\UserBook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class ClassicBookController extends Controller
@@ -18,7 +21,7 @@ class ClassicBookController extends Controller
     public function create()
     {
         // Atgriežam skatu ar žanriem un vecuma ierobežojumiem
-        return Inertia::render('Control/NewClassicBook', [
+        return Inertia::render('Control/Books/NewInfo/NewClassicBook', [
             'genres' => Genre::all(), // Saņemam visus žanrus no datu bāzes
             'ratings' => [
                 ['id' => '0+', 'label' => '0+ '],
@@ -81,7 +84,7 @@ class ClassicBookController extends Controller
             ->findOrFail($id);
 
         // Atgriežam skatu ar grāmatas datiem un iespējām rediģēt
-        return Inertia::render('Control/ClassicEdit', [
+        return Inertia::render('Control/Books/EditInfo/ClassicEdit', [
             'classic_book' => $classic_book,
             'genres' => Genre::all(),
             'chapters' => $classic_book->chapters,
@@ -158,34 +161,6 @@ class ClassicBookController extends Controller
         return redirect()->back()->with('success', 'Grāmata veiksmīgi dzēsta.');
     }
 
-    // Atgriež visu grāmatu sarakstu ar saistītajiem datiem
-    public function showAll()
-    {
-        // Iegūst visas lietotāju grāmatas ar saistītajiem lietotājiem un žanriem
-        $books = UserBook::with(['user', 'genres'])->get();
-
-        // Iegūst visas klasiskās grāmatas ar saistītajiem žanriem
-        $classicBooks = ClassicBook::with('genres')->get();
-
-        // Iegūst visus žanrus
-        $allGenres = Genre::orderBy('name', 'asc')->get();
-        $ratings = [
-            ['id' => '0+', 'label' => '0+'],
-            ['id' => '6+', 'label' => '6+'],
-            ['id' => '12+', 'label' => '12+'],
-            ['id' => '16+', 'label' => '16+'],
-            ['id' => '18+', 'label' => '18+'],
-        ];
-
-        // Atgriež Inertia skatu ar abu veidu grāmatu kolekcijām
-        return Inertia::render('Reading/Library', [
-            'books' => $books,
-            'classicBooks' => $classicBooks,
-            'allGenres' => $allGenres,
-            'ratings' => $ratings,
-        ]);
-    }
-
     // Metode, kas parāda visu informāciju par grāmatu
     public function showInfo($id)
     {
@@ -194,95 +169,81 @@ class ClassicBookController extends Controller
         }])
             ->findOrFail($id);
 
+
+        // Saņemiet vērtējuma datus
+        $ratingsData = ClassicRating::where('book_id', $id)
+            ->selectRaw('AVG(grade) as average, COUNT(*) as count')
+            ->first();
+
+        // Iegūstiet pašreizējā lietotāja vērtējumu
+        $userRating = auth()->check()
+            ? ClassicRating::where('book_id', $id)
+                ->where('user_id', auth()->id())
+                ->value('grade')
+            : null;
+
+        //Grāmatzīmju atrašana
+        $userBookmark = null;
+        if (auth()->check()) {
+            $bookmark = Bookmark::where('user_id', auth()->id())
+                ->where('classic_book_id', $id)
+                ->with('bookmarkType')
+                ->first();
+
+            if ($bookmark) {
+                $userBookmark = [
+                    'id' => $bookmark->bookmark_type_id,
+                    'name' => $bookmark->bookmarkType->name
+                ];
+            }
+        }
+
         // Atgriežam rediģēšanas skatu ar nepieciešamajiem datiem
-        return Inertia::render('Reading/ClassicBook', [
+        return Inertia::render('Reading/ClassicBooks/ClassicBook', [
             'book' => $book,
             'genres' => $book->genres,
-            'chapters' => $book->chapters
+            'chapters' => $book->chapters,
+            'initialAverageRating' => (float) ($ratingsData->average ?? 0),
+            'initialRatingsCount' => $ratingsData->count ?? 0,
+            'initialUserRating' => $userRating,
+            'initialUserBookmark' => $userBookmark
         ]);
     }
 
-    //Metode filtrešānai
-    public function filter(Request $request)
+     // Grāmatas vērtēšanas funkcija
+    public function rateBook(Request $request, $bookId)
     {
-        // Inicializējam vaicājumus ar relācijām
-        $query = UserBook::query()->with(['user', 'genres']);
-        $classicQuery = ClassicBook::query()->with('genres');
-
-        // Lietotāju grāmatu filtrēšana (ja nav atlasīts tikai klasiskās)
-        if ($request->bookType !== 'classic') {
-            // Filtrē pēc vecuma ierobežojuma
-            if ($request->ratings) {
-                $query->whereIn('age_limit', $request->ratings);
-            }
-
-            // Filtrē pēc žanriem
-            if (!empty($request->genres)) {
-                $query->whereHas('genres', function($q) use ($request) {
-                    $q->whereIn('genres.id', $request->genres); // Precīzi norādam tabulu
-                });
-            }
-
-            // Filtrē pēc statusa (tikai lietotāju grāmatām)
-            if (!empty($request->statuses)) {
-                $query->whereIn('status', $request->statuses);
-            }
-        }
-
-        // Klasisko grāmatu filtrēšana (ja nav atlasīts tikai lietotāju grāmatas)
-        if ($request->bookType !== 'user') {
-            // Filtrē pēc vecuma ierobežojuma
-            if ($request->ratings) {
-                $classicQuery->whereIn('age_limit', $request->ratings);
-            }
-
-            // Filtrē pēc žanriem
-            if (!empty($request->genres)) {
-                $classicQuery->whereHas('genres', function($q) use ($request) {
-                    $q->whereIn('genres.id', $request->genres); // Precīzi norādam tabulu
-                });
-            }
-        }
-
-        // Atgriežam Inertia skatu ar filtrētajiem rezultātiem
-        return Inertia::render('Reading/Library', [
-            // Filtrētās lietotāju grāmatas (ja nav atlasīts tikai klasiskās)
-            'books' => $request->bookType === 'classic' ? [] : $query->get(),
-
-            // Filtrētās klasiskās grāmatas (ja nav atlasīts tikai lietotāju grāmatas)
-            'classicBooks' => $request->bookType === 'user' ? [] : $classicQuery->get(),
-
-            // Visi pieejamie žanri (sakārtoti pēc nosaukuma)
-            'allGenres' => Genre::orderBy('name')->get(),
-
-            // Vecuma ierobežojumu opcijas
-            'ratings' => [
-                ['id' => '0+', 'label' => '0+'],
-                ['id' => '6+', 'label' => '6+'],
-                ['id' => '12+', 'label' => '12+'],
-                ['id' => '16+', 'label' => '16+'],
-                ['id' => '18+', 'label' => '18+'],
-            ],
-
-            // Statusu opcijas (tikai lietotāju grāmatām)
-            'statuses' => [
-                ['id' => 'Procesā', 'label' => 'Procesā'],
-                ['id' => 'Pabeigts', 'label' => 'Pabeigts'],
-                ['id' => 'Pamests', 'label' => 'Pamests'],
-            ],
-
-            // Aktīvie filtri (tiek izmantoti, lai atjauninātu saskarni)
-            'filters' => [
-                'bookType' => $request->bookType ?? 'all', // Grāmatu tips
-                'ratings' => $request->ratings ?? [], // Atlasītie vērtējumi
-                'genres' => is_array($request->genres)
-                    ? array_map('strval', $request->genres) // Pārveidojam žanru ID par string
-                    : [], // Atlasītie žanri
-                'statuses' => $request->statuses ?? [] // Atlasītie statusi
-
-            ],
-             'hasFilteredResults' => ($request->bookType !== 'classic' && $query->count() > 0) ||
-                 ($request->bookType !== 'user' && $classicQuery->count() > 0)
+        // Validācija - vērtējumam jābūt no 1 līdz 5
+        $request->validate([
+            'grade' => 'required|integer|min:1|max:5'
         ]);
+
+        // Atjaunina esošu vai izveido jaunu vērtējumu
+        $rating = ClassicRating::updateOrCreate(
+            [
+                'user_id' => $request->user()->id,
+                'book_id' => $bookId
+            ],
+            [
+                'grade' => $request->grade
+            ]
+        );
+
+        // Pārrēķina vidējo vērtējumu grāmatai
+        $average = ClassicRating::where('book_id', $bookId)
+            ->avg('grade');
+
+        // Saskaita vērtējumu skaitu grāmatai
+        $count = ClassicRating::where('book_id', $bookId)
+            ->count();
+
+        // Atgriež veiksmīgu atbildi ar datiem
+        return response()->json([
+            'success' => true,
+            'averageRating' => (float) $average,  // Vidējais vērtējums
+            'ratingsCount' => $count,             // Vērtējumu skaits
+            'userRating' => $rating->grade       // Lietotāja vērtējums
+        ]);
+
     }
 }

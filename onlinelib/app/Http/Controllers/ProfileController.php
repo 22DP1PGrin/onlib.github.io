@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Bookmark;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -110,10 +111,28 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
         $booksCount = $user->books()->count();
+        $classicRatingsCount = $user->classicBookRatings()->count();
+        $userWorkRatingsCount = $user->bookRatings()->count();
+        $totalRatingsCount = $classicRatingsCount + $userWorkRatingsCount;
+
+        // grāmatu skaits (ar grāmatzīmes veidu)
+        $bookmarkCounts = Bookmark::where('user_id', $user->id)
+            ->selectRaw('bookmark_type_id, count(*) as count')
+            ->groupBy('bookmark_type_id')
+            ->pluck('count', 'bookmark_type_id')
+            ->toArray();
+
+        // Izlasīto grāmatu skaits (ar grāmatzīmes veidu "Izlasīts")
+        $readBooksCount = $bookmarkCounts[1] ?? 0;
+
 
         return Inertia::render('Profile/Profile', [
             'user' => $user,
             'booksCount' => $booksCount,
+            'classicRatingsCount' => $classicRatingsCount,
+            'userWorkRatingsCount' => $userWorkRatingsCount,
+            'totalRatingsCount' => $totalRatingsCount,
+            'readBooksCount' => $readBooksCount,
         ]);
     }
 
@@ -124,7 +143,7 @@ class ProfileController extends Controller
             ->orderBy('nickname', 'asc')
             ->get();
 
-        return Inertia::render('Control/Users', [
+        return Inertia::render('Control/Users/Users', [
             'users' => $users,
         ]);
     }
@@ -145,7 +164,7 @@ class ProfileController extends Controller
         $users = User::findOrFail($id);
 
         // Atgriežam skatu ar grāmatas datiem un iespējām rediģēt
-        return Inertia::render('Control/UserInfo', [
+        return Inertia::render('Control/Users/UserInfo', [
             'users' => $users,
         ]);
     }

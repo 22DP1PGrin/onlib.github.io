@@ -43,7 +43,7 @@ class SupportController extends Controller
     {
         $technical_support_form = TechnicalSupportForm::latest()->get();
 
-        return Inertia::render('Control/Problems', [
+        return Inertia::render('Control/TechnicalSupport/Problems', [
             'technical_support_form' => $technical_support_form,
         ]);
     }
@@ -51,9 +51,9 @@ class SupportController extends Controller
     // Atgriež konkrēta pieteikuma detalizētu informāciju
     public function showForm($id)
     {
-        $form = TechnicalSupportForm::orderBy('nickname', 'asc') ->get();
+        $form = TechnicalSupportForm::findOrFail($id);
 
-        return Inertia::render('Control/ProblemInfo', [
+        return Inertia::render('Control/TechnicalSupport/ProblemInfo', [
             'form' => $form,
         ]);
     }

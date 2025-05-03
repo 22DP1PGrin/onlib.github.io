@@ -50,4 +50,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserBook::class, 'user_id'); // Lietotājam pieder daudzas grāmatas
     }
+
+    public function bookRatings()
+    {
+        return $this->hasMany(UserRating::class);
+    }
+
+    public function classicBookRatings()
+    {
+        return $this->hasMany(ClassicRating::class);
+    }
 }

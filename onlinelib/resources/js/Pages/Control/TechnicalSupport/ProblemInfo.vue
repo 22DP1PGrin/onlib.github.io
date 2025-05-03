@@ -2,6 +2,7 @@
     import { router, usePage } from '@inertiajs/vue3';
     import Navbar from "@/Components/Navbar.vue";
     import Footer from "@/Components/Footer.vue";
+    import {route} from "ziggy-js";
 
     // Saņemam formas datus no servera
     const form = usePage().props.form;

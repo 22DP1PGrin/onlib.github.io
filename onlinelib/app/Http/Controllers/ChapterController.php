@@ -50,7 +50,7 @@ class ChapterController extends Controller
     // Metode, kas atver jaunas nodaļas izveides formu
     public function create(UserBook $book)
     {
-        return Inertia::render('Writing/NewChapter', [
+        return Inertia::render('Writing/NewInfo/NewChapter', [
             'bookId' => $book->id
         ]);
     }
@@ -76,7 +76,7 @@ class ChapterController extends Controller
     // Metode, kas atver nodaļas rediģēšanas formu
     public function edit(UserBookChapter $chapter)
     {
-        return Inertia::render('Writing/EditChapter', [
+        return Inertia::render('Writing/EditInfo/EditChapter', [
             'chapter' => $chapter,  // Nododam nodaļas datus uz priekšējo pusi
         ]);
     }
@@ -109,7 +109,7 @@ class ChapterController extends Controller
             ->findOrFail($chapterId);
 
         // Atgriežam Inertia skatu ar nepieciešamajiem datiem
-        return Inertia::render('Reading/UserContent', [
+        return Inertia::render('Reading/UserBooks/UserContent', [
             'chapter' => $chapter,
             'bookChapters' => $chapter->book->chapters,
             'bookId' => $bookId

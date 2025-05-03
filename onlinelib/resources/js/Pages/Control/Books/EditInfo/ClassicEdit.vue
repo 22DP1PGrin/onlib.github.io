@@ -20,6 +20,7 @@ const form = useForm({
     name: props.classic_book.name,
     description: props.classic_book.description,
     age_limit: props.classic_book.age_limit,
+    Year_publication: props.classic_book.Year_publication,
     genres: [...initialGenreIds],
     Author_name: props.classic_book.Author_name,
     Author_surname: props.classic_book.Author_surname
@@ -146,6 +147,22 @@ const goToEdit = (chapterId) => {
                     <!-- Validācijas kļūda nosaukumam -->
                     <div v-if="form.errors.Author_surname" class="error-message">
                         {{ form.errors.Author_surname }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">Izdošanas gads</label>
+                    <input
+                        type="text"
+                        id="name"
+                        v-model="form.Year_publication"
+                        class="form-input"
+                        placeholder="Izdošanas gads"
+                        required
+                    >
+                    <!-- Validācijas kļūda nosaukumam -->
+                    <div v-if="form.errors.Year_publication" class="error-message">
+                        {{ form.errors.Year_publication }}
                     </div>
                 </div>
 

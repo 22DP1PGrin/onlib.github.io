@@ -46,6 +46,18 @@ return new class extends Migration
             $table->foreign('book_id')->references('id')->on('user_books')->onDelete('cascade');
         });
 
+        Schema::create('User_books_ratings', function (Blueprint $table) {
+            $table->id();
+            $table->integer('grade');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('book_id');
+            $table->timestamps();
+
+            $table->foreign('book_id')->references('id')->on('user_books')->onDelete('cascade');
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
+
     }
 
     /**
@@ -53,9 +65,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('User_books_ratings');
         Schema::dropIfExists('user_book_genre');
         Schema::dropIfExists('user_book_chapters');
         Schema::dropIfExists('user_books');
+
 
 
     }

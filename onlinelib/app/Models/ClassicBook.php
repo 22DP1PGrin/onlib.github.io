@@ -27,4 +27,15 @@ class ClassicBook extends Model
     {
         return $this->hasMany(ClassicBookChapter::class, 'book_id'); // Grāmatai ir vairākas nodaļas
     }
+    public function ratings()
+    {
+        return $this->hasMany(ClassicRating::class, 'book_id');
+    }
+
+    public function bookmark()
+    {
+        return $this->hasOne(Bookmark::class, 'classic_book_id')
+            ->where('user_id', auth()->id())
+            ->with('bookmarkType');
+    }
 }

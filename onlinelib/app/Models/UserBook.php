@@ -36,4 +36,15 @@ class UserBook extends Model
     {
         return $this->belongsToMany(Genre::class, 'user_book_genre', 'book_id', 'genre_id'); // Grāmatai var būt vairāki žanri
     }
+
+    public function ratings()
+    {
+        return $this->hasMany(UserRating::class, 'book_id');
+    }
+    public function bookmark()
+    {
+        return $this->hasOne(Bookmark::class, 'user_book_id')
+        ->where('user_id', auth()->id())
+            ->with('bookmarkType');
+    }
 }

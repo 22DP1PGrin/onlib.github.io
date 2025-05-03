@@ -203,6 +203,7 @@ export default {
 
     .description {
         font-size: 1rem;
+        word-wrap: break-word;
     }
     .created {
         font-size: 0.9rem;

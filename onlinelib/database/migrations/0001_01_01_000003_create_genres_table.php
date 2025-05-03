@@ -25,6 +25,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('classic_book_genre');
+        Schema::dropIfExists('user_book_genre');
         Schema::dropIfExists('genres');
 
     }

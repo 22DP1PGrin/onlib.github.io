@@ -10,6 +10,8 @@
             // Izmanto `computed`, lai iegūtu datus par lietotāju un grāmatu skaitu no servera
             const user = computed(() => usePage().props.auth.user); // Iegūst pašreizējo lietotāju
             const booksCount = computed(() => usePage().props.booksCount); // Iegūst grāmatu skaitu
+            const totalRatingsCount = computed(() => usePage().props.totalRatingsCount);
+            const readBooksCount = computed(() => usePage().props.readBooksCount || 0);
 
             // Izveido mainīgo, kas uzrauga profila rediģēšanas stāvokli
             const isEditing = ref(false);
@@ -44,18 +46,37 @@
                 router.get(route('book.lists')); // Pāriet uz grāmatu sarakstu
             };
 
+            const goToRead = () => {
+                router.get(route('bookmarks.read'));
+            };
+            const goToPlanned = () => {
+                router.get(route('bookmarks.planned'));
+            };
+            const goToReading = () => {
+                router.get(route('bookmarks.reading'));
+            };
+            const goToDropped = () => {
+                router.get(route('bookmarks.dropped'));
+            };
+
             // Atgriež visus datus un metodes, lai izmantotu šablonā
             return {
                 user,
                 isEditing,
                 stats,
                 booksCount,
+                totalRatingsCount,
+                readBooksCount,
                 goToEdit,
                 GoToWatch,
                 GoToCreate,
                 GoToUser,
                 GoToForm,
-                GoToBookList
+                GoToBookList,
+                goToRead,
+                goToPlanned,
+                goToReading,
+                goToDropped
             };
         },
         components: {
@@ -94,7 +115,7 @@
                     <div class="stats-grid">
                         <!-- Izlasīto grāmatu skaits -->
                         <div class="stat-item">
-                            <div class="stat-number">{{ stats.booksRead }}</div>
+                            <div class="stat-number">{{ readBooksCount }}</div>
                             <div class="stat-label">Izlasītās grāmatas</div>
                         </div>
                         <!-- Uzrakstīto darbu skaits -->
@@ -104,7 +125,7 @@
                         </div>
                         <!-- Novērtēto darbu skaits -->
                         <div class="stat-item">
-                            <div class="stat-number">{{ stats.inProgress }}</div>
+                            <div class="stat-number">{{ totalRatingsCount || 0 }}</div>
                             <div class="stat-label">Novērtētie darbi</div>
                         </div>
                     </div>
@@ -115,25 +136,25 @@
                     <h2>Manas grāmatzīmes</h2>
                     <div class="links-grid">
                         <!-- Izlasīto grāmatu saite -->
-                        <div class="bookmark-link read">
+                        <div class="bookmark-link read" @click="goToRead">
                             <span class="fa">&#xf02d;</span> <!-- Grāmatas ikona -->
                             <span class="link-text">Izlasītās grāmatas</span>
                         </div>
 
                         <!-- Plānoto grāmatu saite -->
-                        <div class="bookmark-link">
+                        <div class="bookmark-link" @click="goToPlanned">
                             <span class="fa">&#xf046;</span> <!-- Atzīmēšanas ikona -->
                             <span class="link-text">Plānotās grāmatas</span>
                         </div>
 
                         <!-- Pašlaik lasāmo grāmatu saite -->
-                        <div class="bookmark-link">
+                        <div class="bookmark-link" @click="goToReading">
                             <span class="fa">&#xf02e;</span> <!-- Atvērtas grāmatas ikona -->
                             <span class="link-text">Lasu tagad</span>
                         </div>
 
                         <!-- Pamesto grāmatu saite -->
-                        <div class="bookmark-link">
+                        <div class="bookmark-link" @click="goToDropped">
                             <span class="fa">&#xf1f8;</span> <!-- Dzēšanas ikona -->
                             <span class="link-text">Pamestās grāmatas</span>
                         </div>
@@ -263,6 +284,7 @@
     .stat-label {
         font-size: 1rem;
         letter-spacing: 1px; /* Burtu attālums */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
     }
 
     .bookmarks-links {

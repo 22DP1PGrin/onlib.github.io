@@ -9,14 +9,16 @@
     const classicBooks = usePage().props.classicBooks;
 
     const deleteBook = (id) => {
-        if (confirm('Vai tiešām vēlaties dzēst šo darbu?')) {
-            router.delete(route('classic_destroyBook', { id }), {
-                onSuccess: () => {
-                    alert('Darbs veiksmīgi dzēsts!');
-                    window.location.reload();
-
-                },
-            });
+        if (confirm('Vai tiešām vēlaties dzēst šo stāstu un visas tā nodaļas?')) {
+            axios.delete(route('deleteStory', { id: id }))
+                .then(response => {
+                    alert('Stāsts un visas nodaļas tika veiksmīgi dzēstas!');
+                    window.location.reload(); // Pārlādēt lapu, lai atspoguļotu izmaiņas
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Radās kļūda, mēģiniet vēlreiz.');
+                });
         }
     };
 
@@ -87,9 +89,7 @@
                     </div>
 
                     <h2>Grāmatu saraksts</h2>
-                    <div v-if="classicBooks.length === 0" class="item">
-                        <span class="title">Šeit vēl nav pievienotu darbu.</span>
-                    </div>
+
                     <!-- Darbu saraksts -->
                     <div v-for="classicBook in classicBooks" :key="classicBook.id" class="work-item">
                         <!-- Darba virsraksts -->
@@ -246,6 +246,7 @@
         font-family: Tahoma, Helvetica, sans-serif;
         font-size: 1rem;
         color: rgba(26, 16, 8, 0.8);
+        word-wrap: break-word;
     }
     .author {
         font-family: Tahoma, Helvetica, sans-serif;

@@ -46,7 +46,7 @@ class ClassicChapterController extends Controller
     // Metode, kas atver jaunas nodaļas izveides formu
     public function create(ClassicBook $book)
     {
-        return Inertia::render('Control/NewClassicChapter', [
+        return Inertia::render('Control/Books/NewInfo/NewClassicChapter', [
             'bookId' => $book->id
         ]);
     }
@@ -67,7 +67,7 @@ class ClassicChapterController extends Controller
     // Metode, kas atver nodaļas rediģēšanas formu
     public function edit(ClassicBookChapter $chapter)
     {
-        return Inertia::render('Control/EditClassicChapter', [
+        return Inertia::render('Control/Books/EditInfo/EditClassicChapter', [
             'chapter' => $chapter,  // Nododam nodaļas datus uz priekšējo pusi
         ]);
     }
@@ -77,7 +77,7 @@ class ClassicChapterController extends Controller
     {
         // Validējam ievadītos datus
         $validated = $request->validate([
-            'name' => 'required|string|max:25',
+            'name' => 'required|string|max:30',
             'content' => 'required|string',
         ]);
 
@@ -85,7 +85,7 @@ class ClassicChapterController extends Controller
         $chapter->update($request->only('name', 'content'));
 
         // Iegūstam grāmatu, pie kuras pieder nodaļa
-        $book = $chapter->classic_books;
+        $book = $chapter->classic_book;
 
         // Pāradresējam uz grāmatas rediģēšanas lapu ar veiksmīgu ziņu
         return redirect()->route('EditClassicBook', $book->id)
@@ -100,7 +100,7 @@ class ClassicChapterController extends Controller
             ->findOrFail($chapterId);
 
         // Atgriežam Inertia skatu ar nepieciešamajiem datiem
-        return Inertia::render('Reading/ClassicContent', [
+        return Inertia::render('Reading/ClassicBooks/ClassicContent', [
             'chapter' => $chapter,
             'bookChapters' => $chapter->classic_book->chapters,
             'bookId' => $bookId
