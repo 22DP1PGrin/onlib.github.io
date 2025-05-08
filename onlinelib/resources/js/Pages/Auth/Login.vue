@@ -75,14 +75,6 @@ const submit = () => {
                     <InputError class="mt-2" :message="form.errors.password" />
                 </div>
 
-                <!-- Atcerēties mani -->
-                <div class="form-group block">
-                    <label class="flex items-center">
-                        <Checkbox name="remember" v-model:checked="form.remember" class="tick" />
-                        <span class="ms-2 text-sm"> Atcerēties mani</span>
-                    </label>
-                </div>
-
                 <!-- Iesniegšanas poga un saite uz paroles atiestatīšanu -->
                 <div class="form-group form-footer">
                     <Link
