@@ -43,14 +43,14 @@ class ProfileController extends Controller
             'nickname' => [
                 'required',
                 'string',
-                'max:255',
+                'max:50',
                 Rule::unique('users', 'nickname')->ignore($user->id),
             ],
             'email' => [
                 'required',
                 'string',
                 'email',
-                'max:255',
+                'max:50',
                 Rule::unique('users')->ignore($user->id),
                 'lowercase'
             ],
