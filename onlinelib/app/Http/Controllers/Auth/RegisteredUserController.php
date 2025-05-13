@@ -35,6 +35,8 @@ class RegisteredUserController extends Controller
             'email' => 'required|string|lowercase|email|max:50|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'bio' => 'nullable|string|max:150',
+        ], [
+            'password.confirmed' => 'Parolēmj ir jāsakrīt!',
         ]);
 
         User::create([

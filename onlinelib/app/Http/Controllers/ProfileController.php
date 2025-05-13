@@ -89,7 +89,7 @@ class ProfileController extends Controller
             'new' => ['required', 'string', 'min:8', 'confirmed'],
         ], [
             'new.min' => 'Parolei jābūt vismaz 8 simbolu garai.',
-            'new.confirmed' => 'Jaunā parole nesakrīt ar apstiprinājumu.',
+            'new.confirmed' => 'Parolēmj ir jāsakrīt!',
         ]);
 
         $user = $request->user();

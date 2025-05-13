@@ -134,7 +134,7 @@
                     <div v-for="book in userBooks" :key="book.id" class="book-card">
                         <div class="book-content">
                             <div class="bookmark-badge">
-                                Jaunums =
+                                Jaunums
                             </div>
 
                             <h2 class="book-title">{{ book.name }}</h2> <!-- Stāsta nosaukums -->

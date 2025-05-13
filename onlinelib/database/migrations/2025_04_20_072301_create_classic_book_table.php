@@ -36,7 +36,7 @@ return new class extends Migration
         Schema::create('classic_book_chapters', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('book_id');
-            $table->string('name', 255);
+            $table->string('name');
             $table->longText('content');
             $table->unsignedInteger('order')->default(0);
             $table->timestamps();
