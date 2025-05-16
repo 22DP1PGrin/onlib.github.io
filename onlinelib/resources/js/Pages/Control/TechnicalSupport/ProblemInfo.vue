@@ -154,6 +154,7 @@ label {
     border-radius: 4px; /* Noapaļotie stūri */
     font-size: 1rem; /* Teksta izmērs */
     height: 140px;
+    word-wrap: break-word;
 }
 
 

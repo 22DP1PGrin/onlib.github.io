@@ -115,6 +115,7 @@
         line-height: 1.7; /* Rindu augstums */
         font-size: 1rem;
         margin-bottom: 40px;
+        word-wrap: break-word;
     }
 
     .chapter-navigation {

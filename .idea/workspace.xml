@@ -6,10 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="c3e76eb8-75aa-48f5-a2ef-f4cf9daec5ed" name="Changes" comment="return view('example_vue', compact('story'));">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/Auth/RegisteredUserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/Auth/RegisteredUserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ProfileController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ProfileController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/database/migrations/2025_04_20_072301_create_classic_book_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/database/migrations/2025_04_20_072301_create_classic_book_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/HomeView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/HomeView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/TechnicalSupport/ProblemInfo.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/TechnicalSupport/ProblemInfo.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/UserInfo.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/UserInfo.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ClassicBooks/ClassicBook.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ClassicBooks/ClassicBook.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ClassicBooks/ClassicContent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ClassicBooks/ClassicContent.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/UserBooks/UserBook.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/UserBooks/UserBook.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/UserBooks/UserContent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/UserBooks/UserContent.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -278,6 +280,8 @@
       <workItem from="1745937059021" duration="36428000" />
       <workItem from="1746097870092" duration="49819000" />
       <workItem from="1746717665459" duration="25409000" />
+      <workItem from="1747120122615" duration="1701000" />
+      <workItem from="1747209688001" duration="4515000" />
     </task>
     <servers />
   </component>

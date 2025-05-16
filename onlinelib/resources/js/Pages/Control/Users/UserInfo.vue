@@ -106,6 +106,7 @@ h1 {
 
 .form-group {
     margin-bottom: 20px; /* Atstarpe starp laukiem */
+    word-wrap: break-word;
 }
 
 .title {

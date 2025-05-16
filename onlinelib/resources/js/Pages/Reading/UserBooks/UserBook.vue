@@ -411,6 +411,7 @@
         line-height: 1.7;
         box-shadow: 0 2px 4px rgba(63, 31, 4, 0.8);
         font-size: 1rem;
+        word-wrap: break-word;
     }
 
     h2 {
