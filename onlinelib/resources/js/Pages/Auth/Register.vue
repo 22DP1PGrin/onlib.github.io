@@ -37,13 +37,13 @@ const submit = () => {
             <div class="contact-form">
                 <!-- Formas virsraksts -->
 
-                <a class="back" @click="goBack"><-Atpakaļ</a>
+                <a class="back" @click="goBack">Atpakaļ</a>
                 <h1>Reģistrācija</h1>
                 <form @submit.prevent="submit">
 
-                    <!-- Segvārda lauks -->
+                    <!-- Lietotājvārda lauks -->
                     <div class="form-group">
-                        <InputLabel for="nickname" value="Segvārds" class="label" />
+                        <InputLabel for="nickname" value="Lietotājvārds" class="label" />
                         <TextInput
                             id="nickname"
                             type="text"
@@ -89,7 +89,7 @@ const submit = () => {
 
                     <!-- Paroles apstiprinājuma lauks -->
                     <div class="form-group">
-                        <InputLabel for="password_confirmation" value="Apstipriniet paroli" class="label"/>
+                        <InputLabel for="password_confirmation" value="Atkartot paroli" class="label"/>
                         <TextInput
                             id="password_confirmation"
                             type="password"
@@ -235,10 +235,11 @@ const submit = () => {
 
     /* Saites stils */
     a {
-        text-decoration: underline !important;
+        text-decoration: none;
         color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
         font-size: 1rem;
         cursor: pointer; /* Kursora izskats */
+        transition: color 0.3s;
     }
 
     a:hover{

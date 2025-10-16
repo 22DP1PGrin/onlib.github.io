@@ -85,12 +85,10 @@ export default {
                             input.focus()
                         }
                     } else {
-                        // Вызываем метод performSearch вместо прямого поиска
                         this.performSearch()
                     }
                 })
 
-                // Добавляем обработчик Enter
                 input.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
                         this.performSearch()
@@ -137,8 +135,8 @@ export default {
 
 
             <template v-if="!isLoggedIn">
-                <a class="pressed2" href="/registerp"><i class="fa">&#xf2bd;</i> Reģistrācija</a>
-                <a class="pressed2" href="/login"> <i class="fa">&#xf2be;</i> Pieslēgties</a>
+                <a class="pressed2" href="/register"><i class="fa">&#xf2bd;</i> Reģistrācija</a>
+                <a class="pressed2" href="/login"> <i class="fa">&#xf2be;</i> Pieteikšanās</a>
                 <a class="pressed3" href="/login"> <i class="fa">&#xf2be; <br></i></a>
             </template>
 

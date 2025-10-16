@@ -38,7 +38,7 @@ const submit = () => {
 
     <div class="support-page">
         <div class="contact-form">
-            <a class="back" @click="goBack"><-Atpakaļ</a>
+            <a class="back" @click="goBack">Atpakaļ</a>
             <h1>Pieteikšanās</h1> <!-- Formas virsraksts -->
 
             <div v-if="status" >
@@ -160,10 +160,6 @@ const submit = () => {
         border-color: rgba(26, 16, 8, 0.8); /* Apmales krāsa */
     }
 
-    .tick{
-        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-
-    }
     /* Pogas stils */
     button {
         background-color: #c58667; /* Fona krāsa */
@@ -192,6 +188,8 @@ const submit = () => {
         text-decoration: none; /* Noņem apakšsvītrojumu */
         color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
         font-size: 1rem;
+        transition: color 0.3s;
+        cursor: pointer; /* Kursora izskats */
     }
 
     a:hover{

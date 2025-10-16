@@ -10,7 +10,7 @@
             <!-- Jautājums 1: Kā reģistrēties? -->
                 <h2>1. Kā reģistrēties platformā?</h2>
                 <p>
-                    Lai reģistrētos datorā, noklikšķiniet uz pogas <a href="/registerp">"Reģistrācija"</a> lapas augšējā labajā stūrī. Jums būs jāievada savs vārds, uzvārds, segvārds, e-pasta adrese un jāizveido drošs parole.
+                    Lai reģistrētos datorā, noklikšķiniet uz pogas <a href="/register">"Reģistrācija"</a> lapas augšējā labajā stūrī. Jums būs jāievada savs vārds, uzvārds, segvārds, e-pasta adrese un jāizveido drošs parole.
                     Lai reģistrētos telefonā, augšējā labajā stūrī ir jānoklikšķina uz iemiesojuma, kas atrodas blakus meklēšanas pogai.
                 </p>
 

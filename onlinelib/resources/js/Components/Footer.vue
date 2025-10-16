@@ -8,8 +8,8 @@
                 <li><a href="/privacypolicy">Privātuma politika</a></li> <!-- Saite uz privātuma politiku -->
             </ul>
             <ul class="footer-links">
-                <li><a href="/dmcapolicy">DMCA politika</a></li> <!-- Saite uz DMCA politiku -->
-                <li><a href="/faq">FAQ</a></li> <!-- Saite uz bieži uzdotiem jautājumiem -->
+                <li><a href="/dmcapolicy">DTAL politika</a></li> <!-- Saite uz DMCA politiku -->
+                <li><a href="/faq">BUJ</a></li> <!-- Saite uz bieži uzdotiem jautājumiem -->
                 <li><a href="/technicalsupport">Tehniskais atbalsts</a></li> <!-- Saite uz tehnisko atbalstu -->
             </ul>
     </div>

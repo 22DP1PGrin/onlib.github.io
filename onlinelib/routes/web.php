@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\AllBooksController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\ClassicBookController;
@@ -54,17 +55,24 @@ Route::get('/technicalsupport', function () {
 
 Route::post('/support', [SupportController::class, 'store']);
 
-Route::get('/registerp', function () {
-    return Inertia::render('Auth/Register', []);
-})->name('registerp');
+Route::get('/verify-pending/{token}', [RegisteredUserController::class, 'verify'])
+    ->name('verify.pending');
 
-Route::get('/login', function () {
-    return Inertia::render('Auth/Login', []);
-})->name('login');
+Route::post('/verify-resend', [RegisteredUserController::class, 'resend'])
+    ->name('verification.resend');
+
+Route::middleware('guest')->group(function () {
+    Route::get('/verify-email', function () {
+        return Inertia::render('Auth/VerifyEmail', [
+            'status' => session('status')
+        ]);
+    })->name('verification.notice');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
 });
+
 
 Route::middleware('auth')->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');

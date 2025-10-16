@@ -80,7 +80,7 @@
         } catch (error) {
             // Ja lietotājs nav autorizējies, novirza uz autorizācijas lapu
             if (error.response?.status === 401) {
-                window.location.href = route('login');
+                window.location.href = route('z');
             }
             // Varētu pievienot papildu kļūdu apstrādi šeit
         }
