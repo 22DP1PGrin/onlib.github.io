@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
+use App\Mail\PasswordMessage;
 use App\Models\Bookmark;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Hash;
@@ -86,10 +88,14 @@ class ProfileController extends Controller
     {
         $request->validate([
             'current' => ['required', 'string'],
-            'new' => ['required', 'string', 'min:8', 'confirmed'],
+            'new' => ['required', 'confirmed',
+                Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+            ],
         ], [
-            'new.min' => 'Parolei jābūt vismaz 8 simbolu garai.',
-            'new.confirmed' => 'Parolēmj ir jāsakrīt!',
         ]);
 
         $user = $request->user();
@@ -103,7 +109,12 @@ class ProfileController extends Controller
         $user->password = Hash::make($request->new);
         $user->save();
 
+        Mail::to($user->email)->send(new PasswordMessage($user));
+
         return back()->with('success', 'Parole veiksmīgi nomainīta!');
+        // Nosūtām e-pastu ar paziņojumu, ka parole mainīta
+
+
     }
 
     // Atgriež lietotāja profila skatu ar grāmatu skaitu

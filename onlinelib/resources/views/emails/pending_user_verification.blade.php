@@ -7,7 +7,7 @@
 <body style="font-family: Tahoma, Helvetica, sans-serif; ">
 <p>Sveiki {{ $nickname }},</p>
 
-<p>Paldies par reģistrēšanos! Lūdzu, apstipriniet savu e-pastu, noklikšķinot uz tālāk redzamās saites:</p>
+<p>paldies par reģistrēšanos! Lūdzu, apstipriniet savu e-pastu, noklikšķinot uz tālāk redzamās saites:</p>
 
 <p>
     <a href="{{ url('/verify-pending/' . $token) }}"

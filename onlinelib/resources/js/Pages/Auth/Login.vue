@@ -1,55 +1,40 @@
 <script setup>
-import Checkbox from '@/Components/Checkbox.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import { route } from "ziggy-js";
+    // Importē nepieciešamās funkcijas un komponentes
+    import {useForm } from '@inertiajs/vue3';
+    import { route } from "ziggy-js";
 
-const goBack = () => {
-    window.history.back();
-};
+    // Funkcija, kas atgriež lietotāju uz iepriekšējo lapu
+    const goBack = () => {
+        window.history.back();
+    };
 
-defineProps({
-    canResetPassword: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
-
-const form = useForm({
-    email: '',
-    password: '',
-    remember: false,
-});
-
-const submit = () => {
-    form.post(route('login'), {
-        onFinish: () => form.reset('password'),
+    // Izveido Inertia formu ar sākotnējām vērtībām
+    const form = useForm({
+        email: '',// Lietotāja e-pasta adrese
+        password: '', // Lietotāja parole
     });
-};
+
+    // Funkcija, kas tiek izsaukta, kad forma tiek iesniegta
+    const submit = () => {
+        form.post(route('login'), {
+            onFinish: () => form.reset('password'),
+        });
+    };
 </script>
 
 <template>
-    <Head title="Log in" />
-
     <div class="support-page">
         <div class="contact-form">
+            <!-- Atpakaļ poga -->
             <a class="back" @click="goBack">Atpakaļ</a>
-            <h1>Pieteikšanās</h1> <!-- Formas virsraksts -->
+            <h1>Pieteikšanās</h1>
 
-            <div v-if="status" >
-                {{ status }}
-            </div>
-
+            <!-- Forma pieteikšanās datu ievadei -->
             <form @submit.prevent="submit">
                 <!-- E-pasta lauks -->
                 <div class="form-group">
-                    <InputLabel for="email" value="E-pasta adrese" class="label"/>
-                    <TextInput
+                    <label for="email" class="label">E-pasta adrese</label>
+                    <input
                         id="email"
                         type="email"
                         class="input"
@@ -58,13 +43,14 @@ const submit = () => {
                         autofocus
                         autocomplete="username"
                     />
-                    <InputError class="mt-2" :message="form.errors.email" />
+                    <!-- Parāda kļūdu, ja e-pasts nav derīgs -->
+                    <div v-if="form.errors.email" class="input-error">{{ form.errors.email }}</div>
                 </div>
 
                 <!-- Paroles lauks -->
                 <div class="form-group">
-                    <InputLabel for="password" value="Parole" class="label"/>
-                    <TextInput
+                    <label for="password" class="label">Parole</label>
+                    <input
                         id="password"
                         type="password"
                         class="input"
@@ -72,24 +58,27 @@ const submit = () => {
                         required
                         autocomplete="current-password"
                     />
-                    <InputError class="mt-2" :message="form.errors.password" />
+                    <!-- Parāda kļūdu, ja parole nav pareiza -->
+                    <div v-if="form.errors.password" class="input-error">{{ form.errors.password }}</div>
+
+                    <!-- Saite "Aizmirsāt paroli?" tiek rādīta, ja ir kļūda -->
+                    <div v-if="form.errors.email || form.errors.password" class="forgot-password">
+                        <a :href="route('forgot-password.page')">Aizmirsāt paroli?</a>
+                    </div>
                 </div>
 
-                <!-- Iesniegšanas poga un saite uz paroles atiestatīšanu -->
+                <!-- Reģistrācijas saite un pieteikšanās poga -->
                 <div class="form-group form-footer">
-                    <Link
-                        :href="route('register')"
-                    >
-                        Nav izveidots konts?
-                    </Link>
+                    <a href="/register">Nav izveidots konts?</a>
 
-                    <PrimaryButton
-                        class="ms-4"
-                        :class="{ 'opacity-25': form.processing }"
+                    <button
+                        type="submit"
+                        class="primary-button"
                         :disabled="form.processing"
+                        :style="{ opacity: form.processing ? 0.25 : 1 }"
                     >
                         Pieteikties
-                    </PrimaryButton>
+                    </button>
                 </div>
             </form>
         </div>
@@ -139,12 +128,12 @@ const submit = () => {
 
     .label {
         color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-        font-weight: normal; /* Normāls fonta stils */
+        font-weight: normal;
         font-size: 1.0rem;
     }
 
     /* Ievades lauku stils */
-    .input {
+    input {
         width: 100%; /* Pilns platums */
         padding: 10px; /* Iekšējā atstarpe */
         border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
@@ -152,8 +141,13 @@ const submit = () => {
         font-size: 1rem; /* Teksta izmērs */
     }
 
-    /* Fokusa stils */
-    .input:focus {
+    /* Kļūdas zem ievades lauka */
+    .input-error{
+        color: rgb(110, 37, 37);
+        font-size: 1rem;
+    }
+
+    input:focus {
         outline: none; /* Noņem noklusēto fokusu */
         box-shadow: none; /* Noņem ēnu */
         background-color: #ffd9c6; /* Fona krāsa */
@@ -173,16 +167,18 @@ const submit = () => {
         transition: background-color 0.3s, border-color 0.3s;
     }
 
-    /* Pogas stils, kad pele ir virs tās */
     button:hover {
         background-color: #ffc8a9;
         border-color: #ffc8a9;;
     }
+
+    /* Pēdējās rindas izkārtojums (saite + poga) */
     .form-footer{
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
+
     /* Saites stils */
     a {
         text-decoration: none; /* Noņem apakšsvītrojumu */
@@ -195,8 +191,10 @@ const submit = () => {
     a:hover{
         color: #ffc8a9; /* Teksta krāsa */
     }
+
+    /* Responsīvs dizains mazākiem ekrāniem */
     @media (max-width: 500px) {
-        .mt-2,
+        .input-error,
         .label,
         input::placeholder,
         a

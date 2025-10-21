@@ -363,7 +363,8 @@ export default {
         background-color: #c58667;
         border: 2px solid rgba(26, 16, 8, 0.8); /*apmales vērtības */
         border-radius: 20px;
-        padding: 1px; /* Iekšējās atstarpes */
+        padding-bottom:2px; /* Iekšējās atstarpes */
+        padding-left: 0;
         cursor: pointer; /* Peles formāts */
         outline: none; /* Noņemam noklusēto apmales stāvokli */
         margin-right: 7px; /* Atstarpe no labās puses */
@@ -514,6 +515,7 @@ export default {
                 width: 28px; /* Pogas platums */
                 height: 28px; /* Pogas augstums */
                 margin-top: 13px; /* Atstarpe no augšas */
+                padding-left: 1px;
             }
 
             .search.active .input {

@@ -4,7 +4,6 @@ namespace App\Mail;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -14,12 +13,15 @@ class Welcome extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public User $user;
+    public User $user; // Lietotāju dati
 
+    // Izveido jaunu vēstules instanci.
     public function __construct(User $user)
     {
         $this->user = $user;
     }
+
+    // E-pasta vēstules tēma.
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -27,10 +29,11 @@ class Welcome extends Mailable
         );
     }
 
+    // Satura veidu un datus, kas tiks izmantoti e-pastā.
     public function content(): Content
     {
         return new Content(
-            view: 'emails.welcome',
+            view: 'emails.welcome', // Blade skats, kas tiek nosūtīts kā e-pasts
             with: [
                 'nickname' => $this->user->nickname,
                 'email' => $this->user->email,

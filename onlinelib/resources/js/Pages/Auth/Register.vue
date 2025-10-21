@@ -1,50 +1,44 @@
 <script setup>
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import { route } from "ziggy-js";
+    // Importē nepieciešamās funkcijas un komponentes
+    import {useForm } from '@inertiajs/vue3';
+    import { route } from "ziggy-js";
 
-const goBack = () => {
-    window.history.back();
-};
-// Formas datu inicializācija
-const form = useForm({
-    name: '', // Lietotāja vārds
-    lastname: '', // Lietotāja uzvārds
-    nickname: '', // Lietotāja segvārds
-    email: '', // Lietotāja e-pasta adrese
-    password: '', // Lietotāja parole
-    password_confirmation: '', // Paroles apstiprinājums
-});
+    // Funkcija, kas atgriež lietotāju uz iepriekšējo lapu
+    const goBack = () => {
+        window.history.back();
+    };
 
-// Formas iesniegšanas metode
-const submit = () => {
-    form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),  // Notīra paroles laukus pēc iesniegšanas
+    // Izveido Inertia formu ar sākotnējām vērtībām
+    const form = useForm({
+        name: '', // Lietotāja vārds
+        lastname: '', // Lietotāja uzvārds
+        nickname: '', // Lietotāja segvārds
+        email: '', // Lietotāja e-pasta adrese
+        password: '', // Lietotāja parole
+        password_confirmation: '', // Paroles apstiprinājums
     });
-};
+
+    // Funkcija, kas tiek izsaukta, kad forma tiek iesniegta
+    const submit = () => {
+        form.post(route('register'), {
+            onFinish: () => form.reset('password', 'password_confirmation'),  // Notīra paroles laukus pēc iesniegšanas
+        });
+    };
 </script>
 
 <template>
-        <!-- Lapas virsraksts -->
-        <Head title="Register" />
-
         <div class="support-page">
-
-
             <div class="contact-form">
-                <!-- Formas virsraksts -->
-
+                <!-- Atpakaļ poga -->
                 <a class="back" @click="goBack">Atpakaļ</a>
                 <h1>Reģistrācija</h1>
-                <form @submit.prevent="submit">
 
-                    <!-- Lietotājvārda lauks -->
+                <!-- Forma reģistrācijas datu ievadei -->
+                <form @submit.prevent="submit">
+                    <!-- Lietotājvārds -->
                     <div class="form-group">
-                        <InputLabel for="nickname" value="Lietotājvārds" class="label" />
-                        <TextInput
+                        <label for="nickname" class="label">Lietotājvārds</label>
+                        <input
                             id="nickname"
                             type="text"
                             class="input"
@@ -53,14 +47,14 @@ const submit = () => {
                             autofocus
                             autocomplete="given-name"
                         />
-                        <!-- Kļūdu ziņojums -->
-                        <InputError class="mt-2" :message="form.errors.nickname" />
+                        <!-- Parāda kļūdu, ja lietotājvārds nav derīgs -->
+                        <div v-if="form.errors.nickname" class="input-error">{{ form.errors.nickname }}</div>
                     </div>
 
-                    <!-- E-pasta lauks -->
+                    <!-- E-pasts -->
                     <div class="form-group">
-                        <InputLabel for="email" value="E-pasta adrese" class="label"/>
-                        <TextInput
+                        <label for="email" class="label">E-pasta adrese</label>
+                        <input
                             id="email"
                             type="email"
                             class="input"
@@ -68,14 +62,14 @@ const submit = () => {
                             required
                             autocomplete="username"
                         />
-                        <!-- Kļūdu ziņojums -->
-                        <InputError class="mt-2" :message="form.errors.email" />
+                        <!-- Parāda kļūdu, ja e-pasts nav derīgs -->
+                        <div v-if="form.errors.email" class="input-error">{{ form.errors.email }}</div>
                     </div>
 
-                    <!-- Paroles lauks -->
+                    <!-- Parole -->
                     <div class="form-group">
-                        <InputLabel for="password" value="Parole" class="label"/>
-                        <TextInput
+                        <label for="password" class="label">Parole</label>
+                        <input
                             id="password"
                             type="password"
                             class="input"
@@ -83,14 +77,14 @@ const submit = () => {
                             required
                             autocomplete="new-password"
                         />
-                        <!-- Kļūdu ziņojums -->
-                        <InputError class="mt-2" :message="form.errors.password" />
+                        <!-- Parāda kļūdu, ja parole nav pareiza -->
+                        <div v-if="form.errors.password" class="input-error">{{ form.errors.password }}</div>
                     </div>
 
-                    <!-- Paroles apstiprinājuma lauks -->
+                    <!-- Apstiprinājums parolei -->
                     <div class="form-group">
-                        <InputLabel for="password_confirmation" value="Atkartot paroli" class="label"/>
-                        <TextInput
+                        <label for="password_confirmation" class="label">Atkartot paroli</label>
+                        <input
                             id="password_confirmation"
                             type="password"
                             class="input"
@@ -98,28 +92,21 @@ const submit = () => {
                             required
                             autocomplete="new-password"
                         />
-                        <!-- Kļūdu ziņojums -->
-                        <InputError class="mt-2" :message="form.errors.password_confirmation" />
+                        <!-- Parāda kļūdu, ja parole nav pareiza -->
+                        <div v-if="form.errors.password_confirmation" class="input-error">{{ form.errors.password_confirmation }}</div>
                     </div>
 
                     <!-- Iesniegšanas poga un saite uz pieteikšanās lapu -->
                     <div class="form-group form-footer">
-
-                        <!-- Saite uz pietekšānu -->
-                        <Link
-                            :href="route('login')"
-                        >
-                            Jau reģistrējies?
-                        </Link>
-
-                        <!-- Saite uz reģistrāciju -->
-                        <PrimaryButton
-                            class="ms-4"
-                            :class="{ 'opacity-25': form.processing }"
+                        <a href="/login">Jau reģistrējies?</a>
+                        <button
+                            type="submit"
+                            class="primary-button "
                             :disabled="form.processing"
+                            :style="{ opacity: form.processing ? 0.25 : 1 }"
                         >
                             Reģistrēties
-                        </PrimaryButton>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -175,18 +162,19 @@ const submit = () => {
         color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
     }
 
+    /* Pēdējās rindas izkārtojums (saite + poga) */
     .form-footer {
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
+
     .label{
         color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-        font-weight: normal; /* Normāls fonta stils */
+        font-weight: normal;
         font-size: 1.0rem;
     }
 
-    /* Etiķešu stils */
     label {
         display: block; /* Parāda kā bloku elementu */
         margin-bottom: 5px; /* Atstarpe no apakšas */
@@ -210,9 +198,12 @@ const submit = () => {
         border-color: rgba(26, 16, 8, 0.8); /* Apmales krāsa */
     }
 
-    .mt-2{
+    /* Kļūdas zem ievades lauka */
+    .input-error{
         font-size: 1rem;
+        color: rgb(110, 37, 37);
     }
+
     /* Pogas stils */
     button {
         background-color: #c58667; /* Fona krāsa */
@@ -232,7 +223,6 @@ const submit = () => {
         border-color: #ffc8a9;
     }
 
-
     /* Saites stils */
     a {
         text-decoration: none;
@@ -245,9 +235,11 @@ const submit = () => {
     a:hover{
         color: #ffc8a9; /* Teksta krāsa */
     }
+
+    /* Responsīvs dizains mazākiem ekrāniem */
     @media (max-width: 500px) {
         .main-content p,
-        .mt-2,
+        .input-error,
         .label,
         input::placeholder,
         a

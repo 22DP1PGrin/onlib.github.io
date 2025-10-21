@@ -1,5 +1,7 @@
 <?php
+
 use App\Http\Controllers\AllBooksController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\ChapterController;
@@ -9,13 +11,8 @@ use App\Http\Controllers\GenreController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SupportController;
 use App\Http\Controllers\UserBookController;
-use App\Models\TechnicalSupportForm;
 use App\Models\UserBook;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 
@@ -25,10 +22,54 @@ Route::get('/api/is-logged-in', function () {
         'user' => auth()->user(),
     ]);
 });
+
+// Verifikācija
+Route::get('/verify-pending/{token}', [RegisteredUserController::class, 'verify'])
+    ->name('verify.pending');
+
+Route::post('/verify-resend', [RegisteredUserController::class, 'resend'])
+    ->name('verification.resend');
+
+Route::middleware('guest')->group(function () {
+    Route::get('/verify-email', function () {
+        return Inertia::render('Auth/VerifyEmail', [
+            'status' => session('status')
+        ]);
+    })->name('verification.notice');
+});
+
+// --- Страница с вводом email (GET)
+Route::get('/forgot-password', function () {
+    return Inertia::render('Auth/ForgotPassword');
+})->name('forgot-password.page');
+
+// --- Отправка email (POST)
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetCode'])
+    ->name('password.email');
+
+// --- Проверка кода
+Route::post('/check-code', [PasswordResetController::class, 'checkCode'])
+    ->name('password.check');
+
+// --- Сброс пароля
+Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])
+    ->name('password.reset');
+
+// --- Страница с вводом кода и новым паролем
+Route::get('/reset-password', function () {
+    return Inertia::render('Auth/ResetPassword', [
+        'verified' => request()->query('verified') === 'true', // показывает форму нового пароля
+    ]);
+})->name('password.showReset');
+
+// Sākums
 Route::get('/', [AllBooksController::class, 'getHomePageBooks'])->name('Home');
 
+// Mēklēšana
 Route::get('/search', [AllBooksController::class, 'searchBooks'])->name('search.books');
 
+
+//Lapas no kājenes
 Route::get('/contentpolicy', function () {
     return Inertia::render('ContentPolicy', []);
 })->name('ContentPolicy');
@@ -53,21 +94,9 @@ Route::get('/technicalsupport', function () {
     return Inertia::render('TechnicalSupport', []);
 })->name('TechnicalSupport');
 
+//Tehniskais atbalsts
 Route::post('/support', [SupportController::class, 'store']);
 
-Route::get('/verify-pending/{token}', [RegisteredUserController::class, 'verify'])
-    ->name('verify.pending');
-
-Route::post('/verify-resend', [RegisteredUserController::class, 'resend'])
-    ->name('verification.resend');
-
-Route::middleware('guest')->group(function () {
-    Route::get('/verify-email', function () {
-        return Inertia::render('Auth/VerifyEmail', [
-            'status' => session('status')
-        ]);
-    })->name('verification.notice');
-});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');

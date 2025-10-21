@@ -2,29 +2,33 @@
 
 namespace App\Mail;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class PendingUserVerification extends Mailable
+class PasswordResetCodeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $pending; // Pagaidu sesija ar datiem
+    public $code;  // Paroles atiestatīšanas kods, kas tiks nosūtīts e-pastā
+    public User $user; // Lietotāju dati
+
 
     // Izveido jaunu vēstules instanci.
-    public function __construct($pending)
+    public function __construct($code, $user)
     {
-        $this->pending = $pending;
+        $this->code = $code;
+        $this->user = $user;
     }
 
     // E-pasta vēstules tēma.
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'E-pasta verifikācija.',
+            subject: 'Paroles atiestatīšana.',
         );
     }
 
@@ -32,13 +36,11 @@ class PendingUserVerification extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.pending_user_verification', // Blade skats, kas tiek nosūtīts kā e-pasts
+            view: 'emails.password_reset_code', // Blade skats, kas tiek nosūtīts kā e-pasts
             with: [
-                'nickname' => $this->pending['nickname'],
-                'token' => $this->pending['token'],
+                'code' => $this->code,
+                'nickname' => $this->user->nickname,
             ],
         );
     }
-
-
 }

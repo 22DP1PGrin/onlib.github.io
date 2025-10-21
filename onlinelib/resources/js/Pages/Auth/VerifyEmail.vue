@@ -1,162 +1,187 @@
 <script setup>
-import {computed, ref} from 'vue';
-import { usePage, Head, Link, useForm } from '@inertiajs/vue3';
-import Navbar from '@/Components/Navbar.vue';
-import Footer from '@/Components/Footer.vue';
-import {route} from "ziggy-js";
+    // Importē nepieciešamās funkcijas un komponentes
+    import { computed, ref } from 'vue';
+    import { usePage, useForm } from '@inertiajs/vue3';
+    import Navbar from '@/Components/Navbar.vue';
+    import Footer from '@/Components/Footer.vue';
+    import { route } from "ziggy-js";
 
-const props = defineProps({
-    status: {
-        type: String,
-    },
-});
-
-const form = useForm({});
-const linkSent = ref(false);
-const submit = () => {
-    form.post(route('verification.resend'), {
-        onSuccess: () => {
-            linkSent.value = true;
+    // Saņem props, kas tiek padoti no servera puses
+    const props = defineProps({
+        status: {
+            type: String,
         },
     });
-};
 
-const goBack = () => {
-    window.history.back();
-};
+    // Izveido tukšu formu, kas tiks izmantota verifikācijas saites atkārtotai nosūtīšanai
+    const form = useForm({});
 
-const page = usePage();
-const verified = computed(() => page.url.includes('verified=1'));
+    // Reaktīvs mainīgais, kas norāda, vai jaunā verifikācijas saite jau ir nosūtīta
+    const linkSent = ref(false);
+
+    // Funkcija, kas nosūta pieprasījumu uz serveri, lai atkārtoti nosūtītu e-pasta verifikācijas saiti
+    const submit = () => {
+        form.post(route('verification.resend'), {
+            onSuccess: () => {
+                linkSent.value = true; // Ja pieprasījums veiksmīgs, tiek parādīts paziņojums
+            },
+        });
+    };
+
+    // Funkcija, kas atgriež lietotāju uz iepriekšējo lapu
+    const goBack = () => {
+        window.history.back();
+    };
+
+    // Iegūst informāciju par pašreizējo lapu (URL un datus) no Inertia.js
+    const page = usePage();
+
+    // Aprēķinātais mainīgais, kas pārbauda, vai URL satur "verified=1" (tas nozīmē, ka e-pasts jau ir apstiprināts)
+    const verified = computed(() => page.url.includes('verified=1'));
 </script>
 
 <template>
     <Navbar />
     <div class="center-container">
-            <div v-if="verified" class="verify">
-                Jūsu e-pasts ir apstiprināts! Tagad Jūs varat
-                <a href="/login">pieteikties</a>
-                vai
-                <a href="/" class="home">atgriezties vietnē</a>.
+        <!-- Ja lietotājs jau ir apstiprinājis savu e-pastu -->
+        <div v-if="verified" class="verify">
+            Jūsu e-pasts ir apstiprināts! Tagad Jūs varat
+            <a href="/login">pieteikties</a>
+            vai
+            <a href="/" class="home">atgriezties vietnē</a>.
+        </div>
+
+        <!-- Ja e-pasts vēl nav apstiprināts -->
+        <div v-else class="container">
+            <div class="info">
+                <h2>
+                    Paldies par reģistrēšanos! <br />
+                    Pirms turpināt, lūdzu, apstipriniet savu e-pasta adresi, noklikšķinot uz Jums nosūtītas saites. <br />
+                    Ja neesat saņēmis vēstuli, varat to pieprasīt vēlreiz.
+                </h2>
             </div>
 
-            <div v-else class="container">
-                <div class="info">
-                    <h2>Paldies par reģistrēšanos!
-                    Pirms turpināt, lūdzu, apstipriniet savu e-pasta adresi, noklikšķinot uz Jums nosūtītas saites.
-                    Ja neesat saņēmis vēstuli, varat to pieprasīt vēlreiz.</h2>
-                </div>
-
-                <div class="again" v-if="linkSent">
-                    Uz Jūsu e-pastu ir nosūtīta jauna apstiprinājuma saite.
-                </div>
-
-                    <div class="choice">
-                        <a @click.prevent="submit">Nosūtīt atkārtoti</a>
-                        <a @click="goBack">Iziet</a>
-                    </div>
+            <!-- Parāda paziņojumu, ja jauna saite tika nosūtīta -->
+            <div class="again" v-if="linkSent">
+                Uz Jūsu e-pastu ir nosūtīta jauna apstiprinājuma saite.
             </div>
+
+            <!-- Divas darbības: atkārtoti nosūtīt vai iziet -->
+            <div class="choice">
+                <a @click.prevent="submit">Nosūtīt atkārtoti</a>
+                <a @click="goBack">Iziet</a>
+            </div>
+        </div>
     </div>
     <Footer />
 </template>
 
 <style scoped>
-.center-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 90vh;
-    text-align: center;
-    font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-}
-
-.container{
-    border: 1px solid rgba(26, 16, 8, 0.8);
-    background-color: #e4a27c;
-    padding: 20px;
-    border-radius: 4px;
-    box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px;
-    max-width: 800px;
-}
-
-.verify{
-    border: 1px solid rgba(26, 16, 8, 0.8);
-    background-color: #e4a27c;
-    padding: 20px;
-    border-radius: 4px;
-    box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px;
-}
-
-.again{
-    margin-top: 20px;
-    font-weight: bold;
-    font-size: 1rem;
-}
-
-h2 {
-    margin-top: 0; /* Noņem noklusēto atstarpi */
-    font-size: 1.1rem;
-}
-
-.choice{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 35px;
-    padding-right:15px;
-    padding-left:15px;
-}
-
-a{
-    text-decoration: none; /* Noņem apakšsvītrojumu */
-    color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
-    font-size: 1rem;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-a:hover{
-    color: #ffc8a9; /* Teksta krāsa */
-}
-
-@media (max-width: 850px) {
-    .container, .verify{
-        max-width: 600px;
-    }
-}
-
-@media (max-width: 625px) {
-    .container, .verify{
-        max-width: 400px;
+    /* Galvenais konteiners */
+    .center-container {
+        display: flex; /* Aktivizē flex izkārtojumu */
+        flex-direction: column; /* Elementi tiek izvietoti kolonnā */
+        align-items: center; /* Centrē horizontāli */
+        justify-content: center; /* Centrē vertikāli */
+        min-height: 90vh; /* Aizņem vismaz 90% no loga augstuma */
+        text-align: center; /* Centrē tekstu */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
     }
 
-    .verify{
-        font-size: 0.9rem;
+    /* Konteiners ar informāciju par e-pasta verifikāciju */
+    .container {
+        border: 1px solid rgba(26, 16, 8, 0.8); /* Rāmis ap formu */
+        background-color: #e4a27c; /* Fona krāsa */
+        padding: 20px; /* Iekšējā atstarpe */
+        border-radius: 4px; /* Noapaļoti stūri */
+        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */
+        max-width: 800px; /* Maksimālais platums */
     }
 
-    .again{
+    /* Bloks, kas tiek parādīts, ja e-pasts ir apstiprināts */
+    .verify {
+        border: 1px solid rgba(26, 16, 8, 0.8);
+        background-color: #e4a27c;
+        padding: 20px;
+        border-radius: 4px;
+        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px;
+    }
+
+    /* Paziņojums, ka atkārtotā verifikācijas saite ir nosūtīta */
+    .again {
         margin-top: 20px;
         font-weight: bold;
         font-size: 1rem;
     }
 
+    /* Teksta virsraksts ar paskaidrojumu lietotājam */
     h2 {
-        font-size: 1rem;
+        margin-top: 0;
+        font-size: 1.1rem;
     }
 
+    /* Izvēles bloks ar divām saitēm (nosūtīt atkārtoti / iziet) */
     .choice {
-        margin-top: 20px;
-        white-space: nowrap;
+        display: flex;
+        justify-content: space-between; /* Vienāda atstarpe starp saitēm */
+        align-items: center;
+        margin-top: 35px;
+        padding-right: 15px;
+        padding-left: 15px;
     }
 
-    a{
-        font-size: 0.9rem;
+    /* Saites stils */
+    a {
+        text-decoration: none; /* Noņem apakšsvītrojumu */
+        color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
+        font-size: 1rem;
+        cursor: pointer;
+        transition: color 0.3s; /* Gluda pāreja krāsai */
     }
-}
-@media (max-width: 425px) {
-    .container, .verify{
-        max-width: 325px;
-    }
-}
 
+    a:hover {
+        color: #ffc8a9;
+    }
+
+    /* Responsīvs dizains mazākiem ekrāniem */
+    @media (max-width: 850px) {
+        .container, .verify {
+            max-width: 600px;
+        }
+    }
+
+    @media (max-width: 625px) {
+        .container, .verify {
+            max-width: 400px;
+        }
+
+        .verify {
+            font-size: 0.9rem;
+        }
+
+        .again {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        h2 {
+            font-size: 1rem;
+        }
+
+        .choice {
+            margin-top: 20px;
+            white-space: nowrap; /* Neļauj saitēm pārnesties jaunā rindā */
+        }
+
+        a {
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 425px) {
+        .container, .verify {
+            max-width: 325px;
+        }
+    }
 </style>
