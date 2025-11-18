@@ -49,6 +49,7 @@
                     Aizmirsāt savu paroli?
                     Vienkārši ievadiet savu e-pasta adresi zemāk, un Jūs saņemsiet vēstuli ar saiti, lai droši atiestatītu savu paroli.
                     Pārliecinieties, ka norādāt pareizo e-pasta adresi.
+                    Ja neesat saņēmis e-pastu ar kodu, pārbaudiet surogātpasta mapi vai ievadīto e-pasta adresi.
                 </h2>
             </div>
 

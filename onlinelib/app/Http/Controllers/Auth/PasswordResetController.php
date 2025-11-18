@@ -18,26 +18,34 @@ class PasswordResetController extends Controller
     // Funkcija, kas nosūta atiestatīšanas kodu uz lietotāja e-pastu
     public function sendResetCode(Request $request)
     {
-        // Validē e-pasta formātu un pārbauda, vai lietotājs eksistē
-        $request->validate(['email' => 'required|email|exists:users,email']);
+        // Validē e-pasta formātu
+        $request->validate(['email' => 'required|email']);
 
         // Atrodam lietotāju pēc e-pasta
         $user = User::where('email', $request->email)->first();
 
         // Ģenerējam 6 ciparu kodu
-        $code = rand(100000, 999999);
+        if ($user) {
+            $code = rand(100000, 999999);
 
-        // Saglabājam kodu kešā uz 10 minūtēm
-        Cache::put('password_reset_code_' . $user->email, $code, now()->addMinutes(10));
+            // Saglabājam kodu kešā uz 10 minūtēm
+            Cache::put('password_reset_code_' . $user->email, $code, now()->addMinutes(10));
 
-        // Nosūtām e-pastu ar atiestatīšanas kodu
-        Mail::to($user->email)->send(new PasswordResetCodeMail($code, $user));
+            // Nosūtām e-pastu ar atiestatīšanas kodu
+            Mail::to($user->email)->send(new PasswordResetCodeMail($code, $user));
 
-        // Saglabājam lietotāja e-pastu sesijā, lai vēlāk pārbaudītu kodu
-        session(['reset_email' => $user->email]);
+            // Saglabājam lietotāja e-pastu sesijā, lai vēlāk pārbaudītu kodu
+            session([
+                'reset_email' => $user->email,
+            ]);
+
+            session()->save();
+        }
 
         // Pāradresējam uz lapu, kur lietotājs ievadīs kodu
-        return redirect()->route('password.showReset');
+        return Inertia::render('Auth/ResetPassword', [
+            'verified' => $request->get('verified', false)
+        ]);
     }
 
     // Funkcija, kas pārbauda ievadīto atiestatīšanas kodu
@@ -46,6 +54,9 @@ class PasswordResetController extends Controller
         // Validē ievadīto kodu
         $request->validate([
             'code'  => 'required|digits:6',
+        ],
+        [
+            'code.digits' => 'Paroles atiestatīšanas kodam jābūt 6 ciparu garumā.',
         ]);
 
         // Iegūstam saglabāto kodu kešā pēc sesijas e-pasta
@@ -53,7 +64,7 @@ class PasswordResetController extends Controller
 
         // Ja koda nav vai tas nesakrīt ar ievadīto — atgriež kļūdu
         if (!$cachedCode || $cachedCode != $request->code) {
-            return back()->withErrors(['code' => 'Неверный или просроченный код.']);
+            return back()->withErrors(['code' => 'Nederīgs vai beidzies kods.']);
         }
 
         // Ja kods pareizs, pāradresē uz to pašu lapu ar verified=true
@@ -99,9 +110,6 @@ class PasswordResetController extends Controller
         // Nosūtām e-pastu ar paziņojumu, ka parole mainīta
         Mail::to($user->email)->send(new PasswordMessage($user));
 
-        // Atgriežam Inertia komponentu ar statusu, lai frontend parādītu ziņojumu
-        return Inertia::render('Auth/ResetPassword', [
-            'status' => 'Parole veiksmīgi atjaunināta!',
-        ]);
+        return back()->with('success', 'Parole veiksmīgi atjaunināta!');
     }
 }

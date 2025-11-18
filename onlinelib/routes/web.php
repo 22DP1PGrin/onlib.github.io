@@ -23,44 +23,57 @@ Route::get('/api/is-logged-in', function () {
     ]);
 });
 
-// Verifikācija
+//Lietotāja e-pasta verifikācija ar tokena pārbaudi
+// Aizsargāts ar registration.flow, lai nepieļautu piekļuvi bez reģistrācijas procesa.
 Route::get('/verify-pending/{token}', [RegisteredUserController::class, 'verify'])
-    ->name('verify.pending');
+    ->name('verify.pending')
+    ->middleware(['registration.flow']);
 
+// Verifikācijas e-pasta atkārtota nosūtīšana
+// Aizsargāts ar registration.flow, lai nepieļautu piekļuvi bez reģistrācijas procesa.
 Route::post('/verify-resend', [RegisteredUserController::class, 'resend'])
-    ->name('verification.resend');
+    ->name('verification.resend')
+    ->middleware(['registration.flow']);
 
-Route::middleware('guest')->group(function () {
-    Route::get('/verify-email', function () {
-        return Inertia::render('Auth/VerifyEmail', [
-            'status' => session('status')
-        ]);
-    })->name('verification.notice');
-});
+// Lapa ar paziņojumu, ka jāapstiprina e-pasts
+// Aizsargāts ar registration.flow, lai nepieļautu piekļuvi bez reģistrācijas procesa.
+Route::get('/verify-email', function () {
+    return Inertia::render('Auth/VerifyEmail', [
+        'status' => session('status')
+    ]);
+})->name('verification.notice')
+    ->middleware(['registration.flow']);
 
-// --- Страница с вводом email (GET)
+// Paroles atjaunošanas sākuma lapa (e-pasta ievade)
 Route::get('/forgot-password', function () {
     return Inertia::render('Auth/ForgotPassword');
 })->name('forgot-password.page');
 
-// --- Отправка email (POST)
+// E-pasta nosūtīšana ar verifikācijas kodu
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetCode'])
     ->name('password.email');
 
-// --- Проверка кода
+//  Verifikācijas koda pārbaude
+// Šis maršruts ir aizsargāts ar reset.flow, lai nepieļautu tiešu piekļuvi
 Route::post('/check-code', [PasswordResetController::class, 'checkCode'])
-    ->name('password.check');
+    ->name('password.check')
+    ->middleware('reset.flow');
 
-// --- Сброс пароля
+// Paroles atjaunošana pēc veiksmīgas koda pārbaudes
+// Aizsargāts ar reset.flow, lai piekļuve būtu iespējama tikai pēc koda apstiprināšanas
 Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])
-    ->name('password.reset');
+    ->name('password.reset')
+    ->middleware('reset.flow');
 
-// --- Страница с вводом кода и новым паролем
+// Lapa, kurā lietotājs ievada verifikācijas kodu un/vai jauno paroli
+// Parametrs "verified" nosaka, vai parādīt jaunas paroles formu
 Route::get('/reset-password', function () {
     return Inertia::render('Auth/ResetPassword', [
-        'verified' => request()->query('verified') === 'true', // показывает форму нового пароля
+        'verified' => request()->query('verified') === 'true',
     ]);
-})->name('password.showReset');
+})->name('password.showReset')
+    ->middleware('reset.flow');
+
 
 // Sākums
 Route::get('/', [AllBooksController::class, 'getHomePageBooks'])->name('Home');

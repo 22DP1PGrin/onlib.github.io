@@ -8,17 +8,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class IsAdmin
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
+
     public function handle(Request $request, Closure $next)
     {
         if ($request->user() && $request->user()->role === 'admin') {
             return $next($request);
         }
 
-        return redirect()->route('home')->with('error', 'Jums nav piekļuves!');
+        return redirect()->route('home');
     }
 }

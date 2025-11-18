@@ -1,13 +1,16 @@
 <script setup>
     // Importē nepieciešamās funkcijas un komponentes
     import { useForm } from '@inertiajs/vue3';
-    import { ref } from 'vue';
+    import {onMounted, ref} from 'vue';
     import { route } from 'ziggy-js';
     import Navbar from '@/Components/Navbar.vue';
     import Footer from '@/Components/Footer.vue';
 
     const verified = ref(false); // Norāda, vai lietotājs jau ir pārbaudījis kodu
-    const passwordChanged = ref(false); // Ja parole ir veiksmīgi nomainīta
+    const showModal = ref(false); // Vai modālais logs ir redzams
+
+    const urlParams = new URLSearchParams(window.location.search); //Iegūst parametrs pēc URL
+    verified.value = urlParams.get('verified') === 'true';
 
     // Forma koda pārbaudei
     const codeForm = useForm({
@@ -33,13 +36,19 @@
     // Nosūta jauno paroli serverim
     const submitPassword = () => {
         passwordForm.post(route('password.reset'), {
-            onSuccess: () => passwordChanged.value = true,
+            onSuccess: () => {
+                showModal.value = true;
+                passwordForm.reset();
+                document.body.style.overflow = 'hidden';
+            },
         });
     };
+
 </script>
 
 <template>
     <Navbar />
+
     <div class="center-container">
         <div class="container">
             <div class="info">
@@ -53,12 +62,12 @@
                     Ievadiet kodu no nosūtītās vēstules.
                 </h2>
                 <!-- Virsraksts, kad kods ir pārbaudīts, bet parole vēl nav mainīta -->
-                <h2 v-if="verified && !passwordChanged">
+                <h2 v-if="verified">
                     Ievadiet jaunu paroli savam kontam.
                 </h2>
             </div>
 
-            <!-- Forma datu ievadei -->
+            <!-- Forma koda ievadei -->
             <form v-if="!verified" @submit.prevent="submitCode">
                 <div class="form-group">
                     <label class="label">Apstiprinājuma kods</label>
@@ -68,11 +77,11 @@
                         v-model="codeForm.code"
                         required
                     />
-                    <!-- Parāda kļūdu ziņojumu, ja kods nav pareizs -->
+                    <!-- Kļūdas ziņojums -->
                     <div v-if="codeForm.errors.code" class="input-error">{{ codeForm.errors.code }}</div>
                 </div>
 
-                <!-- Bloks ar pogu un saiti -->
+                <!-- Poga un saite -->
                 <div class="choice">
                     <a :href="route('forgot-password.page')">Mainīt e-pasta adresi</a>
                     <button
@@ -81,13 +90,13 @@
                         :disabled="codeForm.processing"
                         :style="{ opacity: codeForm.processing ? 0.25 : 1 }"
                     >
-                        Parbaudīt
+                        Pārbaudīt
                     </button>
                 </div>
             </form>
 
             <!-- Forma jaunās paroles ievadei -->
-            <form v-if="verified && !passwordChanged" @submit.prevent="submitPassword">
+            <form v-if="verified" @submit.prevent="submitPassword">
                 <div class="form-group">
                     <label class="label">Jauna parole</label>
                     <input
@@ -96,14 +105,14 @@
                         v-model="passwordForm.password"
                         required
                     />
-                    <label class="label">Atkartot paroli</label>
+                    <label class="label">Atkārtot paroli</label>
                     <input
                         type="password"
                         class="input"
                         v-model="passwordForm.password_confirmation"
                         required
                     />
-                    <!-- Parāda kļūdu ziņojumu, ja parole nav derīga -->
+                    <!-- Kļūdas ziņojums -->
                     <div v-if="passwordForm.errors.password" class="input-error">{{ passwordForm.errors.password }}</div>
                 </div>
                 <div class="butt">
@@ -117,16 +126,24 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
 
-            <!-- Bloks, kas parāda ziņojumu par veiksmīgu paroles maiņu -->
-            <div v-if="passwordChanged" class="success-container">
-                Parole veiksmīgi atjaunināta! Tagad Jūs varat
-                <a href="/login">pieteikties</a>
-                vai
-                <a href="/" class="home">atgriezties vietnē</a>.
+    <!-- Modālais logs pēc veiksmīgas paroles maiņas -->
+    <div v-if="showModal" class="modal-overlay">
+        <div class="modal">
+            <div class="success-container">
+                <h2>Parole veiksmīgi atjaunināta!</h2>
+                <p>
+                    Tagad Jūs varat
+                    <a href="/login">pieteikties</a>
+                    vai
+                    <a href="/" class="home">atgriezties vietnē</a>.
+                </p>
             </div>
         </div>
     </div>
+
     <Footer />
 </template>
 
@@ -230,7 +247,6 @@
         text-align: right !important;
     }
 
-
     /* Pogas stils */
     button {
         background-color: #c58667; /* Fona krāsa */
@@ -254,17 +270,68 @@
         font-size: 1rem;
     }
 
+    /* Modala loga stils */
+    .modal-overlay {
+        position: fixed; /* Fiksēta pozicija */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(19, 8, 0, 0.59);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000; /* Virs visiem elementiem */
+    }
+
+    .modal {
+        border-radius: 12px;
+        padding: 15px;
+        max-width: 400px;
+        width: 90%;
+        position: relative;
+        background-color: #c58667; /* Fona krāsa */
+        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+    }
+
+    .success-container {
+        text-align: center;
+        padding: 15px;
+    }
+
+    .success-container h2 {
+        margin-bottom: 15px;
+        font-size:  1.3rem;
+    }
+
+    .success-container p {
+        margin-bottom: 15px;
+    }
+
     /* Responsīvs dizains mazākiem ekrāniem */
     @media (max-width: 625px) {
         .container {
             max-width: 400px;
         }
+
         h2 {
             font-size: 1rem;
         }
-        .label, input::placeholder, a {
+
+
+        .modal{
+            max-width: 300px;
+        }
+
+        .success-container h2{
+            font-size: 1.1rem;
+        }
+
+        .label, input::placeholder, a, p {
             font-size: 0.9rem;
         }
+
         button {
             font-size: 0.9rem;
             padding: 5px 18px;
