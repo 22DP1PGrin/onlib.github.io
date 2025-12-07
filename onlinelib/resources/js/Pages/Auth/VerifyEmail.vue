@@ -112,12 +112,14 @@
         margin-top: 20px;
         font-weight: bold;
         font-size: 1rem;
+        color: rgba(26, 16, 8, 0.8);
     }
 
     /* Teksta virsraksts ar paskaidrojumu lietotājam */
     h2 {
         margin-top: 0;
         font-size: 1.1rem;
+        color: rgba(26, 16, 8, 0.8);
     }
 
     /* Izvēles bloks ar divām saitēm (nosūtīt atkārtoti / iziet) */

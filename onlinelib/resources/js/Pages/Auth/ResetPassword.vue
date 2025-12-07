@@ -179,6 +179,7 @@
         margin-top: 0;
         font-size: 1.1rem;
         margin-bottom: 20px;
+        color: rgba(26, 16, 8, 0.8);
     }
 
     /* Izvēles bloks ar saiti un pogu */

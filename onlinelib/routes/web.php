@@ -23,28 +23,33 @@ Route::get('/api/is-logged-in', function () {
     ]);
 });
 
-//Lietotāja e-pasta verifikācija ar tokena pārbaudi
-// Aizsargāts ar registration.flow, lai nepieļautu piekļuvi bez reģistrācijas procesa.
-Route::get('/verify-pending/{token}', [RegisteredUserController::class, 'verify'])
-    ->name('verify.pending');
-
-// Verifikācijas e-pasta atkārtota nosūtīšana
-// Aizsargāts ar registration.flow, lai nepieļautu piekļuvi bez reģistrācijas procesa.
-Route::post('/verify-resend', [RegisteredUserController::class, 'resend'])
-    ->name('verification.resend');
-
 // Lapa ar paziņojumu, ka jāapstiprina e-pasts
-// Aizsargāts ar registration.flow, lai nepieļautu piekļuvi bez reģistrācijas procesa.
 Route::get('/verify-email', function () {
     return Inertia::render('Auth/VerifyEmail', [
         'status' => session('status')
     ]);
 })->name('verification.notice');
 
+//Lietotāja e-pasta verifikācija ar tokena pārbaudi
+Route::get('/verify-pending/{token}', [RegisteredUserController::class, 'verify'])
+    ->name('verify.pending');
+
+// Verifikācijas e-pasta atkārtota nosūtīšana
+Route::post('/verify-resend', [RegisteredUserController::class, 'resend'])
+    ->name('verification.resend');
+
+
 // Paroles atjaunošanas sākuma lapa (e-pasta ievade)
 Route::get('/forgot-password', function () {
     return Inertia::render('Auth/ForgotPassword');
 })->name('forgot-password.page');
+
+// Lapa, kurā lietotājs ievada verifikācijas kodu un/vai jauno paroli
+Route::get('/reset-password', function () {
+    return Inertia::render('Auth/ResetPassword', [
+        'verified' => request()->query('verified') === 'true',
+    ]);
+})->name('password.showReset');
 
 // E-pasta nosūtīšana ar verifikācijas kodu
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetCode'])
@@ -57,14 +62,6 @@ Route::post('/check-code', [PasswordResetController::class, 'checkCode'])
 // Paroles atjaunošana pēc veiksmīgas koda pārbaudes
 Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])
     ->name('password.reset');
-
-// Lapa, kurā lietotājs ievada verifikācijas kodu un/vai jauno paroli
-// Parametrs "verified" nosaka, vai parādīt jaunas paroles formu
-Route::get('/reset-password', function () {
-    return Inertia::render('Auth/ResetPassword', [
-        'verified' => request()->query('verified') === 'true',
-    ]);
-})->name('password.showReset');
 
 
 // Sākums
@@ -102,35 +99,42 @@ Route::get('/technicalsupport', function () {
 //Tehniskais atbalsts
 Route::post('/support', [SupportController::class, 'store']);
 
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
-});
-
+// E-pasta verifikācija, kad lietotājs izmainīja savu e-pastu adresi
 Route::get('/email-change', function () {
     return Inertia::render('Profile/VerifyEmailChange');
 })->name('verify.change.notice');
 
+// Apstiprināt e-pasta maiņu ar tokenu
 Route::get('/email-change/{token}', [ProfileController::class, 'verify'])
     ->name('email.change.confirm');
 
+// Atsūtīt atkārtoti e-pasta maiņas apstiprinājuma vēstuli
 Route::post('/email-resend', [ProfileController::class, 'resend'])
     ->name('email.change.resend');
 
+// Grupēti maršruti, kas pieejami tikai autentificētiem lietotājiem
 Route::middleware('auth')->group(function () {
+    // Rādīt profila lapu
+    Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
+
+    // Atjaunināt profila datus
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Dzēst lietotāja kontu
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Atjaunināt lietotāja paroli
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
+    // Augšupielādēt vai mainīt lietotāja avataru
+    Route::post('/profile/avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.avatar');
+
+    // Rādīt profila iestatījumu lapu
+    Route::get('/profile/settings', [ProfileController::class, 'settings'])->name('profile.settings');
+
+    // Papildu maršruts, kas rādīt profila lapu
+    Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
 });
-
-Route::get('/profile/settings', [ProfileController::class, 'settings'])
-    ->name('profile.settings')
-    ->middleware('auth');
-
-Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
-
-
 
 Route::get('/CreateStory', [UserBook::class, 'create'])->name('NewStory');
 
@@ -216,8 +220,6 @@ Route::get('/Classic/{id}/edit', [ClassicBookController::class, 'editClassic'])
 Route::put('/Classic/{id}', [ClassicBookController::class, 'updateClassic'])
     ->middleware('can:Admin')
     ->name('classic.books.update');
-
-
 
 Route::get('/NewClassicChapter', function () {
     return Inertia::render('Control/Books/NewInfo/NewClassicChapter');

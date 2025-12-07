@@ -49,6 +49,31 @@ class ProfileController extends Controller
         ]);
     }
 
+    // Augšpielāde attēļu un saglabā to ceļu datu bāzē.
+    public function uploadAvatar(Request $request)
+    {
+        // Validē ienākošo failu – tam jābūt attēlam, ne lielākam par 2MB
+        $request->validate([
+            'avatar' => ['required', 'image', 'max:2048'],
+        ]);
+
+        // Saņem pašreiz pieslēgto lietotāju
+        $user = Auth::user();
+
+        // Ģenerē unikālu faila nosaukumu
+        $filename = Str::uuid() . '.' . $request->avatar->getClientOriginalExtension();
+
+        // Saglabā failu mapē public/avatars
+        $path = $request->avatar->storeAs('avatars', $filename, 'public');
+
+        // Saglabā ceļu uz avataru datubāzē
+        $user->avatar = $path;
+        $user->save();
+
+        // Atgriež atpakaļ ar veiksmes ziņojumu
+        return back()->with('success', 'Attēls ir veiksmīgi augšupielādēts!');
+    }
+
     // Atjaunīna datus
     public function update(Request $request)
     {

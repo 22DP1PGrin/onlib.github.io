@@ -12,6 +12,14 @@ const user = computed(() => usePage().props.auth.user);
 const showModal = ref(false);
 const showPasswordModal = ref(false);
 const showDeleteModal = ref(false);
+const showAvatarModal = ref(false);
+
+const avatarInput = ref(null);
+
+const avatarForm = useForm({
+    avatar: null
+});
+
 
 // Aizver profila modāli
 const closeModal = () => {
@@ -22,6 +30,12 @@ const closeModal = () => {
 // Aizver paroles maiņas modāli
 const closePasswordModal = () => {
     showPasswordModal.value = false;
+    document.body.style.overflow = "";
+};
+
+// Aizver attēla modāli
+const closeAvatarModal = () => {
+    showAvatarModal.value = false;
     document.body.style.overflow = "";
 };
 
@@ -97,14 +111,36 @@ const logout = () => {
         onSuccess: () => window.location.href = "/"
     });
 };
-</script>
 
+const selectAvatar = () => {
+    avatarInput.value.click(); // Atver faila izvēles dialogu
+};
+
+// Augšpielāde attēli
+const uploadAvatar = (event) => {
+    const file = event.target.files[0]; // Saglabā izvēlēto failu
+    if (!file) return;
+
+    avatarForm.avatar = file;
+
+    avatarForm.post(route('profile.avatar'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            avatarForm.reset('avatar');
+            showAvatarModal.value = true;
+            document.body.style.overflow = "hidden";
+        }
+    });
+};
+</script>
 <template>
     <Navbar/>
 
     <div class="settings-header">
         <h1><strong>Profila iestatījumi</strong></h1>
     </div>
+
+    <!-- Modālie logi dažādiem notikumiem -->
     <div v-if="showModal" class="modal-overlay">
         <div class="modal">
             <div class="success-container">
@@ -146,7 +182,35 @@ const logout = () => {
         </div>
     </div>
 
+    <div v-if="showAvatarModal" class="modal-overlay">
+        <div class="modal">
+            <div class="success-container">
+                <h2>Profila dati veiksmīgi saglabāti!</h2>
+                <p>Jūsu avatars ir atjaunināts.</p>
+                <button @click="closeAvatarModal" class="close-btn">Aizvērt</button>
+            </div>
+        </div>
+    </div>
+
     <div class="settings-page">
+        <!-- Avataru izvēles un attēlošanas bloks -->
+        <div class="avatar-wrapper">
+            <div class="avatar" @click="selectAvatar">
+                <input
+                    type="file"
+                    ref="avatarInput"
+                    class="hidden"
+                    @change="uploadAvatar"
+                    accept="image/*"
+                />
+                <i v-if="!user.avatar" class="fa profile-icon">&#xf2be;</i>
+                <img v-else :src="`/storage/${user.avatar}`" alt="avatar" />
+
+                <div class="avatar-overlay">
+                    <i class="fa fa-plus overlay-icon"></i>
+                </div>
+            </div>
+        </div>
 
         <!-- Profila informācija -->
         <div class="settings-section">
@@ -238,83 +302,7 @@ const logout = () => {
     <Footer/>
 </template>
 
-
 <style scoped>
-    .settings-page {
-        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa - Krāsa, kas izmantota visam tekstam */
-        max-width: 800px; /* Maksimālais platums - lapas platums tiks ierobežots līdz 800px */
-        margin: 0 auto; /* Automātiski horizontālie malas, lai centrs būtu uz ekrāna */
-        padding: 20px; /* Iekšējais attālums ap saturu */
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-    }
-
-    .settings-header {
-        text-align: center; /* Centrē tekstu */
-        margin-top: 38px; /* Augšējā atstarpe */
-        padding: 20px 20px; /* Iekšējais attālums */
-        color: rgba(26, 16, 8, 0.8);
-        font-family: Tahoma, Helvetica, sans-serif;
-        font-size: 1.7rem; /* Fonta izmērs */
-    }
-
-    .settings-section {
-        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-        background-color: #e4a27c;
-        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna  */
-        border-radius: 4px; /* Noapaļotie stūri */
-        padding: 20px;
-        margin-bottom: 20px; /* Attālums no nākamās sadaļas */
-    }
-
-    .settings-section h2 {
-        font-size: 1.1rem;
-        margin-bottom: 20px;
-    }
-
-    .settings-form {
-        display: flex; /* Flexbox izkārtojums */
-        flex-direction: column; /* Novietojiet elementus vertikāli */
-        gap: 15px; /* Attālums starp elementiem */
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
-
-    label {
-        font-weight: bold;
-    }
-
-    input::placeholder,
-    textarea::placeholder {
-        color: rgba(26, 16, 8, 0.42);
-        font-size: 1.0rem;
-    }
-    /* Kļūdas zem ievades lauka */
-    .error{
-        color: rgb(110, 37, 37);
-        font-size: 1rem;
-    }
-
-    button {
-        border: 2px solid rgba(26, 16, 8, 0.8);
-        background-color: #c58667; /* Fona krāsa */
-        color: rgba(26, 16, 8, 0.8);
-        border-radius: 4px;
-        font-size: 1.0rem;
-        transition: background-color 0.3s, border-color 0.3s; /* Pārejas efekts, lai uzlabotu interaktivitāti */
-        cursor: pointer; /* Kursora izmaiņas pie pogas */
-        padding: 5px 10px;
-    }
-
-    a {
-        text-decoration: none; /* Noņem apakšsvītrojumu no saitēm */
-        color: rgba(106, 51, 0, 0.8);
-        font-size: 1rem;
-    }
-
     /* Modala loga stils */
     .modal-overlay {
         position: fixed; /* Fiksēta pozicija */
@@ -347,10 +335,6 @@ const logout = () => {
         margin-top: 20px;
     }
 
-    .close-btn{
-        align-self: flex-start;
-        margin-bottom: 5px;
-    }
     .success-container {
         text-align: center;
         padding: 15px;
@@ -368,6 +352,137 @@ const logout = () => {
         color: rgba(26, 16, 8, 0.8);
 
     }
+    .settings-page {
+        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa - Krāsa, kas izmantota visam tekstam */
+        max-width: 800px; /* Maksimālais platums - lapas platums tiks ierobežots līdz 800px */
+        margin: 0 auto; /* Automātiski horizontālie malas, lai centrs būtu uz ekrāna */
+        padding: 20px; /* Iekšējais attālums ap saturu */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+    }
+
+    .settings-header {
+        text-align: center; /* Centrē tekstu */
+        margin-top: 38px; /* Augšējā atstarpe */
+        padding: 20px 20px; /* Iekšējais attālums */
+        color: rgba(26, 16, 8, 0.8);
+        font-family: Tahoma, Helvetica, sans-serif;
+        font-size: 1.7rem; /* Fonta izmērs */
+    }
+
+    .settings-section {
+        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+        background-color: #e4a27c;
+        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna  */
+        border-radius: 4px; /* Noapaļotie stūri */
+        padding: 20px;
+        margin-bottom: 20px; /* Attālums no nākamās sadaļas */
+    }
+
+    .avatar-wrapper {
+        display: flex;
+        justify-content: center; /* Центр горизонтально */
+        margin-bottom: 50px;
+    }
+
+    .avatar {
+        width: 120px; /* Avatar platums */
+        height: 120px; /* Avatar augstums */
+        border-radius: 50%; /* Padara avataru pilnīgu apli */
+        border: 1px solid rgba(26, 16, 8, 0.8);
+        background-color: #e4a27c;
+        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px;
+        border-radius: 50%; /* Pilns aplis */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        overflow: hidden; /* Paslēpj visu, kas pārsniedz aplīti */
+        position: relative; /* Relatīvs pozicionējums */
+    }
+
+    .avatar img {
+        width: 100%; /* Attēla platums pilnībā atbilst avataram */
+        height: 100%; /* Attēla augstums pilnībā atbilst avataram */
+        object-fit: cover; /* Attēls aptver visu aplīti, saglabājot proporcijas */
+        border-radius: 50%;
+    }
+
+    .profile-icon {
+        font-size: 3rem;
+    }
+
+    .avatar-overlay {
+        position: absolute; /* Absolūtā pozīcija */
+        top: 0; /* Novieto augšpusē */
+        left: 0; /* Novieto kreisajā pusē */
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 200, 169, 0.56);
+        display: flex;
+        justify-content: center;
+        align-items: center; /* Vertikāli centrē saturu */
+        opacity: 0; /* Noklusējuma stāvoklī slēpts */
+        transition: opacity 0.3s; /* Pāreja uz redzamību ar animāciju 0.3s */
+    }
+
+    .avatar:hover .avatar-overlay {
+        opacity: 1;
+    }
+
+    .overlay-icon {
+        color: rgba(26, 16, 8, 0.8);
+        font-size: 3rem;
+    }
+
+    .settings-section h2 {
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+    }
+
+    .settings-form {
+        display: flex; /* Flexbox izkārtojums */
+        flex-direction: column; /* Novietojiet elementus vertikāli */
+        gap: 15px; /* Attālums starp elementiem */
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: rgba(26, 16, 8, 0.42);
+        font-size: 1.0rem;
+    }
+
+    /* Kļūdas zem ievades lauka */
+    .error{
+        color: rgb(110, 37, 37);
+        font-size: 1rem;
+    }
+
+    button {
+        border: 2px solid rgba(26, 16, 8, 0.8);
+        background-color: #c58667; /* Fona krāsa */
+        color: rgba(26, 16, 8, 0.8);
+        border-radius: 4px;
+        font-size: 1.0rem;
+        transition: background-color 0.3s, border-color 0.3s; /* Pārejas efekts, lai uzlabotu interaktivitāti */
+        cursor: pointer; /* Kursora izmaiņas pie pogas */
+        padding: 5px 10px;
+    }
+
+    a {
+        text-decoration: none; /* Noņem apakšsvītrojumu no saitēm */
+        color: rgba(106, 51, 0, 0.8);
+        font-size: 1rem;
+    }
 
     a:hover {
         color: #ffc8a9;
@@ -376,6 +491,11 @@ const logout = () => {
     button:hover {
         background-color: #ffc8a9;
         border-color: #ffc8a9;
+    }
+
+    .close-btn{
+        align-self: flex-start;
+        margin-bottom: 5px;
     }
 
     .edit-btn {
@@ -465,6 +585,9 @@ const logout = () => {
         .success-container h2{
             font-size: 1.1rem;
         }
+        .avatar {
+            width: 100px;
+            height: 100px;
+        }
     }
-
 </style>

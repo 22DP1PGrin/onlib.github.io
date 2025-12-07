@@ -73,111 +73,113 @@
 </template>
 
 <style scoped>
-/* Galvenais konteiners */
-.center-container {
-    display: flex; /* Aktivizē flex izkārtojumu */
-    flex-direction: column; /* Elementi tiek izvietoti kolonnā */
-    align-items: center; /* Centrē horizontāli */
-    justify-content: center; /* Centrē vertikāli */
-    min-height: 90vh; /* Aizņem vismaz 90% no loga augstuma */
-    text-align: center; /* Centrē tekstu */
-    font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-}
-
-/* Konteiners ar informāciju par e-pasta verifikāciju */
-.container {
-    border: 1px solid rgba(26, 16, 8, 0.8); /* Rāmis ap formu */
-    background-color: #e4a27c; /* Fona krāsa */
-    padding: 20px; /* Iekšējā atstarpe */
-    border-radius: 4px; /* Noapaļoti stūri */
-    box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */
-    max-width: 800px; /* Maksimālais platums */
-}
-
-/* Bloks, kas tiek parādīts, ja e-pasts ir apstiprināts */
-.verify {
-    border: 1px solid rgba(26, 16, 8, 0.8);
-    background-color: #e4a27c;
-    padding: 20px;
-    border-radius: 4px;
-    box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px;
-}
-
-/* Paziņojums, ka atkārtotā verifikācijas saite ir nosūtīta */
-.again {
-    margin-top: 20px;
-    font-weight: bold;
-    font-size: 1rem;
-}
-
-/* Teksta virsraksts ar paskaidrojumu lietotājam */
-h2 {
-    margin-top: 0;
-    font-size: 1.1rem;
-}
-
-/* Izvēles bloks ar divām saitēm (nosūtīt atkārtoti / iziet) */
-.choice {
-    display: flex;
-    justify-content: space-between; /* Vienāda atstarpe starp saitēm */
-    align-items: center;
-    margin-top: 35px;
-    padding-right: 15px;
-    padding-left: 15px;
-}
-
-/* Saites stils */
-a {
-    text-decoration: none; /* Noņem apakšsvītrojumu */
-    color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
-    font-size: 1rem;
-    cursor: pointer;
-    transition: color 0.3s; /* Gluda pāreja krāsai */
-}
-
-a:hover {
-    color: #ffc8a9;
-}
-
-/* Responsīvs dizains mazākiem ekrāniem */
-@media (max-width: 850px) {
-    .container, .verify {
-        max-width: 600px;
-    }
-}
-
-@media (max-width: 625px) {
-    .container, .verify {
-        max-width: 400px;
+    /* Galvenais konteiners */
+    .center-container {
+        display: flex; /* Aktivizē flex izkārtojumu */
+        flex-direction: column; /* Elementi tiek izvietoti kolonnā */
+        align-items: center; /* Centrē horizontāli */
+        justify-content: center; /* Centrē vertikāli */
+        min-height: 90vh; /* Aizņem vismaz 90% no loga augstuma */
+        text-align: center; /* Centrē tekstu */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
     }
 
+    /* Konteiners ar informāciju par e-pasta verifikāciju */
+    .container {
+        border: 1px solid rgba(26, 16, 8, 0.8); /* Rāmis ap formu */
+        background-color: #e4a27c; /* Fona krāsa */
+        padding: 20px; /* Iekšējā atstarpe */
+        border-radius: 4px; /* Noapaļoti stūri */
+        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */
+        max-width: 800px; /* Maksimālais platums */
+    }
+
+    /* Bloks, kas tiek parādīts, ja e-pasts ir apstiprināts */
     .verify {
-        font-size: 0.9rem;
+        border: 1px solid rgba(26, 16, 8, 0.8);
+        background-color: #e4a27c;
+        padding: 20px;
+        border-radius: 4px;
+        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px;
     }
 
+    /* Paziņojums, ka atkārtotā verifikācijas saite ir nosūtīta */
     .again {
         margin-top: 20px;
         font-weight: bold;
         font-size: 1rem;
+        color: rgba(26, 16, 8, 0.8);
     }
 
+    /* Teksta virsraksts ar paskaidrojumu lietotājam */
     h2 {
-        font-size: 1rem;
+        margin-top: 0;
+        font-size: 1.1rem;
+        color: rgba(26, 16, 8, 0.8);
     }
 
+    /* Izvēles bloks ar divām saitēm (nosūtīt atkārtoti / iziet) */
     .choice {
-        margin-top: 20px;
-        white-space: nowrap; /* Neļauj saitēm pārnesties jaunā rindā */
+        display: flex;
+        justify-content: space-between; /* Vienāda atstarpe starp saitēm */
+        align-items: center;
+        margin-top: 35px;
+        padding-right: 15px;
+        padding-left: 15px;
     }
 
+    /* Saites stils */
     a {
-        font-size: 0.9rem;
+        text-decoration: none; /* Noņem apakšsvītrojumu */
+        color: rgba(106, 51, 0, 0.8); /* Teksta krāsa */
+        font-size: 1rem;
+        cursor: pointer;
+        transition: color 0.3s; /* Gluda pāreja krāsai */
     }
-}
 
-@media (max-width: 425px) {
-    .container, .verify {
-        max-width: 325px;
+    a:hover {
+        color: #ffc8a9;
     }
-}
+
+    /* Responsīvs dizains mazākiem ekrāniem */
+    @media (max-width: 850px) {
+        .container, .verify {
+            max-width: 600px;
+        }
+    }
+
+    @media (max-width: 625px) {
+        .container, .verify {
+            max-width: 400px;
+        }
+
+        .verify {
+            font-size: 0.9rem;
+        }
+
+        .again {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        h2 {
+            font-size: 1rem;
+        }
+
+        .choice {
+            margin-top: 20px;
+            white-space: nowrap; /* Neļauj saitēm pārnesties jaunā rindā */
+        }
+
+        a {
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 425px) {
+        .container, .verify {
+            max-width: 325px;
+        }
+    }
 </style>

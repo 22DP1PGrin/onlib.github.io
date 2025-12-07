@@ -141,8 +141,22 @@ export default {
             </template>
 
             <template v-else>
-                <a class="pressed2" href="/profile"><i class="fa profile-icon">&#xf2be;</i> {{ user.nickname }}</a>
-                <a class="pressed3" href="/profile"> <i class="fa">&#xf2be; <br></i></a>
+                <a class="pressed2" href="/profile">
+                    <div class="avatar">
+                        <!-- Jā nav konta avatara, tad standarta ikona -->
+                        <i v-if="!user.avatar" class="fa profile-icon">&#xf2be;</i>
+                        <img v-else :src="`/storage/${user.avatar}`" alt="avatar" />
+                    </div>
+                    {{ user.nickname }}
+                </a>
+
+                <a class="pressed3" href="/profile">
+                    <!-- Jā nav konta avatara, tad standarta ikona -->
+                    <div class="avatar">
+                        <i v-if="!user.avatar" class="fa profile-icon">&#xf2be;</i>
+                        <img v-else :src="`/storage/${user.avatar}`" alt="avatar" />
+                    </div>
+                </a>
             </template>
         </div>
 
@@ -172,7 +186,6 @@ export default {
    </template>
 
    <style>
-
 
    /* Navigācijas josla */
    .navbar {
@@ -214,7 +227,30 @@ export default {
        padding: 0.5rem; /* Iekšējās atstarpes */
        display: block; /* Bloka elementi */
    }
+   .avatar {
+       width: 25px; /* Avatar platums */
+       height: 25px; /* Avatar augstums */
+       border-radius: 50%; /* Padara avataru pilnīgu apli */
+       border: 1px solid rgba(26, 16, 8, 0.8);
+       background-color: #e4a27c;
+       border-radius: 50%; /* Pilns aplis */
+       display: flex;
+       align-items: center;
+       justify-content: center;
+   }
 
+   .pressed3 .avatar{
+       width: 37px;
+       height: 37px;
+       margin-top: -4px;
+   }
+
+   .avatar img {
+       width: 100%; /* Attēla platums pilnībā atbilst avataram */
+       height: 100%; /* Attēla augstums pilnībā atbilst avataram */
+       object-fit: cover; /* Attēls aptver visu aplīti, saglabājot proporcijas */
+       border-radius: 50%;
+   }
    .navbar-links a:hover {
        color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
    }
@@ -250,6 +286,7 @@ export default {
        display: flex; /* Flexbox for layout */
        margin-left: auto; /* Novietojam konta bloku pa labi */
        text-align: center; /* Centrējam tekstu */
+       align-items: center;
    }
    .account .fa{
        transition: color 0.3s;
@@ -257,7 +294,11 @@ export default {
 
    .pressed2{
        color: rgba(26, 16, 8, 0.8); /*Teksta krāsa */
+       display: flex;
+       align-items: center;
+       gap: 8px;
        margin: 9px;
+       margin-bottom: 8px;
        text-decoration: none; /* Noņemam noklusēto teksta apakšsvītrojumu */
        font-size: 17px; /* Fonta izmērs navigācijas tekstam */
        font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
@@ -268,7 +309,7 @@ export default {
        display:none;
        text-decoration: none; /* Noņemam noklusēto teksta apakšsvītrojumu */
        margin-top: 13px;
-       margin-right:15px ;
+       margin-right:15px;
        transition: color 0.3s;
    }
 
@@ -503,8 +544,6 @@ export default {
 
             .pressed3 {
                 display: flex; /* Flex izkārtojums */
-                margin-left: 5px; /* Atstarpe no kreisās puses */
-                margin-top: 15px; /* Atstarpe no augšas */
             }
 
             .search {

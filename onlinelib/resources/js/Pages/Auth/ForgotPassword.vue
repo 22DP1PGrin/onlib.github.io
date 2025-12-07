@@ -119,6 +119,7 @@
     h2 {
         margin-top: 0; /* Noņem noklusēto augšējo atstarpi */
         font-size: 1.1rem; /* Teksta izmērs */
+        color: rgba(26, 16, 8, 0.8);
     }
 
     /* Izvēles bloks ar saitēm */

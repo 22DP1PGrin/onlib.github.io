@@ -93,11 +93,17 @@
 
     <div class="main-content">
         <div class="content">
+
             <!-- Lietotāja profila sadaļa -->
             <div class="profile-header">
                 <!-- Lietotājvārds kā virsraksts -->
                 <h1><strong>{{ user.nickname }}</strong></h1>
-
+                <div class="avatar-wrapper">
+                    <div class="avatar">
+                        <i v-if="!user.avatar" class="fa profile-icon">&#xf2be;</i>
+                        <img v-else :src="`/storage/${user.avatar}`" alt="avatar" />
+                    </div>
+                </div>
                 <!-- Biogrāfijas sadaļa -->
                 <div class="bio-section">
                     <!-- Biogrāfijas teksts (ja tukšs - rāda aizvietotājtekstu) -->
@@ -217,6 +223,36 @@
     .content {
         max-width: 1000px; /* Maksimālais platums */
         margin: 0 auto; /* Centrē saturs */
+    }
+    .avatar-wrapper {
+        display: flex;
+        justify-content: center; /* Horizontāli centrēts */
+        margin-bottom: 10px;
+    }
+
+    .avatar {
+        width: 120px; /* Avatar platums */
+        height: 120px; /* Avatar augstums */
+        border-radius: 50%; /* Padara avataru pilnīgu apli */
+        border: 1px solid rgba(26, 16, 8, 0.8);
+        background-color: #e4a27c;
+        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px;
+        border-radius: 50%; /* Pilns aplis */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .avatar img {
+        width: 100%; /* Attēla platums pilnībā atbilst avataram */
+        height: 100%; /* Attēla augstums pilnībā atbilst avataram */
+        object-fit: cover; /* Attēls aptver visu aplīti, saglabājot proporcijas */
+        border-radius: 50%;
+    }
+
+    .profile-icon {
+        font-size: 3rem; /* Ikonas lielums, ja nav bildes */
     }
 
     .profile-header {
@@ -390,6 +426,11 @@
 
         .content-panel {
             padding: 20px 15px;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
         }
     }
 </style>
