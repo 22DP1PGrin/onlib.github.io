@@ -31,11 +31,15 @@ class PendingUserVerification extends Mailable
     // Satura veidu un datus, kas tiks izmantoti e-pastā.
     public function content(): Content
     {
+        $verificationUrl = isset($this->pending['user_id'])
+            ? url('/email-change/' . $this->pending['token'])  // pasta maiņai
+            : url('/verify-pending/' . $this->pending['token']); // registrācijai
+
         return new Content(
             view: 'emails.pending_user_verification', // Blade skats, kas tiek nosūtīts kā e-pasts
             with: [
                 'nickname' => $this->pending['nickname'],
-                'token' => $this->pending['token'],
+                'verificationUrl' => $verificationUrl,
             ],
         );
     }

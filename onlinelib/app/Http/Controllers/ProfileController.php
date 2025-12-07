@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\PasswordMessage;
+use App\Mail\PendingUserVerification;
 use App\Models\Bookmark;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -17,11 +18,12 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
+use Illuminate\Log;
 
 class ProfileController extends Controller
 {
-
-
     // Atgriež lietotāja iestatījumu skatu
     public function settings(){
         return Inertia::render('Profile/Settings');
@@ -36,56 +38,150 @@ class ProfileController extends Controller
         ]);
     }
 
-    // Atjaunina lietotāja profila informāciju
+    // Atgriež konkrēta lietotāja informācijas skatu (administratora funkcija)
+    public function Watch($id)
+    {
+        $users = User::findOrFail($id); // Atrod lietotāju pēc ID
+
+        // Atgriež skatu ar lietotāja datiem
+        return Inertia::render('Control/Users/UserInfo', [
+            'users' => $users,
+        ]);
+    }
+
+    // Atjaunīna datus
     public function update(Request $request)
     {
         $user = Auth::user();
 
+        // Validē ienākošos datus
         $validated = $request->validate([
-            'nickname' => [
-                'required',
-                'string',
-                'max:50',
-                Rule::unique('users', 'nickname')->ignore($user->id),
-            ],
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:50',
-                Rule::unique('users')->ignore($user->id),
-                'lowercase'
-            ],
-            'bio' => ['nullable', 'string', 'max:150'],
+            'nickname' => ['required', 'string', 'max:50',
+                Rule::unique('users', 'nickname')->ignore($user->id)],
+            'email'    => ['required', 'string', 'email', 'max:50',
+                Rule::unique('users')->ignore($user->id), 'lowercase'],
+            'bio'      => ['nullable', 'string', 'max:150'],
         ]);
 
-        try {
+        // Nosaka, kuri lauki ir mainīti
+        $emailChanged    = $validated['email'] !== $user->email;
+        $nicknameChanged = $validated['nickname'] !== $user->nickname;
+        $bioChanged      = $validated['bio'] !== $user->bio;
+
+        // Ja e-pasta adrese ir mainīta
+        if ($emailChanged) {
+
+            // Izveido pārbaudes tokenu
+            $token = Str::random(32);
+
+            $pending = [
+                'user_id'  => $user->id,
+                'nickname' => $nicknameChanged ? $validated['nickname'] : $user->nickname,
+                'new_email' => $validated['email'],
+                'token'    => $token,
+            ];
+
+            // Ja mainās arī segvārds
+            if ($nicknameChanged) {
+                $pending['nickname'] = $validated['nickname'];
+            }
+
+            // Ja mainās arī bio
+            if ($bioChanged) {
+                $pending['bio'] = $validated['bio'];
+            }
+
+            // Saglabā datus sesijā
+            session(['pending_user' => $pending]);
+            Session::save();
+
+            // Nosūta e-pastu ar apstiprinājuma linku
+            Mail::to($validated['email'])->send(new PendingUserVerification($pending));
+
+            // Uzreiz piemēro izmaiņas, kas nav saistītas ar e-pastu
+            $updates = [];
+
+            if ($nicknameChanged) {
+                $updates['nickname'] = $validated['nickname'];
+            }
+
+            if ($bioChanged) {
+                $updates['bio'] = $validated['bio'];
+            }
+
+            if ($updates) {
+                $user->update($updates);
+            }
+
+            // Novirza uz lapu, kas informē par apstiprināšanas nepieciešamību
+            return redirect()->route('verify.change.notice')
+                ->with('status', 'email-change-verification-sent');
+        }
+
+        //Ja e-pasts nav mainīts — vienkārši atjaunojam segvārdu/bio
+        if ($nicknameChanged || $bioChanged) {
+
             $user->update($validated);
 
-            return back()->with('success', 'Profils veiksmīgi atjaunināts!');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Kļūda atjauninot profilu: ' . $e->getMessage());
+            return back()->with('profile_updated', true);
         }
+
+        //Ja nekas nav mainīts
+        return back();
     }
 
-    // Dzēš lietotāja kontu
-    public function destroy(Request $request): RedirectResponse
+    // Apstiprina e-pasta nomaiņu pēc verifikācijas saites noklikšķināšanas
+    public function verify(string $token)
     {
-        $user = $request->user();
+        $pending = Session::get('pending_user'); // Iegūst gaidošos datus no sesijas
 
-        Auth::logout();
+        // Pārbauda, vai dati eksistē un tokens sakrīt
+        if (!$pending || $pending['token'] !== $token) {
+            return redirect()->route('profile.edit')
+                ->with('error','Nederīga vai beigusies verifikācijas saite.');
+        }
 
-        $user->delete();
+        $user = User::find($pending['user_id']); // Atrod lietotāju pēc ID
+        if (!$user) {
+            return redirect()->route('profile.edit')
+                ->with('error','Lietotājs nav atrasts.');
+        }
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        // Maina lietotāja e-pastu uz jauno e-pastu
+        $user->email = $pending['new_email'];
+        $user->save(); // Saglabā izmaiņas datubāzē
 
-        return Redirect::to('/');
+        Session::forget('pending_user'); // Izdzēš gaidošos datus no sesijas
+
+        // Pāradresē uz verifikācijas paziņojuma lapu ar apstiprinājumu
+        return redirect()->route('verify.change.notice', ['verified'=>1])
+            ->with('status','email-verified');
+    }
+
+    // Nosūta verifikācijas e-pastu atkārtoti
+    public function resend()
+    {
+        $pending = Session::get('pending_user'); // Iegūst gaidošos datus no sesijas
+
+        if (!$pending) {
+            return redirect()->route('profile.edit')
+                ->with('error', 'Nav atrasts e-pasta maiņas pieprasījums.');
+        }
+
+        // Ģenerē jaunu tokenu
+        $pending['token'] = Str::random(32);
+        Session::put('pending_user', $pending); // Saglabā jauno tokenu sesijā
+
+        // Nosūta jaunu verifikācijas e-pastu uz jauno e-pasta adresi
+        Mail::to($pending['new_email'])->send(new PendingUserVerification($pending));
+
+        return back()->with('status', 'verification-link-sent');
     }
 
     // Atjaunina lietotāja paroli
     public function updatePassword(Request $request)
     {
+        // Validē paroles datus
         $request->validate([
             'current' => ['required', 'string'],
             'new' => ['required', 'confirmed',
@@ -95,89 +191,94 @@ class ProfileController extends Controller
                     ->numbers()
                     ->symbols()
             ],
-        ], [
-        ]);
+        ],
+        );
 
-        $user = $request->user();
+        $user = $request->user(); // Iegūst pašreizējo lietotāju
 
+        // Pārbauda, vai ievadītā pašreizējā parole sakrīt
         if (!Hash::check($request->current, $user->password)) {
             throw ValidationException::withMessages([
                 'current' => ['Nepareiza pašreizējā parole.'],
             ]);
         }
 
-        $user->password = Hash::make($request->new);
-        $user->save();
+        $user->password = Hash::make($request->new); // Hash jauno paroli
+        $user->save(); // Saglabā jauno paroli datubāzē
 
+        // Nosūta e-pastu ar paziņojumu par paroles maiņu
         Mail::to($user->email)->send(new PasswordMessage($user));
 
-        return back()->with('success', 'Parole veiksmīgi nomainīta!');
-        // Nosūtām e-pastu ar paziņojumu, ka parole mainīta
+        return back()->with('password_updated', true);
+    }
 
+    // Dzēš lietotāja kontu
+    public function destroy(Request $request): RedirectResponse
+    {
+        // Parbauda vēco paroli
+        $request->validate([
+            'password' => ['required', 'current_password'],
+        ]);
 
+        $user = $request->user(); // Iegūst pašreizējo lietotāju
+
+        Auth::logout(); // Izlogo lietotāju
+
+        $user->delete(); // Dzēš lietotāja kontu no datubāzes
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return Redirect::to('/'); // Pāradresē uz sākumlapu
     }
 
     // Atgriež lietotāja profila skatu ar grāmatu skaitu
     public function profile()
     {
-        $user = auth()->user();
-        $booksCount = $user->books()->count();
-        $classicRatingsCount = $user->classicBookRatings()->count();
-        $userWorkRatingsCount = $user->bookRatings()->count();
-        $totalRatingsCount = $classicRatingsCount + $userWorkRatingsCount;
+        $user = auth()->user(); // Iegūst autentificēto lietotāju
+        $booksCount = $user->books()->count(); // Saskaita lietotāja grāmatas
+        $classicRatingsCount = $user->classicBookRatings()->count(); // Saskaita klasisko grāmatu vērtējumus
+        $userWorkRatingsCount = $user->bookRatings()->count(); // Saskaita lietotāju darbu vērtējumus
+        $totalRatingsCount = $classicRatingsCount + $userWorkRatingsCount; // Kopējais vērtējumu skaits
 
-        // grāmatu skaits (ar grāmatzīmes veidu)
+        // Grāmatzīmju skaits grupēts pēc tipa
         $bookmarkCounts = Bookmark::where('user_id', $user->id)
             ->selectRaw('bookmark_type_id, count(*) as count')
             ->groupBy('bookmark_type_id')
             ->pluck('count', 'bookmark_type_id')
             ->toArray();
 
-        // Izlasīto grāmatu skaits (ar grāmatzīmes veidu "Izlasīts")
-        $readBooksCount = $bookmarkCounts[1] ?? 0;
+        // Izlasīto grāmatu skaits (grāmatzīmju tips 1)
+        $readBooksCount = $bookmarkCounts[1] ?? 0; // Ja nav grāmatzīmju, tad 0
 
-
+        // Atgriež profila skatu ar visiem datiem
         return Inertia::render('Profile/Profile', [
-            'user' => $user,
-            'booksCount' => $booksCount,
-            'classicRatingsCount' => $classicRatingsCount,
-            'userWorkRatingsCount' => $userWorkRatingsCount,
-            'totalRatingsCount' => $totalRatingsCount,
-            'readBooksCount' => $readBooksCount,
+            'user' => $user, // Lietotāja dati
+            'booksCount' => $booksCount, // Grāmatu skaits
+            'classicRatingsCount' => $classicRatingsCount, // Klasisko grāmatu vērtējumu skaits
+            'userWorkRatingsCount' => $userWorkRatingsCount, // Lietotāju darbu vērtējumu skaits
+            'totalRatingsCount' => $totalRatingsCount, // Kopējais vērtējumu skaits
+            'readBooksCount' => $readBooksCount, // Izlasīto grāmatu skaits
         ]);
     }
 
     // Atgriež visu parasto lietotāju sarakstu (administratora funkcija)
     public function showUsers()
     {
-        $users = User::where('role', 'user')
-            ->orderBy('nickname', 'asc')
-            ->get();
+        $users = User::where('role', 'user') // Atlasa tikai lietotājus ar lomu 'user'
+        ->orderBy('nickname', 'asc')
+        ->get();
 
         return Inertia::render('Control/Users/Users', [
-            'users' => $users,
+            'users' => $users, // Pārraida lietotāju sarakstu
         ]);
     }
 
     // Dzēš konkrētu lietotāju (administratora funkcija)
     public function delete(User $user)
     {
+        $user->delete(); // Dzēš lietotāju no datubāzes
 
-        $user->delete();
-
-        return redirect()->route('users')
-            ->with('success', 'Lietotājs veiksmīgi dzēsts!');
+        return redirect()->route('users')->with('success', 'Lietotājs veiksmīgi dzēsts!');
     }
-
-    public function Watch($id)
-    {
-
-        $users = User::findOrFail($id);
-
-        // Atgriežam skatu ar grāmatas datiem un iespējām rediģēt
-        return Inertia::render('Control/Users/UserInfo', [
-            'users' => $users,
-        ]);
-    }
-
 }

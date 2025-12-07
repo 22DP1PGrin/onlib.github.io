@@ -57,7 +57,6 @@ class RegisteredUserController extends Controller
 
         // Nosūta e-pastu ar verifikācijas saiti
         Mail::to($request->email)->send(new PendingUserVerification(session('pending_user')));
-        Session::put('from_registration', true);
 
         // Pāradresē uz lapu ar paziņojumu, ka saite nosūtīta
         return redirect()->route('verification.notice')

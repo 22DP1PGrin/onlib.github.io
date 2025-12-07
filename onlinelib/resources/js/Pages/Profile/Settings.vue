@@ -1,267 +1,242 @@
-<script>
-    import {computed} from "vue";
-    import {router, usePage} from "@inertiajs/vue3";
-    import Navbar from "@/Components/Navbar.vue";
-    import Footer from "@/Components/Footer.vue";
-    import TextInput from "@/Components/TextInput.vue";
-    import InputError from "@/Components/InputError.vue";
-    import {route} from "ziggy-js";
+<script setup>
+import { useForm, usePage, router } from "@inertiajs/vue3";
+import { computed, ref, watch } from "vue";
+import Navbar from "@/Components/Navbar.vue";
+import Footer from "@/Components/Footer.vue";
+import { route } from "ziggy-js";
 
-    export default {
-        setup() {
-            // Iegūst autentificēto lietotāju no lapas datiem
-            const user = computed(() => usePage().props.auth.user)
+// Iegūst pašreizējo lietotāju
+const user = computed(() => usePage().props.auth.user);
 
-            // Izrakstīšanās funkcija
-            const logout = () => {
-                router.post(route('logout'), {}, {
-                    onSuccess: () => {
-                        // Pēc izrakstīšanās pāradresē uz sākumlapu
-                        window.location.href = '/'
-                    }
-                })
-            }
+// Modālo logu kontrole
+const showModal = ref(false);
+const showPasswordModal = ref(false);
+const showDeleteModal = ref(false);
 
-            return {
-                user,
-                logout
-            };
-        },
-        components: {
-            InputError,
-            TextInput,
-            Navbar,
-            Footer
-        },
-        data() {
-            return {
-                errors: {}, // Objektu kļūdām no servera
-                deletePassword: '', // Ievade konta dzēšanai
+// Aizver profila modāli
+const closeModal = () => {
+    showModal.value = false;
+    document.body.style.overflow = "";
+};
 
-                // Profila rediģēšanas lauki
-                profileData: {
-                    nickname: '',
-                    email: '',
-                    bio: ''
-                },
+// Aizver paroles maiņas modāli
+const closePasswordModal = () => {
+    showPasswordModal.value = false;
+    document.body.style.overflow = "";
+};
 
-                // Paroles maiņas lauki
-                passwordData: {
-                    current: '',
-                    new: '',
-                    confirm: ''
-                }
-            }
-        },
+// Atver konta dzēšanas apstiprinājuma modāli
+const openDeleteModal = () => {
+    showDeleteModal.value = true;
+    document.body.style.overflow = "hidden";
+};
 
-        methods: {
-            // Nosūta pieprasījumu profila datu saglabāšanai
-            handleProfileSubmit() {
-                this.$inertia.put(route('profile.update'), {
-                    nickname: this.profileData.nickname,
-                    email: this.profileData.email,
-                    bio: this.profileData.bio
-                }, {
-                    preserveScroll: true,
-                    onSuccess: () => {
-                        alert('Profila dati veiksmīgi saglabāti!');
-                        this.errors = {}; // Notīra kļūdu ziņojumus
-                    },
-                    onError: (errors) => {
-                        this.errors = errors; // Parāda kļūdas
-                    }
-                });
-            },
+// Aizver konta dzēšanas modāli
+const closeDeleteModal = () => {
+    showDeleteModal.value = false;
+    document.body.style.overflow = "";
+};
 
-            // Nosūta paroles maiņas pieprasījumu
-            handlePasswordSubmit() {
-                this.$inertia.put(route('profile.password'), {
-                    current: this.passwordData.current,
-                    new: this.passwordData.new,
-                    new_confirmation: this.passwordData.confirm,
-                }, {
-                    preserveScroll: true,
-                    onSuccess: () => {
-                        alert('Parole veiksmīgi nomainīta!');
-                        // Notīra laukus un kļūdas
-                        this.passwordData.current = '';
-                        this.passwordData.new = '';
-                        this.passwordData.confirm = '';
-                        this.errors = {};
-                    },
-                    onError: (errors) => {
-                        this.errors = errors;
-                    }
-                });
-            },
+// Profila rediģēšanas forma
+const profileForm = useForm({
+    nickname: user.value?.nickname ?? "",
+    email: user.value?.email ?? "",
+    bio: user.value?.bio ?? ""
+});
 
-            // Konta dzēšana ar apstiprinājumu
-            handleDeleteAccount() {
-                if (confirm('Vai tiešām vēlaties dzēst kontu?\nŠī darbība ir neatgriezeniska.')) {
-                    this.$inertia.delete(route('profile.destroy'), {
-                        data: {
-                            password: this.deletePassword
-                        },
-                        onSuccess: () => {
-                            alert('Jūsu konts tika dzēsts.');
-                        },
-                        onError: (errors) => {
-                            if (errors.password) {
-                                alert(errors.password);
-                            }
-                        }
-                    });
-                }
-            }
-        },
+// Paroles maiņas forma
+const passwordForm = useForm({
+    current: "",
+    new: "",
+    new_confirmation: ""
+});
 
-        mounted() {
-            // Kad komponents tiek ielādēts, iestata profila laukus ar lietotāja datiem
-            if (this.user) {
-                this.profileData.nickname = this.user.nickname;
-                this.profileData.email = this.user.email;
-                this.profileData.bio = this.user.bio;
+// Konta dzēšanas forma
+const deleteForm = useForm({
+    password: ""
+});
+
+// Nosūta profila saglabāšanas formu
+const handleProfileSubmit = () => {
+    profileForm.put(route("profile.update"), {
+        preserveScroll: true,
+
+        onSuccess: (page) => {
+            // Ja atgriežamies tajā pašā maršrutā, tad email nav mainīts
+            if (route().current("profile.settings")) {
+                showModal.value = true;
+                document.body.style.overflow = "hidden";
             }
         }
-    }
-</script>
+    });
+};
 
+// Nosūta paroles maiņas formu
+const handlePasswordSubmit = () => {
+    passwordForm.put(route("profile.password"), {
+        preserveScroll: true,
+        onSuccess: () => {
+            showPasswordModal.value = true;
+            document.body.style.overflow = "hidden";
+        }
+    });
+};
+
+// Apstiprina konta dzēšanu
+const confirmDeleteAccount = () => {
+    deleteForm.delete(route("profile.destroy"), {
+        onSuccess: () => {
+            closeDeleteModal();
+        }
+    });
+};
+
+// Izlogo lietotāju
+const logout = () => {
+    router.post(route("logout"), {}, {
+        onSuccess: () => window.location.href = "/"
+    });
+};
+</script>
 
 <template>
     <Navbar/>
 
-    <!-- Iestatījumu lapas virsraksts -->
     <div class="settings-header">
         <h1><strong>Profila iestatījumi</strong></h1>
     </div>
-
-
-    <div class="settings-page">
-        <!-- Profila pamatinformācijas sadaļa -->
-        <div class="settings-section">
-            <h2><i class="fa">&#xf007;</i> Pamatinformācija</h2>
-
-            <!-- Profila datu atjaunināšanas forma -->
-            <form @submit.prevent="handleProfileSubmit" class="settings-form">
-                <!-- Lietotājvārda ievades lauks -->
-                <div class="form-group">
-                    <label>Lietotājvārds:</label>
-                    <input
-                        type="text"
-                        v-model="profileData.nickname"
-                        placeholder="Jūsu lietotājvārds"
-                        autocomplete="given-name"
-                        required
-                    >
-                    <!-- Kļūdu paziņojums lietotājvārdam -->
-                    <InputError class="mt-2" :message="errors.nickname" />
-                </div>
-
-                <!-- E-pasta ievades lauks -->
-                <div class="form-group">
-                    <label>E-pasts:</label>
-                    <input
-                        type="email"
-                        v-model="profileData.email"
-                        placeholder="jūsu@epasts.lv"
-                        autocomplete="username"
-                        required
-                    >
-                    <!-- Kļūdu paziņojums e-pastam -->
-                    <InputError class="mt-2" :message="errors.email" />
-                </div>
-
-                <!-- Profila apraksta laukums -->
-                <div class="form-group">
-                    <label>Apraksts:</label>
-                    <textarea
-                        v-model="profileData.bio"
-                        rows="4"
-                        placeholder="Rakstiet kaut ko par sevi..."
-                    ></textarea>
-                    <!-- Kļūdu paziņojums aprakstam -->
-                    <InputError class="mt-2" :message="errors.bio" />
-                </div>
-
-                <!-- Saglabāšanas poga -->
-                <button type="submit" class="save-btn">Saglabāt</button>
-            </form>
-        </div>
-
-        <!-- Paroles maiņas sadaļa -->
-        <div class="settings-section">
-            <h2><i class="fa">&#xf023;</i> Paroles maiņa</h2>
-
-            <!-- Paroles maiņas forma -->
-            <form @submit.prevent="handlePasswordSubmit" class="settings-form">
-                <!-- Pašreizējās paroles ievades lauks -->
-                <div class="form-group">
-                    <label>Pašreizējā parole:</label>
-                    <input
-                        type="password"
-                        v-model="passwordData.current"
-                        placeholder="Jūsu vecā parole"
-                    >
-                    <!-- Kļūdu paziņojums paroles ievadei -->
-                    <InputError class="mt-2" :message="$page.props.errors.current" />
-                </div>
-
-                <!-- Jaunās paroles ievades lauks -->
-                <div class="form-group">
-                    <label>Jaunā parole:</label>
-                    <input
-                        type="password"
-                        v-model="passwordData.new"
-                        placeholder="Vismaz 8 simboli"
-                    >
-                    <!-- Kļūdu paziņojums jaunajai parolei -->
-                    <InputError class="mt-2" :message="$page.props.errors.new" />
-                </div>
-
-                <!-- Paroles apstiprināšanas lauks -->
-                <div class="form-group">
-                    <label>Atkārtojiet paroli:</label>
-                    <input
-                        type="password"
-                        v-model="passwordData.confirm"
-                        placeholder="Atkārtojiet jūsu paroli"
-                    >
-                    <!-- Kļūdu paziņojums paroles apstiprināšanai -->
-                    <InputError class="mt-2" :message="$page.props.errors.new_confirmation" />
-                </div>
-
-                <!-- Paroles maiņas poga -->
-                <button type="submit"  @click.prevent="handlePasswordSubmit" class="edit-btn">Mainīt paroli</button>
-            </form>
-        </div>
-
-        <!-- Konta darbību sadaļa (bīstamā zona) -->
-        <div class="settings-section">
-            <h2><i class="fa">&#xf071;</i> Darbības ar kontu</h2>
-
-            <div class="form-group">
-                <!-- Konta dzēšanas poga -->
-                <button
-                    @click="handleDeleteAccount"
-                    class="delete-btn"
-                >
-                    Dzēst kontu
-                </button>
-
-                <!-- Izrakstīšanās poga -->
-                <button
-                    @click.prevent="logout"
-                    class="exit-btn"
-                >
-                    Iziet
-                </button>
+    <div v-if="showModal" class="modal-overlay">
+        <div class="modal">
+            <div class="success-container">
+                <h2>Profila dati veiksmīgi saglabāti!</h2>
+                <p>Jūsu lietotājvārds un/vai apraksts ir atjaunināti.</p>
+                <button @click="closeModal" class="close-btn">Aizvērt</button>
             </div>
         </div>
     </div>
 
+    <div v-if="showPasswordModal" class="modal-overlay">
+        <div class="modal">
+            <div class="success-container">
+                <h2>Profila dati veiksmīgi saglabāti!</h2>
+                <p>Jūsu parole ir atjaunināta.</p>
+                <button @click="closePasswordModal" class="close-btn">Aizvērt</button>
+            </div>
+        </div>
+    </div>
+
+    <div v-if="showDeleteModal" class="modal-overlay">
+        <div class="modal">
+            <div class="success-container">
+                <h2>Vai tiešām vēlaties dzēst savu kontu?</h2>
+                <p>Šī darbība ir neatgriezeniska. Ievadiet paroli, lai apstiprinātu.</p>
+
+                <div class="form-group">
+                    <input type="password" v-model="deleteForm.password">
+                    <div class="error" v-if="deleteForm.errors.password">
+                        {{ deleteForm.errors.password }}
+                    </div>
+                </div>
+
+                <div class="close">
+                    <button @click="closeDeleteModal" class="close-btn">Atcelt</button>
+                    <button @click="confirmDeleteAccount" class="delete-btn">Dzēst</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="settings-page">
+
+        <!-- Profila informācija -->
+        <div class="settings-section">
+            <h2><i class="fa">&#xf007;</i> Pamatinformācija</h2>
+
+            <form @submit.prevent="handleProfileSubmit" class="settings-form">
+
+                <div class="form-group">
+                    <label>Lietotājvārds:</label>
+                    <input
+                        type="text"
+                        v-model="profileForm.nickname"
+                        placeholder="Jūsu lietotājvārds"
+                        required
+                    >
+                    <div class="error" v-if="profileForm.errors.nickname">{{ profileForm.errors.nickname }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label>E-pasts:</label>
+                    <input
+                        type="email"
+                        v-model="profileForm.email"
+                        placeholder="jūsu@epasts.lv"
+                        required
+                    >
+                    <div class="error" v-if="profileForm.errors.email">{{ profileForm.errors.email }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Apraksts:</label>
+                    <textarea
+                        v-model="profileForm.bio"
+                        rows="4"
+                        placeholder="Rakstiet kaut ko par sevi..."
+                    ></textarea>
+                    <div class="error" v-if="profileForm.errors.bio">{{ profileForm.errors.bio }}</div>
+                </div>
+
+                <button type="submit" class="save-btn">Saglabāt</button>
+            </form>
+        </div>
+
+        <!-- Paroles maiņa -->
+        <div class="settings-section">
+            <h2><i class="fa">&#xf023;</i> Paroles maiņa</h2>
+
+            <form @submit.prevent="handlePasswordSubmit" class="settings-form">
+
+                <div class="form-group">
+                    <label>Pašreizējā parole:</label>
+                    <input type="password" v-model="passwordForm.current" autocomplete="username">
+                    <div class="error" v-if="passwordForm.errors.current">{{ passwordForm.errors.current }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Jaunā parole:</label>
+                    <input type="password" v-model="passwordForm.new">
+                    <div class="error" v-if="passwordForm.errors.new">{{ passwordForm.errors.new }}</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Atkārtojiet paroli:</label>
+                    <input type="password" v-model="passwordForm.new_confirmation">
+                    <div class="error" v-if="passwordForm.errors.new_confirmation">{{ passwordForm.errors.new_confirmation }}</div>
+                </div>
+
+                <!-- Saite "Aizmirsāt paroli?" tiek rādīta, ja ir kļūda autentifikācijā -->
+                <div v-if="passwordForm.errors.current" class="forgot-password">
+                    <a :href="route('forgot-password.page')">Aizmirsāt paroli?</a>
+                </div>
+
+                <button type="submit" class="edit-btn">Mainīt paroli</button>
+            </form>
+        </div>
+
+        <!-- Konta darbības -->
+        <div class="settings-section">
+            <h2><i class="fa">&#xf071;</i> Darbības ar kontu</h2>
+
+            <div class="form-group">
+                <button @click.prevent="openDeleteModal" class="delete-btn">Dzēst kontu</button>
+                <button @click.prevent="logout" class="exit-btn">Iziet</button>
+            </div>
+        </div>
+
+    </div>
+
     <Footer/>
 </template>
-
 
 
 <style scoped>
@@ -308,7 +283,7 @@
         gap: 5px;
     }
 
-    .form-group label {
+    label {
         font-weight: bold;
     }
 
@@ -316,6 +291,11 @@
     textarea::placeholder {
         color: rgba(26, 16, 8, 0.42);
         font-size: 1.0rem;
+    }
+    /* Kļūdas zem ievades lauka */
+    .error{
+        color: rgb(110, 37, 37);
+        font-size: 1rem;
     }
 
     button {
@@ -333,6 +313,60 @@
         text-decoration: none; /* Noņem apakšsvītrojumu no saitēm */
         color: rgba(106, 51, 0, 0.8);
         font-size: 1rem;
+    }
+
+    /* Modala loga stils */
+    .modal-overlay {
+        position: fixed; /* Fiksēta pozicija */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(19, 8, 0, 0.59);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000; /* Virs visiem elementiem */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+    }
+
+    .modal {
+        border-radius: 12px;
+        padding: 15px;
+        max-width: 400px;
+        width: 90%;
+        position: relative;
+        background-color: #c58667; /* Fona krāsa */
+        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+    }
+
+    .close{
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    .close-btn{
+        align-self: flex-start;
+        margin-bottom: 5px;
+    }
+    .success-container {
+        text-align: center;
+        padding: 15px;
+    }
+
+    .success-container h2 {
+        margin-bottom: 15px;
+        font-size:  1.3rem;
+        font-weight: bold;
+        color: rgba(26, 16, 8, 0.8);
+    }
+
+    .success-container p {
+        margin-bottom: 15px;
+        color: rgba(26, 16, 8, 0.8);
+
     }
 
     a:hover {
@@ -422,6 +456,14 @@
 
         .exit-btn{
             padding: 5px 32px;
+        }
+
+        .modal{
+            max-width: 300px;
+        }
+
+        .success-container h2{
+            font-size: 1.1rem;
         }
     }
 

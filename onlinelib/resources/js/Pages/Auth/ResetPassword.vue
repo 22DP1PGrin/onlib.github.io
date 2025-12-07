@@ -136,8 +136,6 @@
                 <h2>Parole veiksmīgi atjaunināta!</h2>
                 <p>
                     Tagad Jūs varat
-                    <a href="/login">pieteikties</a>
-                    vai
                     <a href="/" class="home">atgriezties vietnē</a>.
                 </p>
             </div>
@@ -303,10 +301,13 @@
     .success-container h2 {
         margin-bottom: 15px;
         font-size:  1.3rem;
+        font-weight: bold;
+        color: rgba(26, 16, 8, 0.8);
     }
 
     .success-container p {
         margin-bottom: 15px;
+        color: rgba(26, 16, 8, 0.8);
     }
 
     /* Responsīvs dizains mazākiem ekrāniem */
@@ -317,6 +318,7 @@
 
         h2 {
             font-size: 1rem;
+
         }
 
 

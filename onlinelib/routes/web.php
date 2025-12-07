@@ -26,14 +26,12 @@ Route::get('/api/is-logged-in', function () {
 //Lietotāja e-pasta verifikācija ar tokena pārbaudi
 // Aizsargāts ar registration.flow, lai nepieļautu piekļuvi bez reģistrācijas procesa.
 Route::get('/verify-pending/{token}', [RegisteredUserController::class, 'verify'])
-    ->name('verify.pending')
-    ->middleware(['registration.flow']);
+    ->name('verify.pending');
 
 // Verifikācijas e-pasta atkārtota nosūtīšana
 // Aizsargāts ar registration.flow, lai nepieļautu piekļuvi bez reģistrācijas procesa.
 Route::post('/verify-resend', [RegisteredUserController::class, 'resend'])
-    ->name('verification.resend')
-    ->middleware(['registration.flow']);
+    ->name('verification.resend');
 
 // Lapa ar paziņojumu, ka jāapstiprina e-pasts
 // Aizsargāts ar registration.flow, lai nepieļautu piekļuvi bez reģistrācijas procesa.
@@ -41,8 +39,7 @@ Route::get('/verify-email', function () {
     return Inertia::render('Auth/VerifyEmail', [
         'status' => session('status')
     ]);
-})->name('verification.notice')
-    ->middleware(['registration.flow']);
+})->name('verification.notice');
 
 // Paroles atjaunošanas sākuma lapa (e-pasta ievade)
 Route::get('/forgot-password', function () {
@@ -54,16 +51,12 @@ Route::post('/forgot-password', [PasswordResetController::class, 'sendResetCode'
     ->name('password.email');
 
 //  Verifikācijas koda pārbaude
-// Šis maršruts ir aizsargāts ar reset.flow, lai nepieļautu tiešu piekļuvi
 Route::post('/check-code', [PasswordResetController::class, 'checkCode'])
-    ->name('password.check')
-    ->middleware('reset.flow');
+    ->name('password.check');
 
 // Paroles atjaunošana pēc veiksmīgas koda pārbaudes
-// Aizsargāts ar reset.flow, lai piekļuve būtu iespējama tikai pēc koda apstiprināšanas
 Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])
-    ->name('password.reset')
-    ->middleware('reset.flow');
+    ->name('password.reset');
 
 // Lapa, kurā lietotājs ievada verifikācijas kodu un/vai jauno paroli
 // Parametrs "verified" nosaka, vai parādīt jaunas paroles formu
@@ -71,8 +64,7 @@ Route::get('/reset-password', function () {
     return Inertia::render('Auth/ResetPassword', [
         'verified' => request()->query('verified') === 'true',
     ]);
-})->name('password.showReset')
-    ->middleware('reset.flow');
+})->name('password.showReset');
 
 
 // Sākums
@@ -115,6 +107,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
 });
 
+Route::get('/email-change', function () {
+    return Inertia::render('Profile/VerifyEmailChange');
+})->name('verify.change.notice');
+
+Route::get('/email-change/{token}', [ProfileController::class, 'verify'])
+    ->name('email.change.confirm');
+
+Route::post('/email-resend', [ProfileController::class, 'resend'])
+    ->name('email.change.resend');
 
 Route::middleware('auth')->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');

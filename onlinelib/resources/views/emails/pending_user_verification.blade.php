@@ -7,11 +7,11 @@
 <body style="font-family: Tahoma, Helvetica, sans-serif; ">
 <p>Sveiki {{ $nickname }},</p>
 
-<p>paldies par reģistrēšanos! Lūdzu, apstipriniet savu e-pastu, noklikšķinot uz tālāk redzamās saites:</p>
+<p>Lūdzu, apstipriniet savu e-pastu, noklikšķinot uz tālāk redzamās saites:</p>
 
 <p>
-    <a href="{{ url('/verify-pending/' . $token) }}"
-       style="color:rgba(106, 51, 0, 0.8);">
+    <a href="{{ $verificationUrl }}"
+       style="color:rgba(106, 51, 0, 0.8); text-align: center;">
         Apstiprināt e-pastu
     </a>
 </p>
