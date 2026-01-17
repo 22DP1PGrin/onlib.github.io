@@ -2,117 +2,184 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserBookChapter;
+use App\Models\BookChapter;
+use App\Models\ClassicBook;
 use App\Models\UserBook;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ChapterController extends Controller
 {
-    // Metode, kas saglabā jaunu nodaļu
-    public function store(Request $request)
+
+    // Saglabā jaunu klasisko nodaļu
+    public function storeClassic(Request $request, ClassicBook $book)
     {
-        // Validējam ievadītos datus
+        // Validē ievadītos datus
         $validated = $request->validate([
-            'name' => 'required|string|max:25',
+            'name' => 'required|string|max:30',
             'content' => 'required|string',
-            'book_id' => 'required|exists:user_books,id',
-        ], [
-            'name.max' => 'Nosaukums nedrīkst pārsniegt 25 rakstzīmes.', // Paziņojums, ja nosaukums ir pārāk garš
         ]);
 
-        // Iegūstam pašreizējo lietotāju
-        $user = Auth::user();
+        // Nosaka nodaļas secības numuru
+        $order = BookChapter::where('classic_book_id', $book->id)->count() + 1;
 
-        // Meklējam grāmatu, kas pieder lietotājam
-        $book = UserBook::where('id', $validated['book_id'])
-            ->where('user_id', $user->id)
-            ->first();
-
-        // Ja grāmata netiek atrasta, atgriežam kļūdas atbildi
-        if (!$book) {
-            return response()->json(['error' => 'Grāmata nav atrasta!'], 422);
-        }
-
-        // Izveidojam jaunu nodaļu
-        $chapter = UserBookChapter::create([
-            'book_id' => $book->id,  // Saistām nodaļu ar grāmatu
+        // Izveido jaunu nodaļu datubāzē
+        $chapter = BookChapter::create([
+            'classic_book_id' => $book->id,
             'name' => $validated['name'],
             'content' => $validated['content'],
-            'order' => UserBookChapter::where('book_id', $book->id)->count() + 1,
+            'order' => $order,
         ]);
 
-        // Atgriežam veiksmīgu atbildi ar izveidotās nodaļas datiem
-        return response()->json(['success' => true, 'chapter' => $chapter]);
-    }
-
-    // Metode, kas atver jaunas nodaļas izveides formu
-    public function create(UserBook $book)
-    {
-        return Inertia::render('Writing/NewInfo/NewChapter', [
-            'bookId' => $book->id
+        // Atgriež JSON atbildi ar veiksmīgu izveidi
+        return response()->json([
+            'success' => true,
+            'chapter' => $chapter,
         ]);
     }
 
-    // Metode, kas dzēš nodaļu
-    public function destroy($id)
+    // Saglabā jaunu lietotāja nodaļu
+    public function storeUser(Request $request, UserBook $book)
     {
-        // Meklējam nodaļu pēc ID
-        $chapter = UserBookChapter::findOrFail($id);
-
-        // Ja nodaļa nepieder pašreizējam lietotājam, atsakām piekļuvi
-        if ($chapter->book->user_id !== auth()->id()) {
-            abort(403, 'Jums nav piekļuves šai nodaļai.');
-        }
-
-        // Dzēšam nodaļu
-        $chapter->delete();
-
-        // Atgriežam lietotāju atpakaļ ar ziņojumu
-        return back()->with('message', 'Nodaļa veiksmīgi dzēsta!');
-    }
-
-    // Metode, kas atver nodaļas rediģēšanas formu
-    public function edit(UserBookChapter $chapter)
-    {
-        return Inertia::render('Writing/EditInfo/EditChapter', [
-            'chapter' => $chapter,  // Nododam nodaļas datus uz priekšējo pusi
-        ]);
-    }
-
-    // Metode, kas atjaunina nodaļas datus
-    public function update(Request $request, UserBookChapter $chapter)
-    {
-        // Validējam ievadītos datus
+        // Validē ievadītos datus
         $validated = $request->validate([
-            'name' => 'required|string|max:25',
+            'name' => 'required|string|max:30',
             'content' => 'required|string',
         ]);
 
-        // Atjauninām nodaļas datus
-        $chapter->update($request->only('name', 'content'));
+        // Nosaka nodaļas secības numuru
+        $order = BookChapter::where('user_book_id', $book->id)->count() + 1;
 
-        // Iegūstam grāmatu, pie kuras pieder nodaļa
-        $book = $chapter->book;
+        // Izveido jaunu nodaļu datubāzē
+        $chapter = BookChapter::create([
+            'user_book_id' => $book->id,
+            'name' => $validated['name'],
+            'content' => $validated['content'],
+            'order' => $order,
+        ]);
 
-        // Pāradresējam uz grāmatas rediģēšanas lapu ar veiksmīgu ziņu
-        return redirect()->route('EditStory', $book->id)
-            ->with('success', 'Nodaļa veiksmīgi atjaunināta!');
+        // Atgriež JSON atbildi ar veiksmīgu izveidi
+        return response()->json([
+            'success' => true,
+            'chapter' => $chapter,
+        ]);
     }
 
-    // Rāda konkrētas nodaļas saturu
-    public function showContent($bookId, $chapterId)
+    // Atver jaunas klasiskās nodaļas izveides formu
+    public function createClassic(ClassicBook $book)
     {
-        // Atrodam nodaļu, pārliecinoties, ka tā pieder norādītajai grāmatai
-        $chapter = UserBookChapter::where('book_id', $bookId)
-            ->findOrFail($chapterId);
+        return Inertia::render('Writing/NewInfo/NewChapter', [
+            'bookId' => $book->id,
+            'type' => 'classic',
+        ]);
+    }
 
-        // Atgriežam Inertia skatu ar nepieciešamajiem datiem
-        return Inertia::render('Reading/UserBooks/UserContent', [
+    // Atver jaunas lietotāja nodaļas izveides formu
+    public function createUser(UserBook $book)
+    {
+        return Inertia::render('Writing/NewInfo/NewChapter', [
+            'bookId' => $book->id,
+            'type' => 'user',
+        ]);
+    }
+
+    // Rediģēt klasisko nodaļu
+    public function editClassic(BookChapter $chapter)
+    {
+        return Inertia::render('Writing/EditInfo/EditChapter', [
+            'chapter' => $chapter,               // Pašreizējās nodaļas dati
+            'bookId' => $chapter->classic_book_id, // Grāmatas ID
+            'type' => 'classic',                 // Nodaļas tips
+        ]);
+    }
+
+    // Rediģēt lietotāja nodaļu
+    public function editUser(BookChapter $chapter)
+    {
+        return Inertia::render('Writing/EditInfo/EditChapter', [
+            'chapter' => $chapter,             // Pašreizējās nodaļas dati
+            'bookId' => $chapter->user_book_id, // Grāmatas ID
+            'type' => 'user',                   // Nodaļas tips
+        ]);
+    }
+
+    // Atjaunina klasisko nodaļu datubāzē
+    public function updateClassic(Request $request, BookChapter $chapter)
+    {
+        // Validē ievadītos datus
+        $validated = $request->validate([
+            'name' => 'required|string|max:30',
+            'content' => 'required|string',
+        ]);
+
+        // Atjaunina nodaļu ar jaunajiem datiem
+        $chapter->update($validated);
+
+        // Atgriež JSON ar veiksmīgu atjaunināšanu
+        return response()->json([
+            'success' => true,
+            'bookId' => $chapter->classic_book_id,
+        ]);
+    }
+
+    // Atjaunina lietotāja nodaļu datubāzē
+    public function updateUser(Request $request, BookChapter $chapter)
+    {
+        // Validē ievadītos datus
+        $validated = $request->validate([
+            'name' => 'required|string|max:30',
+            'content' => 'required|string',
+        ]);
+
+        // Atjaunina nodaļu ar jaunajiem datiem
+        $chapter->update($validated);
+
+        // Atgriež JSON ar veiksmīgu atjaunināšanu
+        return response()->json([
+            'success' => true,
+            'bookId' => $chapter->user_book_id,
+        ]);
+    }
+
+    // Dzēš klasisko nodaļu
+    public function destroyClassic(BookChapter $chapter)
+    {
+        $chapter->delete();
+    }
+
+    // Dzēš lietotāja nodaļu
+    public function destroyUser(BookChapter $chapter)
+    {
+        $chapter->delete();
+    }
+
+    // Parāda nodaļas saturu
+    public function showContent(int $bookId, int $chapterId)
+    {
+        // Mēģina atrast nodaļu classic grāmatā
+        $chapter = BookChapter::where('classic_book_id', $bookId)
+            ->find($chapterId);
+
+        $type = 'classic';
+
+        // Ja nodaļa nav atrasta, mēģina user grāmatā
+        if (!$chapter) {
+            $chapter = BookChapter::where('user_book_id', $bookId)
+                ->findOrFail($chapterId);
+            $type = 'user';
+        }
+
+        // Atgriež Inertia skatu ar nodaļas datiem
+        return Inertia::render('Reading/ChapterContent', [
             'chapter' => $chapter,
-            'bookChapters' => $chapter->book->chapters,
-            'bookId' => $bookId
+            'bookChapters' => BookChapter::where(
+                $type === 'classic' ? 'classic_book_id' : 'user_book_id',
+                $bookId
+            )
+                ->orderBy('order')
+                ->get(),
+            'bookId' => $bookId,
+            'type' => $type,
         ]);
     }
 }

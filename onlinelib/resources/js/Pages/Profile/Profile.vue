@@ -184,7 +184,7 @@
                 </div>
 
                 <!-- Administratora funkcionalitāte (rādās tikai adminiem) -->
-                <div v-if="user.role === 'admin'" class="admin-actions">
+                <div v-if="user.role === 'admin' || user.role === 'superadmin'" class="admin-actions">
                     <h2>Pārvaldība</h2>
                     <div class="links-grid">
                         <!-- Lietotāju pārvaldības saite -->
@@ -241,7 +241,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
     }
 
     .avatar img {
@@ -252,7 +251,7 @@
     }
 
     .profile-icon {
-        font-size: 3rem; /* Ikonas lielums, ja nav bildes */
+        font-size: 90px; /* Ikonas lielums, ja nav bildes */
     }
 
     .profile-header {
@@ -362,6 +361,13 @@
         margin-bottom: 10px;
     }
 
+    .profile-icon {
+        font-size: 80px;
+        line-height: 1;
+        margin-bottom: 0;
+        cursor: default;
+    }
+
     .link-text {
         font-size: 1.0rem;
     }
@@ -406,6 +412,16 @@
         .stat-number{
             font-size: 1.5rem;
         }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+        }
+
+        .profile-icon {
+            font-size: 70px;
+        }
+
         .my-works-section h3,
         h2{
             font-size: 1.0rem;
@@ -426,11 +442,6 @@
 
         .content-panel {
             padding: 20px 15px;
-        }
-
-        .avatar {
-            width: 100px;
-            height: 100px;
         }
     }
 </style>

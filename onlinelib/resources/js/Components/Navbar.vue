@@ -185,7 +185,7 @@ export default {
 
    </template>
 
-   <style>
+   <style scoped>
 
    /* Navigācijas josla */
    .navbar {
@@ -232,7 +232,7 @@ export default {
        height: 25px; /* Avatar augstums */
        border-radius: 50%; /* Padara avataru pilnīgu apli */
        border: 1px solid rgba(26, 16, 8, 0.8);
-       background-color: #e4a27c;
+       background-color: #c58667; /* Fona krāsa */
        border-radius: 50%; /* Pilns aplis */
        display: flex;
        align-items: center;
@@ -313,12 +313,8 @@ export default {
        transition: color 0.3s;
    }
 
-   .pressed3:hover .fa{
-       color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
-   }
-
-   .pressed2:hover .fa{
-       color: rgba(255, 187, 142, 0.8); /*Teksts, kad pele tiek pārvilkta */
+   .pressed2:hover .avatar .fa {
+       color: rgba(26, 16, 8, 0.8);
    }
 
    .pressed2:hover {
@@ -471,7 +467,7 @@ export default {
         }
 
         .pressed2 {
-            margin-top: -46px; /* Atstarpe no augšas */
+            margin-top: -58px; /* Atstarpe no augšas */
         }
 
         .marks {
@@ -492,7 +488,7 @@ export default {
             background-color: #c58667; /* Fona krāsa */
             margin: 0; /* Bez ārējām atstarpēm */
             padding: 0; /* Bez iekšējām atstarpēm */
-            margin-top: -15px; /* Atstarpe no augšas */
+            margin-top: -8px; /* Atstarpe no augšas */
         }
 
         .navbar {
@@ -569,7 +565,7 @@ export default {
             }
 
             .navbar-links {
-                margin-top: 12px; /* Atstarpe no augšas */
+                margin-top: 8px; /* Atstarpe no augšas */
             }
 
             .pressed1 {
@@ -616,11 +612,20 @@ export default {
             }
 
             .navbar-links {
-                margin-top: 10px; /* Atstarpe no augšas */
+                margin-top: 8px; /* Atstarpe no augšas */
             }
 
             .pressed1 {
                 font-size: 15px; /* Teksta izmērs */
+            }
+
+            .avatar{
+                width: 35px !important;
+                height: 35px !important;
+            }
+
+            .pressed3 .fa{
+                font-size: 22px;
             }
         }
     }

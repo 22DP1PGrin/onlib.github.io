@@ -9,26 +9,23 @@ return new class extends Migration
     // Izpilda migrācijas
     public function up(): void
     {
-        Schema::create('user_books', function (Blueprint $table) {
+        Schema::create('book_ratings', function (Blueprint $table) {
             $table->id();
+            $table->unsignedTinyInteger('grade');
             $table->unsignedBigInteger('user_id');
-            $table->string('name', 255);
-            $table->text('description');
-            $table->enum('age_limit', ['0+', '6+', '12+', '16+', '18+'])->default('0+');
-            $table->enum('status', ['Procesā', 'Pabeigts', 'Pamests'])->default('Procesā');
+            $table->unsignedBigInteger('classic_book_id')->nullable();
+            $table->unsignedBigInteger('user_book_id')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-
+            $table->foreign('classic_book_id')->references('id')->on('classic_book')->onDelete('cascade');
+            $table->foreign('user_book_id')->references('id')->on('user_books')->onDelete('cascade');
         });
     }
 
     // Apgriezt migrācijas
     public function down(): void
     {
-        Schema::dropIfExists('user_books');
-
-
-
+        Schema::dropIfExists('book_ratings');
     }
 };

@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('nickname')->unique();
             $table->string('password');
-            $table->enum('role', ['admin', 'user'])->default('user');
+            $table->enum('role', ['admin', 'user', 'superadmin'])->default('user');
+            $table->boolean('is_blocked')->default(false);
             $table->string('bio')->nullable();
             $table->string('avatar')->nullable();
             $table->timestamps();
@@ -38,9 +39,7 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    // Apgriezt migrācijas
     public function down(): void
     {
         Schema::dropIfExists('user_books');

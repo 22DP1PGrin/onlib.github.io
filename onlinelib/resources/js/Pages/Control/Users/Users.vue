@@ -1,5 +1,5 @@
 <script>
-import { computed } from "vue";
+import {computed, ref} from "vue";
 import { usePage, router } from "@inertiajs/vue3";
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
@@ -12,20 +12,21 @@ export default {
     },
     setup() {
         const users = computed(() => usePage().props.users);
+        const admins = computed(() => usePage().props.admins);
+        const currentUser = computed(() => usePage().props.currentUser);
 
-        const deleteUser = (userId) => {
-            if (confirm('Vai tiešām vēlaties dzēst šo lietotāju?')) {
-                router.delete(route('users.destroy', userId), {
-                    onSuccess: () => {
-                        // Pēc veiksmīgas dzēšanas varat pievienot papildus darbības
-                        alert('Lietotājs veiksmīgi dzēsts!');
-                    },
-                    onError: (errors) => {
-                        console.error('Kļūda dzēšot lietotāju:', errors);
-                    }
-                });
-            }
-        };
+        const limit = 3;
+
+        const showAllUsers = ref(false);
+        const showAllAdmins = ref(false);
+
+        const visibleUsers = computed(() =>
+            showAllUsers.value ? users.value : users.value.slice(0, limit)
+        );
+
+        const visibleAdmins = computed(() =>
+            showAllAdmins.value ? admins.value : admins.value.slice(0, limit)
+        );
 
         const GoToWatch = (userId) => {
             router.get(route('users.watch', { id: userId }));
@@ -33,8 +34,14 @@ export default {
 
         return {
             users,
-            deleteUser,
-            GoToWatch
+            admins,
+            currentUser,
+            GoToWatch,
+            visibleUsers,
+            visibleAdmins,
+            showAllUsers,
+            showAllAdmins,
+            limit
         };
     },
 };
@@ -45,10 +52,50 @@ export default {
     <Navbar/>
 
     <div class="main-content">
+
+        <!-- Administartoru pārvaldības forma (tikai superadminiem) -->
+        <div v-if="currentUser.role === 'superadmin'">
+            <div class="story-form">
+                <h1>Administratori</h1>
+                <div class="container">
+                    <div class="list">
+                        <!-- Paziņojums, ja nav administratoru -->
+                        <div v-if="admins.length === 0" class="item">
+                            <span class="title">Šeit vēl nav administratora.</span>
+                        </div>
+
+                        <!-- Atkārtojas katram lietotājam -->
+                        <div v-for="admin in visibleAdmins" :key="admin.id" class="item">
+                            <!-- Lietotājvārda attēlošana -->
+                            <span class="title">{{ admin.nickname }}</span>
+
+
+                            <div class="buttons-container">
+                                <!-- Lietotāja dzēšanas poga -->
+                                <button class="watch-btn" @click="GoToWatch(admin.id)">Apskatīt</button>
+                                <button class="delete-btn" @click="deleteUser(admin.id)">
+                                    Bloķēt
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="toggle-container">
+                        <button
+                            v-if="admins.length > limit"
+                            class="toggle-btn"
+                            @click="showAllAdmins = !showAllAdmins"
+                        >
+                            {{ showAllAdmins ? 'Paslēpt' : 'Skatīt vairāk' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Lietotāju pārvaldības forma -->
         <div class="story-form">
-
-            <h1>Lietotāji</h1>
+            <h1>Parastie lietotāji</h1>
 
             <div class="container">
                 <!-- Lietotāju saraksts -->
@@ -59,7 +106,7 @@ export default {
                     </div>
 
                     <!-- Atkārtojas katram lietotājam -->
-                    <div v-for="user in users" :key="user.id" class="item">
+                    <div v-for="user in visibleUsers" :key="user.id" class="item">
                         <!-- Lietotājvārda attēlošana -->
                         <span class="title">{{ user.nickname }}</span>
 
@@ -68,10 +115,19 @@ export default {
                             <!-- Lietotāja dzēšanas poga -->
                             <button class="watch-btn" @click="GoToWatch(user.id)">Apskatīt</button>
                             <button class="delete-btn" @click="deleteUser(user.id)">
-                                Dzēst
+                                Bloķēt
                             </button>
                         </div>
                     </div>
+                </div>
+                <div class="toggle-container">
+                    <button
+                        v-if="users.length > limit"
+                        class="toggle-btn"
+                        @click="showAllUsers = !showAllUsers"
+                    >
+                        {{ showAllUsers ? 'Paslēpt' : 'Skatīt vairāk' }}
+                    </button>
                 </div>
             </div>
         </div>
@@ -132,6 +188,12 @@ export default {
         gap: 10px;
         justify-content: flex-end;
     }
+
+    .toggle-container {
+        display: flex;
+        justify-content: center;
+    }
+
     .chapter-item button {
         margin-left: 3px;
     }
@@ -151,6 +213,18 @@ export default {
         border-radius: 4px;
         cursor: pointer;
         transition: all 0.3s; /* Pāreja uz mainīgām īpašībām */
+    }
+
+    .toggle-btn{
+        font-family: Tahoma, Helvetica, sans-serif;
+        background-color: #c58667;
+        border: 2px solid rgba(26, 16, 8, 0.8);
+        align-self: center;
+        padding: 6px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s; /* Pāreja uz mainīgām īpašībām */
+        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
     }
 
     button:hover {

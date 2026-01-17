@@ -38,17 +38,6 @@ class ProfileController extends Controller
         ]);
     }
 
-    // Atgriež konkrēta lietotāja informācijas skatu (administratora funkcija)
-    public function Watch($id)
-    {
-        $users = User::findOrFail($id); // Atrod lietotāju pēc ID
-
-        // Atgriež skatu ar lietotāja datiem
-        return Inertia::render('Control/Users/UserInfo', [
-            'users' => $users,
-        ]);
-    }
-
     // Augšpielāde attēļu un saglabā to ceļu datu bāzē.
     public function uploadAvatar(Request $request)
     {
@@ -262,9 +251,7 @@ class ProfileController extends Controller
     {
         $user = auth()->user(); // Iegūst autentificēto lietotāju
         $booksCount = $user->books()->count(); // Saskaita lietotāja grāmatas
-        $classicRatingsCount = $user->classicBookRatings()->count(); // Saskaita klasisko grāmatu vērtējumus
-        $userWorkRatingsCount = $user->bookRatings()->count(); // Saskaita lietotāju darbu vērtējumus
-        $totalRatingsCount = $classicRatingsCount + $userWorkRatingsCount; // Kopējais vērtējumu skaits
+        $RatingsCount = $user->BookRatings()->count(); // Kopējais vērtējumu skaits
 
         // Grāmatzīmju skaits grupēts pēc tipa
         $bookmarkCounts = Bookmark::where('user_id', $user->id)
@@ -280,30 +267,8 @@ class ProfileController extends Controller
         return Inertia::render('Profile/Profile', [
             'user' => $user, // Lietotāja dati
             'booksCount' => $booksCount, // Grāmatu skaits
-            'classicRatingsCount' => $classicRatingsCount, // Klasisko grāmatu vērtējumu skaits
-            'userWorkRatingsCount' => $userWorkRatingsCount, // Lietotāju darbu vērtējumu skaits
-            'totalRatingsCount' => $totalRatingsCount, // Kopējais vērtējumu skaits
+            'totalRatingsCount' => $RatingsCount, // Kopējais vērtējumu skaits
             'readBooksCount' => $readBooksCount, // Izlasīto grāmatu skaits
         ]);
-    }
-
-    // Atgriež visu parasto lietotāju sarakstu (administratora funkcija)
-    public function showUsers()
-    {
-        $users = User::where('role', 'user') // Atlasa tikai lietotājus ar lomu 'user'
-        ->orderBy('nickname', 'asc')
-        ->get();
-
-        return Inertia::render('Control/Users/Users', [
-            'users' => $users, // Pārraida lietotāju sarakstu
-        ]);
-    }
-
-    // Dzēš konkrētu lietotāju (administratora funkcija)
-    public function delete(User $user)
-    {
-        $user->delete(); // Dzēš lietotāju no datubāzes
-
-        return redirect()->route('users')->with('success', 'Lietotājs veiksmīgi dzēsts!');
     }
 }

@@ -3,24 +3,25 @@
     import Footer from "@/Components/Footer.vue";
     import Navbar from "@/Components/Navbar.vue";
     import {route} from "ziggy-js";
+    import {computed, ref} from "vue";
 
     // Saņemam stāstu sarakstu no servera
     const books = usePage().props.book;
     const classicBooks = usePage().props.classicBooks;
 
-    const deleteBook = (id) => {
-        if (confirm('Vai tiešām vēlaties dzēst šo stāstu un visas tā nodaļas?')) {
-            axios.delete(route('deleteStory', { id: id }))
-                .then(response => {
-                    alert('Stāsts un visas nodaļas tika veiksmīgi dzēstas!');
-                    window.location.reload(); // Pārlādēt lapu, lai atspoguļotu izmaiņas
-                })
-                .catch(error => {
-                    console.error(error);
-                    alert('Radās kļūda, mēģiniet vēlreiz.');
-                });
-        }
-    };
+    const limit = 3;
+
+    const showAllBooks = ref(false);
+    const showAllClassicBooks = ref(false);
+
+    const visibleBooks = computed(() =>
+        showAllBooks.value ? books : books.slice(0, limit)
+    );
+
+    const visibleClassicBooks = computed(() =>
+        showAllClassicBooks.value ? classicBooks : classicBooks.slice(0, limit)
+    );
+
 
     const GoToEdit = (bookId) => {
         router.get(route('EditClassicBook', { id: bookId }));
@@ -64,7 +65,7 @@
                     </div>
 
                     <!-- Darbu saraksts -->
-                    <div v-for="book in books" :key="book.id" class="work-item">
+                    <div v-for="book in visibleBooks" :key="book.id" class="work-item">
                         <!-- Darba virsraksts -->
                         <h2>{{ book.name }}</h2>
 
@@ -82,16 +83,32 @@
                                     class="delete-btn"
                                     @click="deleteBook(book.id)"
                                 >
-                                    Dzēst
+                                    Bloķēt
                                 </button>
                             </div>
                         </div>
                     </div>
 
+                    <button
+                        v-if="books.length > limit"
+                        class="toggle-btn"
+                        @click="showAllBooks = !showAllBooks"
+                    >
+                        {{ showAllBooks ? 'Paslēpt' : 'Skatīt vairāk' }}
+                    </button>
+
                     <h2>Grāmatu saraksts</h2>
 
+                    <!-- Jauna stāsta izveides sadaļa -->
+                    <div class="new_section">
+                        <div class="new" @click="GoToCreate">
+                            <h2>Pievienot jaunu grāmatu</h2>
+                            <i class="fa">&#xf055;</i>
+                        </div>
+                    </div>
+
                     <!-- Darbu saraksts -->
-                    <div v-for="classicBook in classicBooks" :key="classicBook.id" class="work-item">
+                    <div v-for="classicBook in visibleClassicBooks" :key="classicBook.id" class="work-item">
                         <!-- Darba virsraksts -->
                         <h2>{{ classicBook.name }}</h2>
 
@@ -109,18 +126,20 @@
                                     class="delete-btn"
                                     @click="deleteClassicBook(classicBook.id)"
                                 >
-                                    Dzēst
+                                    Bloķēt
                                 </button>
                                 <button class="edit-btn" @click="GoToEdit(classicBook.id)">Rediģēt</button>
                             </div>
                         </div>
                     </div>
-                    <!-- Jauna stāsta izveides sadaļa -->
-                    <div class="new_section">
-                        <div class="new" @click="GoToCreate">
-                            <h2>Pievienot jaunu grāmatu</h2>
-                            <i class="fa">&#xf055;</i>
-                        </div>
+                    <div class="toggle-container">
+                        <button
+                        v-if="classicBooks.length > limit"
+                        class="toggle-btn"
+                        @click="showAllClassicBooks = !showAllClassicBooks"
+                        >
+                            {{ showAllClassicBooks ? 'Paslēpt' : 'Skatīt vairāk' }}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -240,6 +259,7 @@
         justify-content: center;
         margin-top: 0;
         font-size: 3rem;
+        color: rgba(106, 51, 0, 0.8);
     }
 
     .description {
@@ -283,6 +303,24 @@
         padding: 3px 12px;
         border-radius: 4px;
         cursor: pointer;
+        transition: all 0.3s; /* Pāreja uz mainīgām īpašībām */
+    }
+
+    .toggle-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .toggle-btn{
+        font-family: Tahoma, Helvetica, sans-serif;
+        background-color: #c58667;
+        border: 2px solid rgba(26, 16, 8, 0.8);
+        align-self: center;
+        padding: 6px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s; /* Pāreja uz mainīgām īpašībām */
+        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
     }
 
     button:hover {

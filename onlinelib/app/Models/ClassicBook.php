@@ -20,16 +20,16 @@ class ClassicBook extends Model
 
     public function genres()
     {
-        return $this->belongsToMany(Genre::class, 'classic_book_genre', 'book_id', 'genre_id'); // Grāmatai var būt vairāki žanri
+        return $this->belongsToMany(Genre::class, 'book_genres', 'classic_book_id', 'genre_id'); // Grāmatai var būt vairāki žanri
     }
 
     public function chapters()
     {
-        return $this->hasMany(ClassicBookChapter::class, 'book_id'); // Grāmatai ir vairākas nodaļas
+        return $this->hasMany(BookChapter::class, 'classic_book_id'); // Grāmatai ir vairākas nodaļas
     }
     public function ratings()
     {
-        return $this->hasMany(ClassicRating::class, 'book_id');
+        return $this->hasMany(Rating::class, 'classic_book_id');
     }
 
     public function bookmark()

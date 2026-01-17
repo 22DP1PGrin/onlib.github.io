@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    // Izpilda migrācijas
     public function up(): void
     {
         Schema::create('technical_support_form', function (Blueprint $table) {
@@ -21,9 +19,7 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    // Apgriezt migrācijas
     public function down(): void
     {
         Schema::dropIfExists('technical_support_form');

@@ -1,50 +1,37 @@
 <script setup>
-    import { computed } from 'vue'
-    import { router } from '@inertiajs/vue3'
-    import Navbar from '@/Components/Navbar.vue'
-    import Footer from '@/Components/Footer.vue'
-    import {route} from "ziggy-js";
+import { computed } from 'vue'
+import { router } from '@inertiajs/vue3'
+import Navbar from '@/Components/Navbar.vue'
+import Footer from '@/Components/Footer.vue'
+import { route } from 'ziggy-js'
 
-    // Definējam komponenta ieejas parametrus
-    const props = defineProps({
-        chapter: {  // Nodaļa
-            type: Object,
-            required: true  // Obligāts parametrs
-        },
-        bookChapters: {  // Visas grāmatas nodaļas
-            type: Array,
-            default: () => []  // Noklusējuma vērtība - tukšs masīvs
-        },
-        bookId: {  // Grāmatas ID
-            type: Number,
-            required: true  // Obligāts parametrs
-        }
-    })
+const props = defineProps({
+    chapter: { type: Object, required: true },
+    bookChapters: { type: Array, default: () => [] },
+    bookId: { type: Number, required: true },
+    type: { type: String, required: true } // classic или user
+})
 
-    // Aprēķinām pašreizējās nodaļas indeksu masīvā
-    const currentIndex = computed(() =>
-        props.bookChapters.findIndex(c => c.id === props.chapter.id)
-    )
+const currentIndex = computed(() =>
+    props.bookChapters.findIndex(c => c.id === props.chapter.id)
+)
 
-    // Aprēķinām iepriekšējo nodaļu (ja tāda ir)
-    const prevChapter = computed(() =>
-        currentIndex.value > 0 ? props.bookChapters[currentIndex.value - 1] : null
-    )
+const prevChapter = computed(() =>
+    currentIndex.value > 0 ? props.bookChapters[currentIndex.value - 1] : null
+)
 
-    // Aprēķinām nākamo nodaļu (ja tāda ir)
-    const nextChapter = computed(() =>
-        currentIndex.value < props.bookChapters.length - 1
-            ? props.bookChapters[currentIndex.value + 1]
-            : null
-    )
+const nextChapter = computed(() =>
+    currentIndex.value < props.bookChapters.length - 1
+        ? props.bookChapters[currentIndex.value + 1]
+        : null
+)
 
-    // Funkcija nodaļas maiņai
-    const goToChapter = (chapter) => {
-        router.visit(route('UserContent', {
-            bookId: props.bookId,  // Padodam grāmatas ID
-            chapterId: chapter.id  // Padodam nodaļas ID
-        }))
-    }
+const goToChapter = (chapter) => {
+    router.visit(route('chapter.content', {
+        bookId: props.bookId,
+        chapterId: chapter.id
+    }))
+}
 </script>
 
 <template>
@@ -81,10 +68,6 @@
 
     <Footer />
 </template>
-
-
-
-
 <style scoped>
 
     .chapter-container {

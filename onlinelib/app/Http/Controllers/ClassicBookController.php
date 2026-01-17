@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Bookmark;
 use App\Models\ClassicBook;
-use App\Models\ClassicBookChapter;
-use App\Models\ClassicRating;
+use App\Models\BookChapter;
+use App\Models\Rating;
 use App\Models\Genre;
 use App\Models\UserBook;
 use Illuminate\Http\Request;
@@ -171,13 +171,13 @@ class ClassicBookController extends Controller
 
 
         // Saņemiet vērtējuma datus
-        $ratingsData = ClassicRating::where('book_id', $id)
+        $ratingsData = Rating::where('classic_book_id', $id)
             ->selectRaw('AVG(grade) as average, COUNT(*) as count')
             ->first();
 
         // Iegūstiet pašreizējā lietotāja vērtējumu
         $userRating = auth()->check()
-            ? ClassicRating::where('book_id', $id)
+            ? Rating::where('classic_book_id', $id)
                 ->where('user_id', auth()->id())
                 ->value('grade')
             : null;
@@ -219,10 +219,10 @@ class ClassicBookController extends Controller
         ]);
 
         // Atjaunina esošu vai izveido jaunu vērtējumu
-        $rating = ClassicRating::updateOrCreate(
+        $rating = Rating::updateOrCreate(
             [
                 'user_id' => $request->user()->id,
-                'book_id' => $bookId
+                'classic_book_id' => $bookId
             ],
             [
                 'grade' => $request->grade
@@ -230,11 +230,11 @@ class ClassicBookController extends Controller
         );
 
         // Pārrēķina vidējo vērtējumu grāmatai
-        $average = ClassicRating::where('book_id', $bookId)
+        $average = Rating::where('classic_book_id', $bookId)
             ->avg('grade');
 
         // Saskaita vērtējumu skaitu grāmatai
-        $count = ClassicRating::where('book_id', $bookId)
+        $count = Rating::where('classic_book_id', $bookId)
             ->count();
 
         // Atgriež veiksmīgu atbildi ar datiem

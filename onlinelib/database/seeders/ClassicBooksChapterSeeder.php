@@ -8,15 +8,12 @@ use Illuminate\Support\Facades\DB;
 
 class ClassicBooksChapterSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $chapters = [
             [
                 'name' => '1. Veco krustmāt',
-                'book_id' => 1,
+                'classic_book_id' => 1,
                 'content' => ' Veco krustmāt, kad tu man dosi arī to manas mātes balto lakātu, kuru man šodien rādīji?» " «Tad, meitiņ, kad būsi liela, kad iesi mācībā. Tava māte arī sedzās viņu pirmoreiz tad, kad viņu pieņēma par lielu meitu, tāpat kā otrējo Grietu viņdien. Valkā vien tagad šos pašus manus lakatus pa skolu. Ja varēšu vēl kādu dzijtiņu savērpt, tad gan nopirkšu arī kādu no žīda: turpmāk būs man mājā vienai garš laiks.»
 
 «No kura žīda tu pirki šos lakatus, kurus man iedevi?»
@@ -117,7 +114,7 @@ Ak tēvs, izdzēsi manus grēkus Ar Kristus dārgo asini! Lai tas man iedod jaun
             ],
             [
                 'name' => '2.Kad dziļa aukaina ziema',
-                'book_id' => 1,
+                'classic_book_id' => 1,
                 'content' => 'Dziļa, aukaina ziema bij pārlaista, kādu veci ļaudis atminējās piedzīvojuši tik «Spranču laikos», un «Spranču laikus» tā ziema atgādināja ne tikvien ar savu bargumu, bet arī ar kara pulku cauri iešanu, kuri gan šoreiz nebij ienaidnieki, bet aizstā­vētāji un sargi. Rudenī, kad ledus iznīdēja ienaidnieku kuģus no jūras, viņi nāca uz zemes vidu ieņemt ziemas mitekļus un, pavasarim tuvo­joties, griezās atkal pie laika atpakaļ, caur ko ceļmalniekiem bij daudz darba ar sniega rakšanu, tā ka dažu brīdi vajadzēja gandrīz visiem spēka cilvēkiem doties uz ceļu. Vēl pašā Jura dienā varēja kalnainos apgabalos redzēt, kādi spēka darbi bij strādāti. Dažā pakalnē atradās vēl sniega sienas gandrīz divu vīru augstumā, caur ko ceļš bij ļoti ne­labs, jo viņš ne tikvien nedabūja žūt, bet mirka vēl jo stiprāk laukā no abējās pusēs kūstošiem sniega blāķiem. Turklāt bij viņš no lielgabalu un citu smagu vezumu riteņiem izgriezts gandrīz visam bruģim cauri, tā ka tagad daudz vietās grima vezumi un zirgi pavisam nost.
 
 Jura diena nav caurcaurīm nekāda priekā diena, ja nesaucam par prieku tā jautruma, ko iedevis dažs šķiršanās vai saņemšanas malciņš; bet arī šis pats jautrums nomanāms gandrīz tik pie tiem, kuri paraduši staigāt un kuriem vecā dzīves vietā nav nekas dārgs pametams, nedz arī jaunā jābīstas no kāda krusta — vārdu sakot: kalpu kārtai. Kalpa vīram vietas pārmainīšana nav sveša un ir arī viegli izdarāma: viņš saceļ jaunā saimnieka ratos gultu, lādi, vēl ko neko, uzsēdina bērnus virsū un, vezdams zirgu pie galvas, aiziet gluži vienaldzīgi; sieva ar ratiņu uz pleciem iet vezumam līdz tāpat. Saimniekiem turpretī, ja viņiem jādo­das uz jaunu vietu, nevar būt Jura diena nekad prieka diena. Nav ne­maz visas nastas saskaitāmas, kas viņus spiež, uz citu dzimteni ejot. Viņiem ir brīžam jāatstāj tēvu māja pirmo reizi un varbūt, no uzkalniņa atpakaļ skatoties, jāredz pēdējo reizi un jāiet uz turieni, kur viss, viss svešs! Šo jūsmu sāpes var saprast un cienīt pilnam tikai tas, kas viņas kādreiz pats cietis. Saimnieka pārcelšanās uz jaunu vietu atstāj tam, kas to redz, pavisam citus iespaidus sirdī, jo tur jāiet līdz visiem — no zirdziņa līdz kaķītim un vistiņai; tur jāved viss, no arkla līdz karotei; tur jāiet līdz arī varbūt vecam tēvam un vecai mātei ar baltām, trīcošām galvām. Tādēļ tad tādu ejošu dzīvelnieku acis allaž no asarām izmirku­šas, līdzīgas ceļam, kas zem kājām; tik ja pats tēvs un gādnieks, kura acis susinājuši jau daži mūža vēji un lielākie rūpesti griezuši sirdi pie vienaldzības, iet ar gādības un spēka apziņas pilnu seju, kaut gan var­būt ar vissmagāko sirdi savējiem pa priekšu, jo viņam jāir kā ozolam, kas nes ne tikvien to pašu, bet vienmēr vēl lielāku auku nekā citi koki, tādēļ ka ir garāks, bet nelokās, — un līdz ar viņu, kaut gan kā nesalīdzi- nājuma pretība, guļ mierīgi pie mātes sirds kāds zīdāmais, kura melnās un baltās dienas glabā vēl nākamība savā azotē. — Viņš ir kā maziņa atvasīte pie stipra ozola saknēm, kur viņas nespēj aizņemt vēl nekādas aukas. Šās sēras pavairo vēl arvienu agrā pavasara tukšums, nemīlī­gums un nejaukais ceļš.
@@ -309,7 +306,7 @@ precējās, iedevās laulībā un darīja visus tādus grēkus.»
             ],
             [
                 'name' => '3. Bij karsta pusdiena siena laikā',
-                'book_id' => 1,
+                'classic_book_id' => 1,
                 'content' => 'Bij karsta pusdiena siena laikā. Tikpat Irbēnu jaunie, kā arī vecie iedzīvotāji strādāja tikuši vien savā pļavā katri.
 
 Annuža, kura bij pie ienācējiem palikusi, atvieglināja Ilzei ne tikvien dažu soli, bet brīžam atstāvēja pavisam viņas vietu mājā pa darba laiku, un tā tas bij arī minētā dienā, kur viņa, nonesusi patlaban saviem strādniekiem maltīti, nāca atpakaļ ar spaini vienā rokā un Lienīti uz otras rokas. Celiņš gāja gar Oļiņu istabu, no kuras patlaban iznāca Oļiniete, paķēra grābekli, kurš bij piesliets, un sāka pēc sava ieraduma iet pateciņus uz siena pļavu, jo cēlās mazs debestiņš un visas kaudzes siens bij izlaists uz apārda. Annužu tā pretī nākam sastapdama, viņa sacīja lielā nevaļā: «Labi gan, Annužiņ, ka tevi satieku! Man jāsteidzas palīgā pie kaudzes mešanas, jo viss siens ir vaļā un debess taisās, — cilvēku ir maz, bail, ka neaizlīst. Es Pēterīti gan atstāju pie Trīnītes, bet viņš ir tāds bailīgs, viens nemaz mājā nestāv, gandrīz pērkons uznākot. Ja nu tā redzi, tad atnāc kādu brītiņu, kamēr manis nav mājā.» Annuža vēl nepaguva apsolīties, kad Oļiniete bij jau projām.
@@ -393,7 +390,7 @@ Nakts bij itin silta, klusa un auglīga, kā jau allaž pēc pērkoņa lietus. M
             ],
             [
                 'name' => '4. Kāds liels Miķeļa dienas tirgus šķirās patlaban laukā',
-                'book_id' => 1,
+                'classic_book_id' => 1,
                 'content' => 'Kāds liels Miķeļa dienas tirgus šķirās patlaban laukā. Visi ceļi tecēja kā upes ar tirdziniekiem gan braukšus, gan jašus, gan kājām, gan nesdami, gan vezdami, gan dzīdami. Vēl kādu versti no tirgus, kurš stāvēja lielā, slīpā pakalnē, bij dzirdams tirgus jauktā kora koncerts, kur vērši turēja basu, zirgi tenoru un tās virsbalsis visi citi. Šis koncerts izšķīrās no dažiem citiem tik caur to, ka viņu turēja ļoti milzīgs koris un bez diriģenta. Kad no atstatuma skatījās, tad viss tirgus izlikās kā ņudzošs skudru pūlis. Redzamas bij baltās, ar audekliem apsegtās božu būdas, kurām dažai plivinājās sarkana flaga klāt; tāpat varēja izšķirt arī no meijām sapīto dzērienu pārdošanas būdu, ap kuru griezās viss ļaužu biezums.
 
 Dažas verstes no tirgus, kur jau tirdzinieku rindas bij retākas, brauca soļos divi vīri, savā zirgā katrs. Pirmais bij jau labi vecīgs, sirmiem matiem. Galvā viņam bij «rata cepure» un mugurā garš mētelis ar lielu, atlaistu apkakli. Viņš veda divi govis, katru pie savas ilkss piesietu. Otrs bij jauns, skaists cilvēks apaļu seju, dzeltainiem matiem un ap­ģērbies kā visa jaunā paaudze. Vezumā viņam bij varbūt kādi divi birkavi linu. Pie ratiem vien varēja pazīt, ka šie braucēji bij vai nu slātavieši, vai čangalieši, jo pa visu guberņu citur tādu ratu neatradīsi kā šinīs valstīs, tik augstu un tik lēznu, lai nenieka neva­rētu ielikt.
@@ -759,7 +756,7 @@ Citi, kuriem gar Ķenča zirgu bij jāiet, apstājās arī un sāka drusku izbij
             ],
             [
                 'name' => '5. Irbēnu ienācējiem, Gaitiņiem',
-                'book_id' => 1,
+                'classic_book_id' => 1,
                 'content' => 'Irbēnu ienācējiem, Gaitiņiem, bij jau notecējušas vairāk nekā divas gadu desmitas, šai vietā dzīvojot, un pa to laiku arī pie­dzīvotas un pārlaistas dažādas dienas. Spēka jeb pusmūža cil­vēki bij stipri novecojuši un toreizējie bērni pieauguši par spēka cil­vēkiem. Pie lielākas rocības Gaitiņi nebija nākuši, bet sūri grūti tik dienišķu pārtiku nopelnījuši; tomēr priecīgi viņi bij pat pie mazākā mazuma, un tik maz viņiem nevarēja būt nekad uzaudzis, ka Ilzei ne­pietiktu, ko dievam no sirds dibena pateikt un viņu slavēt. Kad citi gauzdamies un zūdīdamies dažā grūtā gadā jautāja, cik viņai ticis rudzu vai kartupeļu, tad viņa izsaucās arvien svarīgā balsī un rokas salikusi: «Visa diezgan, visa diezgan! Ak tu slavētais dievs, tavu svē­tību! Kas izteiks viņa žēlastību?» Bet, kad kāds gaudās, ka maz esot un nezinot, kā varēšot iztikt, tad viņa par to gandrīz sadusmojās un ru­nāja, norādama: «Vai tas ir par cilvēku saucams, kas tā neatzīst? Ar tūkstoš mēlēm nav izdziedama viņa slava par tiem labumiem, ko viņš ikkatrā acumirklī mums dāvina.» Gandrīz var sacīt, ka pašos grūtākos brīžos, kādu viņas mūžā vis netrūka, viņa jo ciešāki stāvēja uz tā pamata, «kas nekustēsies, kaut zem un debess bojā ies». Jo smagāk viņu kāds dzīves krusts spieda, jo augstākā godā un slavā viņas uzticīgā sirds cēla savu dievu. Vistuvākā dvēsele uz pasaules viņai bija Annuža, kuras negribēja laist nekad un nepavisam no sevis projām, bet kura tomēr pēdējos gados uzturējās lielāko daļu citur par iebūvieti, baidī­damās būt Gaitiņiem par nastu, kaut gan Ilze mēģināja viņu visādi pārliecināt un nelaist projām; tomēr atkal neviena nedēļa nepagāja, kad viņa kādu dienu neatnāktu pie Ilzes un savas audžu meitas Lienas,. kuru jau mazu bija nodevusi pie Oļiņiem par audzēkni.
 
     Tenis bij ari jau itin sirms, ar pavāju acu gaišumu, un tāpēc mita lielāko daļu uz mūrīša, šo to pūlēdams. Jau spēka gados viņš strā­dāja gandrīz vairāk ar muti nekā ar rokām; tādēļ tagad nebij no viņa vairs nekas gaidāms. Kad vēl dzīvoja dzimtenē kopā ar veco brāli tad brīžam par zīmi pašā labākā siena laikā pakāra izkapti šķūņa pa­spārnē, aizgāja uz māju un gulēja veselām dienām dzestrā piedarbā vai arī sēdēja uz sliekšņa, cepuri pār ausīm uzmaucis, nemaz neteik­dams, kas kait, bet ēdin gan ēda. Kādreiz tādā brīdī aicināja viņu vecais brālis, lai nākot palīgā pie ķieģeļu sišanas, ar ko pārmūrēt rijas krāsnij spraušļus. Tad viņš atteica savā zināmā cēlā valodā: «Vai es podnieks?» Ziemās viņš mīlēja šurp turp dievs zin kādēļ izstaigāt un vakaros vīt virves, grožus vai kādas auklas; bet tas bij zināms, ka gandrīz neviena novijuma nenolika pie malas, kamēr nebij ar to sa­pēris bērnu bara, ja vien tam gadījās taisīt ap to bailīgo brīdi kādu troksni, jo, kad novīto grožu vai auklu gribēja labi pie skala apsvi­lināt, ko viņš allaž darīja, tad vijums bij jāsaloka rokā it kā uz labu sišanu, un bez sišanas viņu nost likt bij žēl, tādēļ likās bērniem vidū, sadeva reizes piecas, vai acis vai galva, un tad nolika novijumu, ne vārda nesacīdams. Ja tad Ilze vai cits kāds ieminējās, ka tīri kā traks, kā nepilnīgs bērnus veltīgi sitot, tad viņš atbildēja, lai nebīstoties vis, jo atpelnīšot jau gan rītdien, un kas tad ik reizes pēc žagariem lai skrie­not? Bet, ja gadījās, ka bērni jau gulēja vai skaitīja pātarus, tad ņēma suni rokā, ja vien to varēja istabā atrast, jo par to nebija ko bīties, ka viņš pēršanas iemesla neatradīs. No savas agrākās dabas, izrunas un cēlošanās viņš nebij arī tagad nekā atmetis; pīpes galviņa stāvēja tāpat šķībi pie pagara kāta ar slaidu, līku galu, astru viduci un izro­botām ripiņām; ap kaklu bij tāds pats liels lakats aptīts, galvā pagara ziemas cepure ar plakanu dibenu, nagu un atliektām austiņām; kājās allaž ar atlocītiem stilbiem zābaki, kurus smērēja gandrīz ik pārdienas ar degutu, tā ka tā nespēja nemaz saiet iekšā, bet spīdēja kā vikse pa virsu, un likās, ka viņam tas spīdums patika, kādēļ vien arī tik daudz smērēja. Lasīdams Tenis valkāja brilli un turēja grāmatu no sevis ļoti atstatu, kā to bij redzējis pie dažiem kungiem. Vai viņš arī patiesi lasīja vai tik grāmatā skatījās, tas nav zināms. Dažu brīdi, kad bij tā labi ilgi skatījies, sāka piepeši dziedāt.
@@ -1021,7 +1018,7 @@ Tur dvēsles izdusēs.',
             ],
             [
                 'name' => 'I',
-                'book_id' => 2,
+                'classic_book_id' => 2,
                 'content' => 'Es klīstu pa Rīgas ielām, nedzirdēdams viņu trauksmīgās čalošanas un kara ratu rīboņas, kas tagad rīb un dārd bez stājas, un skatu netvertas man aizpeld garām pretimnā­cēju sejas. Pat mūsu reālskolas direktora kokardoto ce­puri es pamanu tikai pēc tam, kad starp viņas nēsātāja drukno muguru un mani jau viļņo gājēju drūzma.
 
                 Man ir sešpadsmit gadi, un šodien es pirmo reizi skūp­stīju sievieti.
@@ -1061,7 +1058,7 @@ Tur dvēsles izdusēs.',
             ],
             [
                 'name' => 'II',
-                'book_id' => 2,
+                'classic_book_id' => 2,
                 'content' => '
                 Edgars jau pārnācis, bet sēd tumsā. Istabiņas logā liesmo vakarblāzmas atmirdzums.
 
@@ -1097,7 +1094,7 @@ Tur dvēsles izdusēs.',
             ],
             [
                 'name' => 'III',
-                'book_id' => 2,
+                'classic_book_id' => 2,
                 'content' => 'Kararatu dārdēšana Rīgas ielās kļuvusi stiprāka, bet toties gausāka palikusi gājēju gaita. Liekas, it kā viņiem vairs nebūtu kur steigties, jo viņi iet pavisam lēni un klausīdamies un tad uz brītiņu apstājas pavisam, vēro­dami tālu, tikko nojaušamu dunoņu. Tā nāk no Jelgavas puses un brīžiem kļūst dzirdamāka, bet brīžiem apklust pavisam.
 
                 Skolā pārtrauktas mācības. Divi skolotāji jau aizbēguši, citi steidz sakravāt mantas. Viņi grib būt gatavi doties ceļā, kad pienāks evakuācijas pavēle, un to gaida kuru katru brīdi.
@@ -1129,7 +1126,7 @@ Tur dvēsles izdusēs.',
             ],
            [
                'name' => 'Pirmais skats',
-               'book_id' => 3,
+               'classic_book_id' => 3,
                'content' => 'Ilze (sēd zem koka un snauž. Uztrūkdamās). Kas tur? (Klausās.) Neviens nenāk, murgi vien mani atkal mānījuši... Jau gaisma... Visu rītu te par velti esmu nosēdējusi. Viņš atkal nav turējis vārdu... Jeb vai varbūt - varbūt, ka viņš pārnācis mājā un es to tikai neesmu dzirdējusi. (iet atver klētiņas durvis un aizsit tās ātri atkal cieti.) Nav! Cauru nakti tas atkal pie viņas nosēdējis - ak tu Kungs Dievs, ko lai daru, ko lai daru! (Noslīd izmisusi uz sola)',
                'order' => 1,
                'created_at' => now(),
@@ -1138,7 +1135,7 @@ Tur dvēsles izdusēs.',
 
             [
                 'name' => 'Otrais skats',
-                'book_id' => 3,
+                'classic_book_id' => 3,
                 'content' => 'Aža (tumšā uzvalkā nāk no istabas). Jāsteidzas, jāsteidzas - jātiek atkal mājā, kamēr citi vēl guļ. Citādi viņi vēl smiesies un bērni sacīs, es esot traka. (Grib aiziet.)
 
                 Ilze. Aža!
@@ -1202,7 +1199,7 @@ Tur dvēsles izdusēs.',
             ],
             [
                 'name' => 'Trešais skats',
-                'book_id' => 3,
+                'classic_book_id' => 3,
                 'content' => 'Ilze ierauga Krustiņu un Paulu no labās puses pa vārtiem ienākam un klusām iesaucas.
 
                 Aža. Krustiņš un Pauls - kur trešais? (iet viņiem pretī.) Kur trešais?
@@ -1219,7 +1216,7 @@ Tur dvēsles izdusēs.',
             ],
             [
                 'name' => 'Ceturtais skats',
-                'book_id' => 3,
+                'classic_book_id' => 3,
                 'content' => 'Ilze (tuvojas Krustiņam. Kaislīgi). Krustiņ!
 
                 Krustiņš (apgriezdamies, vienaldzīgi). Na?
@@ -1235,7 +1232,7 @@ Tur dvēsles izdusēs.',
             ],
             [
                 'name' => 'Klusie ciemiņi. Veļu laika stāsts',
-                'book_id' => 4,
+                'classic_book_id' => 4,
                 'content' => 'Jau septīto gadu Pēteris Atāls ara tīrumus, kas tam bija ierādīti par iešanu vecajam Kalniņam līdzi kurzemnieku kauju gaitās vai, pareizāk sakot, par dzirdi, ko Atālam atņēma 12. janvārī pie Ložmetēju kalna vācu mīna, uzsviezdama viņu pašu gaisā labas priedes augstumā.
 
                 No viņas cīņu dienas Atāls savu pulku vairs nebija redzējis, jo sagulēja slimnīcā tepat pusgadu, un viņu atlaida mājās kā invalīdu. Bet tēva māju viņam nebija, un Atāls klīda no viena Vidzemes saimnieka pie otra, par vēdera tiesu strādādams no rīta līdz vakaram. — Posts vien esot ar tādu kropļa kalpu, — viņa maizes devēji žēlojās, — ar pirkstiem vien esot viss jārāda. Sūtot kurināt pirti, — šis jūdzot zirgu un taisoties mežā braukt. Sakot, lai iet pacirst plītij žagarus, — kurlais sēstoties pie
@@ -1276,7 +1273,7 @@ Tur dvēsles izdusēs.',
 
             [
                 'name' => 'Mūsmājas',
-                'book_id' => 5,
+                'classic_book_id' => 5,
                 'content' => 'Kaut gan zemnieku mājas ir visas gandrīz vienādas, tad tomēr liekas, ka tādu otru visā Augškurzemē nav kā mūsmājas. - Aizvien pār viņām debesis visaugstāk velvējās; tie mākoņi bij visbaltāki, kuros gulēja bērzu galotnes vecās istabas galā. Tik zaļa sūnu jumta nekur nebij kā mūsu istabai. Un uz šī zaļā jumta - sarkanu ķieģeļu skurstens. Tas sēdēja pietvīcis zaļajās sūnās un brīžam kūpēja. Vakaros viņš apsedzās pats ar saviem dūmiem un kļuva gandrīz neredzams. No virsa bija nodrupuši daži ķieģeļi;
 
                 Istabas priekšā, pajumtē, bij baložiem laktiņas. Ziemā tajās tupēja sarāvušies šie mīļie putni, bet pavasaros viņi dūkdami dejoja pa sētsvidu un nesa salmus un smalkus žagarus savās ligzdās. Vēl vēlāk pār laktiņas malu jau staipījās resni, gaiši knābji. Jauni putni bija ieradušies.
@@ -1307,7 +1304,7 @@ Tur dvēsles izdusēs.',
 
             [
                 'name' => 'Klibais Jurks',
-                'book_id' => 5,
+                'classic_book_id' => 5,
                 'content' => 'Divus tikumus es esmu mācījies no klibā Jurka: pieticību un bezbēdību. Varbūt arī tā drusciņa spītības, kas mani nekad neatstāj, ir mantojums no tā paša sen mirušā drauga. Ja tā, tad es viņam daudz pateicības parādā.
 
                 Klibais Jurks bij sveša pagasta cilvēks. Man šķiet, viņš bij no zalviešiem. Radu viņam nekādu nebij; viņš dzīvoja viens kā koks. Ar saviem septiņdesmit gadiem un klibo kāju Jurks vēl bija diezgan žirgts, kaut gan skaitījās pie pagasta nespējniekiem, kurus saimnieki aiz žēlastības pieņēma un atlaida, ja no tiem neatlēca nekāds labums.- No sava pagasta Jurks ik gadus saņēma dažus mērus labības, un šie mēri kā magnēts pievilka saimniekus. Kādēļ? Nu tādēļ, ka Jurks vēl varēja visus darbus darit un no saimnieka vairāk nekā neprasīja kā tikai skrandas, ko mugurā vilkt, visvienkāršāko ēdienu un kādu drusku pirkta tabaka, ko piejaukt cēbrinēm un siena gružiem.
@@ -1358,7 +1355,7 @@ Tur dvēsles izdusēs.',
 
             [
                 'name' => 'Zemdegas',
-                'book_id' => 6,
+                'classic_book_id' => 6,
                 'content' => 'Asa sāpe ietriecas manī kā uguns strūkla, iedzēlās krūtīs kā indīgs ērkšķis un uzvēra mani uz metāliskas smailes kā taureni. Ribu velvē kaisa nez kas dedzinošs, smags, nekustīgs, es zināju, ka tai jābūt sirdij, taču nespēju apjaust šo nokaitēto, bezveidīgo priekšmetu par savu sirdi, no kuras tirpinošas strāvas tecēja pa nepazīstami ledusauksto, arī gluži svešo un man nepavisam nepiederīgo kreiso roku. Lipīgi, karsti taustekļi snaikstījās ap kaklu, apvijās, saslēdzās. Mani sagrāba tuvās nāves šausmas. No aizžņaugtās rīkles nenāca ne skaņa, un gaisā neritmiski plūsmoja tikai elpas garaiņi.Es sajutu to, ko nekad nebiju sajutusi, — es manīju, kā asinis virzījās pa manām dzīslām, nevis skrēja un ritēja, bet tieši virzījās, gausi sūkdamās uz priekšu pa asinsvadiem kā biezs un blāvs kausēts stikls, kas dziestot sastingst.
 
                 Sāpes, kas bija uzbrukušas griezīgi un spēji, uzplaiksnīdamas ar zibens skaudrumu, sāka lēni un plūstoši atkāpties, iziedamas ārpus mana ķermeņa un eksistēdamas līdzās, kā ēna, sakarībā ar mani un atkarībā no manis, taču ne vairs manī. Tomēr šis atslābums nebija atvieglinošs, bet drīzāk šķebinošs. Kopā ar ciešanām un smaguma sajūtu es šķietami zaudēju arī iekšējos orgānus. Sirds, kuņģis, plaušas, aknas un liesa, kas vēl nule spazmatiski bija savilkušies kvēlojošā kamolā, arī atradās ārpus manis, un es samanīju pakrūtē trulu tukšumu, kā kad no mana rumpja būtu palikusi pāri tikai čaumala ar dobu vidu, tukša miza, ļengans apvalks, kuru kopā nesaturēja gluži nekas.
@@ -1375,7 +1372,7 @@ Tur dvēsles izdusēs.',
 
             [
                 'name' => 'CIETUMS',
-                'book_id' => 6,
+                'classic_book_id' => 6,
                 'content' => '— S-skaties... P-p-paskaties! — viņš iesaucas apslāpētā un klusinātā balsī, mazliet sastostīdamies kā aizvien stipra uztraukuma brīžos, un visa viņa būtība ir viens vienīgs pārsteigums, viens milzu izbrīns, kas strāvo un plūst, staro un laužas no plaši ieplesto acu gluži apaļajām zīlītēm. — R-r-redzi? T-tur!
 
                 Bet Lelde jau redz arī pati.
@@ -1402,7 +1399,7 @@ Tur dvēsles izdusēs.',
 
             [
                 'name' => '*',
-                'book_id' => 6,
+                'classic_book_id' => 6,
                 'content' =>'Mūrgalē nav iespējams nodzīvot ne trīs dienas, lai neiepazītu Ritmu — Ritmu Pērkoni, jo pat tikai un vienīgi uz augsti intelektuālām jomām, sfērām un novadiem caurcaurēm un visnotaļ noskaņota un centrēta cilvēkbūtne nevar eksistēt un pastāvēt bez tā kārdinošā un cildinātā, peltā un nolādētā ēdamā un dzeramā, kas guļ un stāv veikala plauktos un stiklotajā vitrīnā, mirdzinot krāsas un dvašojot aromātus, piedāvājot un solot veselīgas un grēcīgas baudas miesai un garam. Un, kad ir veikalā ieiets un būts, savukārt nav iespējams neievērot un neielāgot Ritmu, tāpēc ka viņa ir skaista un patiešām uzkrītoši spilgta, turklāt ap Ritmas krāšņumiem un jaukumiem vīri var mielot acis un sievas deldēt mēles uz nebēdu un cik uziet, un par baltu velti, bez atlīdzības un maksas, kā piedevu pie pirkumiem. Garāmbraucēji, kas šeit aptur un piestāj tikai retumis un reizumis, lai izsūktu kādu pudeli apelsīnu limonādes, žiguļa vai kādas citas dziras, un nemaz nezina Ritmas vārda, sauc viņu vienkārši par «smuko bodnieci ar lielajām acīm», kā vis netiek dēvēts un godāts kurš katrs meitieša cilvēks. Un, ja vēl Ritma var painformēt par gaidāmo preču pievedumu vai arī izlikties neko nezinām un nenojaušam, ja viņa var sverot izvēlēties skaistākos ābolus un tomātus vai arī lasīt no vietas, kādi pagadās pa rokai, ja viņa var pieņemt tukšās pudeles vai arī sūtīt ar tām uz taras punktu, kas darbojas tikai trīsreiz nedēļā (un dažkārt, kad nav pievestas kastes, vēl retāk), — ja tas viss un ne tikai tas ir Ritmas varā un iespējās un ja turklāt viņas košā āriene tā vien vilina un pavedina, tā vien kaitina un lec acīs, tad kļūst saprotams un skaidrs, ka Ritma Pērkona ir viena no populārākajām personām Mūrgalē.
 
                 Arī Vilis Pērkons skaitās Mūrgales slavenība, lai gan, pēc izskata spriežot, tā nepavisam nevarētu domāt. Viņa ārienē nav un, kā šķiet, nekad nav arī bijis nekā tāda, kas varētu saistīt uzmanību. Visgarām un viscaur Vilis Pērkons izskatās gaužām pelēcīgs — mati, acis, sejas krāsa, apģērbs. Jā nudien, pat goda kārta viņam mugurā šķiet kā izbalojusi, kā saulē stāvējusi, kā gludekli neredzējusi. Un jāieskatās īsti labi un krietni, lai ieraudzītu, ka te tik tiešām slēpjas sazin kāds acu māns, jo īstenībā uzvalks ir spoži melns ar asām bikšu vīlēm un plecos uzpolstēts un krūteža ir sniegbalta, ar raibu zīda kaklasaiti, citiem vārdiem sakot, viss ir pirmā labuma un svaiguma, un acis aiz biezajiem briļļu stikliem nepavisam nav ūdeņaini bezkrāsainas, bet zilas, un mati ir drīzāk gaišdzelteni nekā sirmi. Taču, kolīdz Viļa Pērkona stāvs ieslīd redzes loka perifērijā, uzreiz no jauna norisinās mistiskā pārveidība un drēbes itin kā noplūk un izbalo, saplūksnē un sagumzās un auguma un sejas aprisēs un detaļās atkal valda tikai pelēkā krāsa un palsenie toņi, kā ir tad, kad pāri krīt ēna.
@@ -1419,7 +1416,7 @@ Tur dvēsles izdusēs.',
 
             [
                 'name' => 'ZAĶIS AR DIVĀM SIRDĪM',
-                'book_id' => 6,
+                'classic_book_id' => 6,
                 'content' =>'Vilis ēda, un viņa skatījās, ka tas ēda. Starp abiem uz virtuves galda blakām kafijas kannai noliktais tranzistors — mazā «Selga» atskaņoja rīta koncertu, un tīkama vīrieša balss svešā valodā dziedāja
 
                 Ja, wir passen gut zusammen:
@@ -1443,7 +1440,7 @@ Tur dvēsles izdusēs.',
             ],
             [
                 'name' => 'Kaķīša dzirnavas',
-                'book_id' => 7,
+                'classic_book_id' => 7,
                 'content' =>'Sirms vecis kailā kažokā iznāca no piesarmojušā dārza un skatījās atpakaļ caur ābelēm, pie kurām pār vakara sārtumu drebēja viegli ledus spīdulīši kā tās bālās pelnu plēnes pār kvēlošām oglēm. Biezs rieta sarkanums krita viņa sejā. Tā bija nikna veča seja. Viņa ūsas un bārda izskatījās kā garas sudraba bārkstis, piesalušas zilām un zaļām ledus zīlēm, kurām vēl vakars pielika pa sarkanai. Tas bij vecais Lauskis, izdzīts saimnieka tēvs, kurš dēlam par agru bij atdevis mājas. Viņš uzklīda tikai lielā salā, kad visi zari bij iekalti smalkā ledū, un sarkans saules riets kā dusmu atspīdums zem ābelēm un gar ēku stūriem meklēja viņa sarkano seju. Raug, vecais palecas, tā, ka izjūk apsarmojušais matu cekuls uz pakauša, un sper ar cirvi klēts pakšķī.
 
                 "Ai, ai," baļķis iekliedzas, un viņam pārtrūkst sirds. Tā ir pušu! Viņa trūkst, sēri vaidēdama kā kokļu stīga, un runcis apstājas uz celiņa, kas iet no istabas uz klēti, un klausās, pacēlis kāju.
@@ -1475,7 +1472,7 @@ Tur dvēsles izdusēs.',
             ],
             [
                 'name' => 'Jūras vārava',
-                'book_id' => 7,
+                'classic_book_id' => 7,
                 'content' =>'Kāds puisis bij dzirdējis stāstu par jūras vāravu. No tā laika viņam nebij vairs miera. Tam apnika mīt pelēko vagu tīrumā, un zemā tēva sēta, kur aiz nokvēpušās sijas karājās kumelītes un rudzu vārpas, tam palika šaura. Svētdienās, kad zem liepām pagalmā atskanēja dūdas, viņš vairs negriezās dejā ar ciema meitenēm. Viens kā apmāts viņš maldījās pa mežu, jo vienatnē to pavadīja jūras vārava ar zelta kroni galvā. Aiz kokiem zaļā meža krēslā viņa puisim gāja pa priekšu un skatījās atpakaļ pār plecu smagām ilgu acīm. Un, kad, nodzēries pie upītes, ar rokām atspiedies krasta velēnā, puisis vēl klausījās pilienos, kas no viņa lupām krita ūdenī, viņam gar acīm nozibēja ūdens meitas smaidošā seja: stiebri vien nolocījās. Un skaidrais ūdens nesa viņai pakaļ garas noliektas zāles kā zaļas drānas.
 
                 Puisis nevarēja rimties. Viņš paņēma tēva sudrabu un mātes dziesmu grāmatu, ko mirstot tie bij viņam atstājuši, un devās plašā pasaulē. Mazās lauka puķes pavadīja viņu starojošām acīm. Uz lapām ceļmalā bij zaļas rasas sirdis, un aizejot viņam atvērās un atdevās katra zieda dvēsele. Viņš ņēma līdzi kumelīšu kluso smaržu, rudzu ziedu pelēkos putekļus un dievkociņa zaļo mūžības atmiņu. Ikkatra ežina viņam sniedza savu mantojumu. Vēsmas kā neredzamas bites nāca no birzes, no pļavas, no lauka un metās viņam uz pieres, uz vaigiem, uz pleciem, un atdeva savu bagātību. Bet puiša lielākā bagātība bij mātes dziesmu grāmata. Tur bij dziesmas kā tic eņģelīši piepūstiem vaigiem pie vecās ciema baznīciņas altāra, kuru katrs smaidošais vaidzinš pilns debešķīgu skaņu.
@@ -1492,6 +1489,6 @@ Tur dvēsles izdusēs.',
                 'updated_at' => now()
             ],
         ];
-        DB::table('classic_book_chapters')->insert($chapters);
+        DB::table('book_chapters')->insert($chapters);
     }
 }

@@ -120,8 +120,8 @@
     });
 
 
-    const GoToReadClassic = (bookId, chapterId) => {
-        router.get(route('UserContent', {
+    const GoToRead = (bookId, chapterId) => {
+        router.visit(route('chapter.content', {
             bookId: bookId,
             chapterId: chapterId
         }));
@@ -295,7 +295,7 @@
                         </div>
 
                         <div class="chapter-actions">
-                            <button  @click="GoToReadClassic(bookId, chapter.id)">Lasīt</button>
+                            <button  @click="GoToRead(bookId, chapter.id)">Lasīt</button>
                         </div>
                     </div>
                 </div>

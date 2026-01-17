@@ -408,7 +408,8 @@ const uploadAvatar = (event) => {
     }
 
     .profile-icon {
-        font-size: 3rem;
+        font-size: 90px;
+        line-height: 1;
     }
 
     .avatar-overlay {
@@ -588,6 +589,10 @@ const uploadAvatar = (event) => {
         .avatar {
             width: 100px;
             height: 100px;
+        }
+
+        .profile-icon {
+            font-size: 70px;
         }
     }
 </style>

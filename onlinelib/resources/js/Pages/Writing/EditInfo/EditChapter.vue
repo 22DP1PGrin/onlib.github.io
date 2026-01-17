@@ -1,80 +1,90 @@
 <script setup>
-    import Navbar from "@/Components/Navbar.vue";
-    import Footer from "@/Components/Footer.vue";
-    import { useForm } from "@inertiajs/vue3";
-    import { route } from "ziggy-js";
+import Navbar from "@/Components/Navbar.vue";
+import Footer from "@/Components/Footer.vue";
+import { ref } from "vue";
+import axios from "axios";
+import { route } from "ziggy-js";
 
-    // Definējam rekvizītus, kas tiek padoti komponentam
-    const props = defineProps({
-        chapter: Object // Sagaidām objekta tipu ar informāciju par nodaļu
-    });
+const props = defineProps({
+    chapter: { type: Object, required: true }, // Esošās nodaļas dati
+    bookId: { type: Number, required: true }, // Grāmatas ID
+    type: { type: String, required: true },    // "user" vai "classic"
+});
 
-    // Inicializējam formu ar sākotnējām vērtībām no esošās nodaļas
-    const form = useForm({
-        name: props.chapter.name || '',
-        content: props.chapter.content || '',
-    });
+// Formas dati
+const title = ref(props.chapter.name || '');
+const content = ref(props.chapter.content || '');
+const validationErrors = ref({});
 
-    // Funkcija, kas tiek izsaukta, kad forma tiek iesniegta
-    const submitForm = () => {
-        form.put(route('chapters.update', { chapter: props.chapter.id }), { // Sūtām PUT pieprasījumu uz atjaunošanas maršrutu
-            preserveScroll: true, // Saglabā ritināšanas pozīciju
-            onSuccess: () => {    // Ja izdevās
-                alert('Nodaļa veiksmīgi atjaunināta!'); // Parādam paziņojumu par veiksmīgu atjaunināšanu
-            },
-        });
-    };
+// Funkcija nodaļas saglabāšanai (rediģēšanai)
+async function saveChapter() {
+    try {
+        // Nosaka URL atkarībā no tipa
+        const url = props.type === 'classic'
+            ? route('classic.chapters.update', props.chapter.id)
+            : route('user.chapters.update', props.chapter.id);
+
+        const data = {
+            book_id: props.bookId,
+            name: title.value,
+            content: content.value
+        };
+
+        await axios.put(url, data);
+
+        alert('Nodaļa veiksmīgi atjaunināta!');
+
+        // Pāradresācija uz grāmatas rediģēšanas lapu front-endā
+        const redirectUrl = props.type === 'classic'
+            ? `/Classic/${props.bookId}/edit`
+            : `/writing/${props.bookId}/edit`;
+
+        window.location.href = redirectUrl;
+
+    } catch (error) {
+        if (error.response && error.response.status === 422) {
+            validationErrors.value = error.response.data.errors;
+        } else {
+            console.error(error);
+        }
+    }
+}
 </script>
-
 
 <template>
     <Navbar />
 
-    <!-- Galvenais satura bloks -->
     <div class="main-content">
-        <!-- Nodaļas rediģēšanas forma (parādās tikai, ja nodaļa ir pieejama) -->
-        <div v-if="props.chapter" class="story-form">
-
+        <div class="story-form">
             <h1>Nodaļas rediģēšana</h1>
 
-            <!-- Veidlapas sadaļa ar iesniegšanas apstrādi -->
-            <form @submit.prevent="submitForm" class="submit">
-
+            <form @submit.prevent="saveChapter">
                 <div class="editor-container">
-                    <!-- Nodaļas nosaukuma ievades lauks -->
                     <input
-                        id="name"
-                        v-model="form.name"
+                        v-model="title"
                         type="text"
                         class="chapter-title-input"
                         placeholder="Nodaļas nosaukums"
                         required
                     />
-                    <!-- Validācijas kļūdas ziņojums nosaukumam -->
-                    <div v-if="form.errors.name" class="error-message">
-                        {{ form.errors.name }}
+                    <div v-if="validationErrors.name" class="error-message">
+                        {{ validationErrors.name[0] }}
                     </div>
 
-                    <!-- Nodaļas satura redaktors -->
                     <textarea
-                        id="text"
-                        v-model="form.content"
+                        v-model="content"
                         class="chapter-editor"
                         placeholder="Sāciet rakstīt savu nodaļu šeit..."
                         required
                     ></textarea>
-                    <!-- Validācijas kļūdas ziņojums saturam -->
-                    <div v-if="form.errors.content" class="error-message">
-                        {{ form.errors.content }}
+                    <div v-if="validationErrors.content" class="error-message">
+                        {{ validationErrors.content[0] }}
                     </div>
 
-                    <!-- Redaktora kājene ar darbību pogām -->
                     <div class="editor-footer">
-                        <!-- Saglabāšanas poga -->
-                        <button class="save-btn" @click="saveChapter">Saglabāt</button>
-                        <!-- Rakstzīmju skaitītājs -->
+                        <button type="submit" class="save-btn">Saglabāt</button>
                         <div class="word-count">
-                            Rakstzīmes: {{ form.content.length }}
+                            Rakstzīmes: {{ content.length }}
                         </div>
                     </div>
                 </div>
@@ -82,7 +92,6 @@
         </div>
     </div>
 
-    <!-- Lapas kājene -->
     <Footer />
 </template>
 

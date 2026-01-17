@@ -6,16 +6,16 @@
 
     // Saņemam datus no servera kā props
     const props = defineProps({
-        book: Object, // Stāsta objekts
-        genres: Array, // Pieejamie žanri
-        ratings: Array, // Vērtējumu opcijas
-        flash: Object // Flash ziņojumi (ja ir)
+        book: Object,
+        genres: Array,
+        ratings: Array,
+        flash: Object
     });
 
-    // Paņemam žanru ID no esošā stāsta (ja tādi ir)
+    // Paņemam žanru ID no esošā stāsta
     const initialGenreIds = props.book.genres?.map(g => g.id) || [];
 
-    // Izveidojam veidlapas datus, sākotnēji aizpildītus ar esošo stāsta informāciju
+    // Veidlapas datus
     const form = useForm({
         name: props.book.name,
         description: props.book.description,
@@ -48,25 +48,29 @@
     };
 
     // Nodaļas dzēšana pēc apstiprinājuma
-    const deleteChapter = (id) => {
+    const deleteChapter = (chapterId) => {
         if (confirm('Vai tiešām vēlaties dzēst šo nodaļu?')) {
-            router.delete(route('chapters.destroy', { id }), {
+            router.delete(route('user.chapters.destroy', { chapter: chapterId }), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    alert('Nodaļa dzēsta.'); // Ziņojums pēc dzēšanas
+                    alert('Nodaļa veiksmīgi dzēsta.');
                 },
+                onError: (errors) => {
+                    console.error(errors);
+                    alert('Radās kļūda, mēģiniet vēlreiz.');
+                }
             });
         }
     };
 
     // Pāriet uz nodaļas izveides lapu
     const GoToCreate = () => {
-        router.get(route('chapters.create', { book: props.book.id }));
+        router.get(route('user.chapters.create', { book: props.book.id }));
     };
 
     // Pāriet uz esošās nodaļas rediģēšanu
     const goToEdit = (chapterId) => {
-        router.get(route('chapters.edit', { chapter: chapterId }));
+        router.get(route('user.chapters.edit', { chapter: chapterId }));
     };
 </script>
 

@@ -64,7 +64,7 @@ const deleteChapter = (id) => {
 
 // Pāriet uz nodaļas izveides lapu
 const GoToCreate = () => {
-    router.get(route('classic_chapters.create', { book: props.classic_book.id }));
+    router.get(route('classic.chapters.create', { book: props.classic_book.id }));
 };
 
 // Pāriet uz esošās nodaļas rediģēšanu

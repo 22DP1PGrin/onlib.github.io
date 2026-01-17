@@ -126,7 +126,7 @@
 
     // Funkcija, lai pārvietotos uz klasiskās grāmatas lasīšanas lapu
     const GoToReadClassic = (bookId, chapterId) => {
-        router.get(route('ClassicContent', {
+        router.visit(route('chapter.content', {
             bookId: bookId,
             chapterId: chapterId
         }));

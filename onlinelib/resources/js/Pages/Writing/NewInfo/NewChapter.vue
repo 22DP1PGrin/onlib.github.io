@@ -1,84 +1,88 @@
 <script setup>
-    import Navbar from "@/Components/Navbar.vue";
-    import Footer from "@/Components/Footer.vue";
-    import { ref } from "vue";
-    import axios from "axios";
+import Navbar from "@/Components/Navbar.vue";
+import Footer from "@/Components/Footer.vue";
+import { ref } from "vue";
+import axios from "axios";
+import {route} from "ziggy-js";
 
-    const props = defineProps({
-        bookId: Number, // Saņem stāsta ID kā rekvizītu
-    });
+// Props no Laravel/Inertia
+const props = defineProps({
+    bookId: { type: Number, required: true }, // Grāmatas ID
+    type: { type: String, required: true }    // "user" vai "classic"
+});
 
-    const bookId = props.bookId; // Saglabā stāsta ID mainīgajā
+// Formas dati
+const title = ref('');
+const content = ref('');
+const validationErrors = ref({});
 
-    const title = ref(''); // Nodaļas nosaukuma laukums
-    const content = ref(''); // Nodaļas saturs
-    const validationErrors = ref({}); // Kļūdu glabāšanas objekts
+// Funkcija nodaļas saglabāšanai
+async function saveChapter() {
+    try {
+        // Nosaka URL atkarībā no tipa
+        const url = props.type === 'classic'
+            ? route('classic.chapters.store', props.bookId)
+            : route('user.chapters.store', props.bookId);
 
-    function saveChapter() {
         const data = {
-            book_id: bookId,
+            book_id: props.bookId,
             name: title.value,
-            content: content.value,
+            content: content.value
         };
 
-        axios.post('/chapters', data) // Sūta POST pieprasījumu uz serveri
-            .then(response => {
-                alert('Nodaļa veiksmīgi saglabāta!'); // Paziņojums par veiksmi
-                window.location.href = `/writing/${bookId}/edit`; // Pāradresācija uz rediģēšanas lapu
-            })
-            .catch(error => {
-                if (error.response.status === 422) {
-                    validationErrors.value = error.response.data.errors; // Saglabā validācijas kļūdas
-                } else {
-                    console.error(error); // Izvada kļūdu konsolē
-                }
-            });
+        await axios.post(url, data);
+
+        alert('Nodaļa veiksmīgi saglabāta!');
+
+        // Pāradresācija uz grāmatas rediģēšanas lapu
+        const redirectUrl = props.type === 'classic'
+                ? `/Classic/${props.bookId}/edit`
+                : `/writing/${props.bookId}/edit`;
+
+        window.location.href = redirectUrl;
+
+    } catch (error) {
+        if (error.response && error.response.status === 422) {
+            validationErrors.value = error.response.data.errors;
+        } else {
+            console.error(error);
+        }
     }
+}
 </script>
+
 <template>
     <Navbar />
 
-    <!-- Galvenais satura bloks -->
     <div class="main-content">
-        <!-- Nodaļas izveides formas konteiners -->
         <div class="story-form">
-            <!-- Formas virsraksts -->
             <h1>Nodaļas izveide</h1>
 
-            <!-- Veidlapas sadaļa ar iesniegšanas apstrādi -->
             <form @submit.prevent="saveChapter">
                 <div class="editor-container">
-                    <!-- Nodaļas nosaukuma ievades lauks -->
                     <input
                         v-model="title"
                         type="text"
                         class="chapter-title-input"
                         placeholder="Nodaļas nosaukums"
                         required
-                    >
-                    <!-- Validācijas kļūdas ziņojums nosaukumam -->
+                    />
                     <div v-if="validationErrors.name" class="error-message1">
                         {{ validationErrors.name[0] }}
                     </div>
 
-                    <!-- Nodaļas satura teksta laukums -->
                     <textarea
                         v-model="content"
                         class="chapter-editor"
                         placeholder="Sāciet rakstīt savu nodaļu šeit..."
                         required
                     ></textarea>
-                    <!-- Validācijas kļūdas ziņojums saturam -->
                     <div v-if="validationErrors.content" class="error-message">
                         {{ validationErrors.content[0] }}
                     </div>
 
-                    <!-- Redaktora kājene ar pogām un statistikas -->
                     <div class="editor-footer">
-                        <!-- Iesniegšanas poga -->
                         <button type="submit" class="save-btn">Saglabāt</button>
-
-                        <!-- Rakstzīmju skaitītājs -->
                         <div class="word-count">
                             Rakstzīmes: {{ content.length }}
                         </div>
@@ -87,8 +91,10 @@
             </form>
         </div>
     </div>
-    <Footer/>
+
+    <Footer />
 </template>
+
 
 <style scoped>
     .main-content {
