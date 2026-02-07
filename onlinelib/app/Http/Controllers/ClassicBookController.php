@@ -20,7 +20,7 @@ class ClassicBookController extends Controller
 // Metode, kas atver grāmatas izveides formu
     public function create()
     {
-        // Atgriežam skatu ar žanriem un vecuma ierobežojumiem
+        // Atgriež skatu ar žanriem un vecuma ierobežojumiem
         return Inertia::render('Control/Books/NewInfo/NewClassicBook', [
             'genres' => Genre::all(), // Saņemam visus žanrus no datu bāzes
             'ratings' => [
@@ -36,7 +36,7 @@ class ClassicBookController extends Controller
     // Metode, kas saglabā jaunu grāmatu
     public function store(Request $request)
     {
-        // Validējam saņemtos datus
+        // Valide saņemtos datus
         $validated = $request->validate([
             'title' => 'required|string|max:25',
             'description' => 'required|string|max:250',
@@ -57,7 +57,7 @@ class ClassicBookController extends Controller
             'Year_publication.digits' => 'Publicēšanas gadam jābūt tieši 4 cipariem',
         ]);
 
-        // Izveidojam jaunu grāmatu
+        // Izveido jaunu grāmatu
         $book = ClassicBook::create([
             'user_id' => auth()->id(),
             'name' => $validated['title'],
@@ -68,22 +68,22 @@ class ClassicBookController extends Controller
             'Year_publication' =>$validated['Year_publication'],
         ]);
 
-        // Pievienojam žanrus grāmatai
+        // Pievieno žanrus grāmatai
         $book->genres()->attach($validated['genres']);
 
-        // Pāradresējam uz grāmatu sarakstu
+        // Pāradre uz grāmatu sarakstu
         return redirect()->route('book.lists');
     }
 
     // Metode, kas atver grāmatas rediģēšanas formu
     public function editClassic($id)
     {
-        // Atrodam grāmatu pēc ID un lietotāja ID
+        // Atrod grāmatu pēc ID un lietotāja ID
         $classic_book = ClassicBook::findOrFail($id)
             ->with('genres', 'chapters') // Iekļaujam žanrus un nodaļas
             ->findOrFail($id);
 
-        // Atgriežam skatu ar grāmatas datiem un iespējām rediģēt
+        // Atgriež skatu ar grāmatas datiem un iespējām rediģēt
         return Inertia::render('Control/Books/EditInfo/ClassicEdit', [
             'classic_book' => $classic_book,
             'genres' => Genre::all(),
@@ -102,11 +102,11 @@ class ClassicBookController extends Controller
     // Metode, kas atjaunina esošu grāmatu
     public function updateClassic(Request $request, $id)
     {
-        // Atrodam grāmatu pēc ID un lietotāja ID
+        // Atrod grāmatu pēc ID un lietotāja ID
         $classic_book = ClassicBook::findOrFail($id)
             ->findOrFail($id);
 
-        // Validējam saņemtos datus
+        // Valide saņemtos datus
         $validated = $request->validate([
             'name' => 'required|string|max:30',
             'description' => 'required|string|max:250',
@@ -127,7 +127,7 @@ class ClassicBookController extends Controller
             'Year_publication.digits' => 'Publicēšanas gadam jābūt tieši 4 cipariem',
         ]);
 
-        // Atjauninām grāmatu
+        // Atjaunina grāmatu
         $classic_book->update([
             'name' => $validated['name'],
             'description' => $validated['description'],
@@ -138,44 +138,63 @@ class ClassicBookController extends Controller
 
         ]);
 
-        // Atjaunojam žanrus
+        // Atjaunoja žanrus
         if (isset($validated['genres'])) {
             $classic_book->genres()->sync($validated['genres']);
         }
 
-        // Pāradresējam uz grāmatu sarakstu ar ziņojumu par veiksmi
+        // Pāradrese uz grāmatu sarakstu ar ziņojumu par veiksmi
         return redirect()->route('book.lists')->with('success', 'Stāsts veiksmīgi atjaunināts!');
     }
 
-
-     // Dzēš konkrētu klasisko grāmatu
+    // Dzēš konkrētu klasisko grāmatu
     public function destroyBook($id)
     {
-        // Atrod grāmatu pēc ID vai izmet kļūdu, ja tāda nav atrasta
+        // Atrod klasisko grāmatu pēc ID
         $book = ClassicBook::findOrFail($id);
 
-        // Dzēš atrasto grāmatu
-        $book->delete();
+        // Iegūst pašreiz autentificēto lietotāju
+        $user = auth()->user();
 
-        // Pāradresē atpakaļ uz iepriekšējo lapu ar veiksmes ziņojumu
-        return redirect()->back()->with('success', 'Grāmata veiksmīgi dzēsta.');
+        // Pārbauda, vai lietotājs ir superadmin
+        if ($user->role === 'superadmin') {
+
+            // Noņem saistītus datus
+            $book->genres()->detach();
+            $book->chapters()->delete();
+            $book->delete();
+
+            return redirect()->back()->with('success', 'Grāmata veiksmīgi dzēsta.');
+        }
+
+        // Ja lietotājs nav superadmin, nepiešķir dzēšanas tiesības
+        return redirect()->back()->with('error', 'Tev nav tiesību dzēst šo grāmatu.');
     }
 
     // Metode, kas parāda visu informāciju par grāmatu
     public function showInfo($id)
     {
-        // Atrodam grāmatu ar visiem saistītajiem datiem
+        // Atrod grāmatu ar visiem saistītajiem datiem
         $book = ClassicBook::with(['genres', 'chapters' => function($query) {
-        }])
-            ->findOrFail($id);
+        }])->findOrFail($id);
 
+        // Tikai admin un superadmin var redzēt bloķētu klasisko grāmatu
+        if ($book->is_blocked) {
 
-        // Saņemiet vērtējuma datus
+            $user = auth()->user();
+
+            // Ja lietotājs nav admin/superadmin mēt kļudu
+            if (!$user || (!in_array($user->role, ['admin', 'superadmin']))) {
+                abort(403, 'Ši grāmata ir bloķēta');
+            }
+        }
+
+        // Saņem vērtējuma datus
         $ratingsData = Rating::where('classic_book_id', $id)
             ->selectRaw('AVG(grade) as average, COUNT(*) as count')
             ->first();
 
-        // Iegūstiet pašreizējā lietotāja vērtējumu
+        // Iegūt pašreizējā lietotāja vērtējumu
         $userRating = auth()->check()
             ? Rating::where('classic_book_id', $id)
                 ->where('user_id', auth()->id())

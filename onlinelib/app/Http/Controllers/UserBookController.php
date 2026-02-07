@@ -15,13 +15,13 @@ class UserBookController extends Controller
     // Metode, kas atgriež visus lietotāja grāmatas
     public function index()
     {
-        // Saņemam visus lietotāja grāmatas
-        $works = UserBook::where('user_id', auth()->id()) // Meklējam grāmatas pēc lietotāja ID
-            ->select('id', 'name', 'description', 'created_at') // Atlasa tikai vajadzīgos laukus
-            ->orderBy('name', 'asc')
-            ->get();
+        // Saņem visus lietotāja grāmatas
+        $works = UserBook::where('user_id', auth()->id())
+        ->select('id', 'name', 'description', 'is_blocked', 'created_at')
+        ->orderBy('name', 'asc')
+        ->get();
 
-        // Atgriežam skatu ar visām grāmatām
+        // Atgriež skatu ar visām grāmatām
         return Inertia::render('Writing/StoryList', [
             'works' => $works
         ]);
@@ -30,9 +30,9 @@ class UserBookController extends Controller
     // Metode, kas atver grāmatas izveides formu
     public function create()
     {
-        // Atgriežam skatu ar žanriem un vecuma ierobežojumiem
+        // Atgriež skatu ar žanriem un vecuma ierobežojumiem
         return Inertia::render('Writing/NewInfo/NewStory', [
-            'genres' => Genre::all(), // Saņemam visus žanrus no datu bāzes
+            'genres' => Genre::all(), // Saņem visus žanrus no datu bāzes
             'ratings' => [
                 ['id' => '0+', 'label' => '0+ '],
                 ['id' => '6+', 'label' => '6+'],
@@ -46,7 +46,7 @@ class UserBookController extends Controller
     // Metode, kas saglabā jaunu grāmatu
     public function store(Request $request)
     {
-        // Validējam saņemtos datus
+        // Valide saņemtos datus
         $validated = $request->validate([
             'title' => 'required|string|max:25',
             'description' => 'required|string|max:250',
@@ -60,7 +60,7 @@ class UserBookController extends Controller
             'genres.min' => 'Jāizvēlas vismaz viens žanrs.'
         ]);
 
-        // Izveidojam jaunu grāmatu
+        // Izveido jaunu grāmatu
         $book = UserBook::create([
             'user_id' => auth()->id(),
             'name' => $validated['title'],
@@ -68,19 +68,19 @@ class UserBookController extends Controller
             'age_limit' => $validated['rating_id'],
         ]);
 
-        // Pievienojam žanrus grāmatai
+        // Pievieno žanrus grāmatai
         $book->genres()->attach($validated['genres']);
 
-        // Pāradresējam uz grāmatu sarakstu
+        // Pāradrese uz grāmatu sarakstu
         return redirect()->route('StoryList');
     }
 
     // Metode, kas parāda grāmatas rediģēšanas formu
     public function show($id)
     {
-        // Atrodam grāmatu pēc ID un lietotāja ID
+        // Atrod grāmatu pēc ID un lietotāja ID
         $book = UserBook::where('user_id', auth()->id())
-            ->with('genres', 'chapters') // Iekļaujam žanrus un nodaļas
+            ->with('genres', 'chapters', 'block') // Iekļaujam žanrus un nodaļas
             ->findOrFail($id);
 
         // Atgriežam skatu ar grāmatas datiem
@@ -93,12 +93,12 @@ class UserBookController extends Controller
     // Metode, kas atver grāmatas rediģēšanas formu
     public function edit($id)
     {
-        // Atrodam grāmatu pēc ID un lietotāja ID
+        // Atrod grāmatu pēc ID un lietotāja ID
         $book = UserBook::where('user_id', auth()->id())
-            ->with('genres', 'chapters') // Iekļaujam žanrus un nodaļas
+            ->with('genres', 'chapters', 'block') // Iekļauj žanrus un nodaļas
             ->findOrFail($id);
 
-        // Atgriežam skatu ar grāmatas datiem un iespējām rediģēt
+        // Atgriež skatu ar grāmatas datiem un iespējām rediģēt
         return Inertia::render('Writing/EditInfo/EditStory', [
             'book' => $book,
             'genres' => Genre::all(),
@@ -117,11 +117,11 @@ class UserBookController extends Controller
     // Metode, kas atjaunina esošu grāmatu
     public function update(Request $request, $id)
     {
-        // Atrodam grāmatu pēc ID un lietotāja ID
+        // Atrod grāmatu pēc ID un lietotāja ID
         $book = UserBook::where('user_id', Auth::id())
             ->findOrFail($id);
 
-        // Validējam saņemtos datus
+        // Valide saņemtos datus
         $validated = $request->validate([
             'name' => 'required|string|max:25',
             'description' => 'required|string|max:250',
@@ -136,7 +136,7 @@ class UserBookController extends Controller
             'genres.min' => 'Jāizvēlas vismaz viens žanrs.'
         ]);
 
-        // Atjauninām grāmatu
+        // Atjaunina grāmatu
         $book->update([
             'name' => $validated['name'],
             'description' => $validated['description'],
@@ -144,53 +144,62 @@ class UserBookController extends Controller
             'status' => $validated['status'] ?? $book->status,
         ]);
 
-        // Atjaunojam žanrus
+        // Atjauno žanrus
         if (isset($validated['genres'])) {
             $book->genres()->sync($validated['genres']);
         }
 
-        // Pāradresējam uz grāmatu sarakstu ar ziņojumu par veiksmi
+        // Pāradreseuz grāmatu sarakstu ar ziņojumu par veiksmi
         return redirect()->route('StoryList')->with('success', 'Stāsts veiksmīgi atjaunināts!');
     }
 
     // Metode, kas dzēš grāmatu
     public function delete($id)
     {
-        // Atrodam grāmatu pēc ID
+        // Atrod lietotāja grāmatu pēc ID
         $book = UserBook::findOrFail($id);
 
-        // Dzēšam žanrus, nodaļas un pašu grāmatu
-        $book->genres()->detach();
-        $book->chapters()->delete();
-        $book->delete();
+        // Iegūst pašreiz autentificēto lietotāju
+        $user = auth()->user();
 
-        // Atgriežam ziņu par veiksmīgu dzēšanu
-        return response()->json(['message' => 'Stāsts un visas nodaļas tika veiksmīgi dzēstas!']);
-    }
+        // Pārbauda, vai lietotājs ir superadmin vai grāmatas autors
+        if ($user->role === 'superadmin' || $user->id === $book->user_id) {
 
-    //Dzēš konkrētu lietotāja grāmatu
-    public function destroyBook($id)
-    {
-        $book = UserBook::findOrFail($id);
-        $book->delete();
+            // Noņem saistītus datus
+            $book->genres()->detach();
+            $book->chapters()->delete();
+            $book->delete();
 
-        return redirect()->back()->with('success', 'Grāmata veiksmīgi dzēsta.');
+            return redirect()->back()->with('success', 'Grāmata veiksmīgi dzēsta.');
+        }
+
+        // Ja lietotājs nav autors un nav superadmin, nepiešķir dzēšanas tiesības
+        return redirect()->back()->with('error', 'Tev nav tiesību dzēst šo grāmatu.');
     }
 
     // Metode, kas parāda visu informāciju par stāstu
     public function showInfo($id)
     {
-        // Atrodam grāmatu ar visiem saistītajiem datiem
-        $book = UserBook::with(['genres', 'chapters', 'user'=> function($query) {
-        }])
-            ->findOrFail($id);
+        // Atrod grāmatu ar visiem saistītajiem datiem
+        $book = UserBook::with(['genres', 'chapters', 'user'=> function($query) {}])->findOrFail($id);
 
-        // Saņemiet vērtējuma datus
+        // Tikai admin, superadmin un autors var redzēt bloķētu stāstu
+        if ($book->is_blocked) {
+
+            // Iegūst autentificēto lietotāju
+            $user = auth()->user();
+
+            if (!$user || (!in_array($user->role, ['admin', 'superadmin']) && $user->id !== $book->user_id)) {
+                abort(403, 'Šis stāsts ir bloķēts');
+            }
+        }
+
+        // Saņem vērtējuma datus
         $ratingsData = Rating::where('user_book_id', $id)
             ->selectRaw('AVG(grade) as average, COUNT(*) as count')
             ->first();
 
-        // Iegūstiet pašreizējā lietotāja vērtējumu
+        // Iegūst pašreizējā lietotāja vērtējumu
         $userRating = auth()->check()
             ? Rating::where('user_book_id', $id)
                 ->where('user_id', auth()->id())
@@ -213,7 +222,7 @@ class UserBookController extends Controller
             }
         }
 
-        // Atgriežam rediģēšanas skatu ar nepieciešamajiem datiem
+        // Atgriež rediģēšanas skatu ar nepieciešamajiem datiem
         return Inertia::render('Reading/UserBooks/UserBook', [
             'book' => $book,
             'genres' => $book->genres,
@@ -260,6 +269,5 @@ class UserBookController extends Controller
             'ratingsCount' => $count,             // Vērtējumu skaits
             'userRating' => $rating->grade       // Lietotāja vērtējums
         ]);
-
     }
 }

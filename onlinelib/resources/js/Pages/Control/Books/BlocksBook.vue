@@ -1,13 +1,14 @@
 <script setup>
-    import {router, useForm, usePage} from '@inertiajs/vue3';
+    import { router, usePage } from '@inertiajs/vue3';
     import Footer from "@/Components/Footer.vue";
     import Navbar from "@/Components/Navbar.vue";
-    import { route } from "ziggy-js";
-    import { computed, ref } from "vue";
+    import {route} from "ziggy-js";
+    import {computed, ref} from "vue";
 
     // Saņem stāstu sarakstu no servera
     const books = usePage().props.book;
     const classicBooks = usePage().props.classicBooks;
+    const authUser = usePage().props.authUser;
 
     const limit = 3; // Cik grāmatas rādīt sākumā
 
@@ -25,174 +26,173 @@
         showAllClassicBooks.value ? classicBooks : classicBooks.slice(0, limit)
     );
 
-
     // Modālo logu stāvokļi
-    const showUserModal = ref(false);
-    const showClassicModal = ref(false);
-    const showSuccessModal = ref(false);
+    const showModal = ref(false);
+    const showSuccesModal = ref(false);
+
+    const showDeleteModal = ref(false);
+    const showDeleteSuccessModal = ref(false);
 
     // Atlasītie grāmatu dati
     const selectedBook = ref(null);
+    const selectedType = ref('');
+    const selectedBookForDelete = ref(null);
 
+    const errors = ref({});
 
-    // Veidlapas dati bloķēšanas paziņojumam (tikai lietotāja grāmatām)
-    const form = useForm({
-        subject: '',
-        problem: '',
-    });
-
-    // Atver modāli lietotāja grāmatas bloķēšanai
-    const openUserBlockModal = (book) => {
-        selectedBook.value = book;
+    // Atver dzēšanas modālo logu
+    const openDeleteModal = (book, type) => {
+        selectedBookForDelete.value = book;
+        selectedType.value = type;
+        showDeleteModal.value = true;
         document.body.style.overflow = "hidden";
-        showUserModal.value = true;
     };
 
-    // Atver modāli klasiskās grāmatas bloķēšanai
-    const openClassicBlockModal = (book) => {
-        selectedBook.value = book;
-        document.body.style.overflow = "hidden";
-        showClassicModal.value = true;
-    };
+    // Apstiprina dzēšanu
+    const confirmDelete = () => {
+        if (!selectedBookForDelete.value || !selectedType.value) return;
 
-    // Apstiprina lietotāja grāmatas bloķēšanu
-    const confirmUserBlock = () => {
-        if (!selectedBook.value) return;
+        // Nosaka dzēšanas maršrutu atkarībā no tipa
+        const routeName = selectedType.value === 'classic'
+                ? 'classic_books.destroy'
+                : 'deleteStory';
 
-        form.post(
-            route('userBooks.toggleBlock', {userBook: selectedBook.value.id}),
-            {
-                preserveScroll: true,
+        router.delete(route(routeName, { id: selectedBookForDelete.value.id }), {
+            preserveScroll: true,
 
-                onSuccess: () => {
-                    form.reset();
-                    showUserModal.value = false;
-                    showSuccessModal.value = true;
-                }
+            // Ja dzēšana veiksmīga
+            onSuccess: () => {
+                showDeleteModal.value = false;
+                showDeleteSuccessModal.value = true;
+            },
+
+            // Ja radās kļūda
+            onError: (error) => {
+                console.error(error);
             }
-        );
+        });
     };
 
-    // Apstiprina klasiskās grāmatas bloķēšanu
-    const confirmClassicBlock = () => {
-        if (!selectedBook.value) return;
-
-        router.post(
-            route('classicBooks.toggleBlock', { book: selectedBook.value.id }),
-            {},
-            {
-                preserveScroll: true,
-
-                onSuccess: () => {
-                    showClassicModal.value = false;
-                    showSuccessModal.value = true;
-                }
-            }
-        );
-    };
-
-    // Aizver visus bloķēšanas modāļus
-    const closeAllModals = () => {
-        showUserModal.value = false;
-        showClassicModal.value = false;
-        form.reset();
+    // Aizver dzēšanas apstiprinājuma modāli
+    const closeDeleteModal = () => {
+        showDeleteModal.value = false;
         document.body.style.overflow = "";
     };
 
-    // Aizver veiksmīgas darbības modāli
-    const closeSuccessModal = () => {
-        showSuccessModal.value = false;
+    // Aizver veiksmīgas dzēšanas modāli un atsvaidzina lapu
+    const closeDeleteSuccessModal = () => {
+        showDeleteSuccessModal.value = false;
         router.visit(window.location.href);
         document.body.style.overflow = "";
     };
 
-    // Pāriet uz klasiskās grāmatas rediģēšanas lapu
-    const GoToEdit = (bookId) => {
-        router.get(route('EditClassicBook', { id: bookId }));
+
+    // Atver atbloķēšanas modāli
+    const openUnblockModal = (book, type) => {
+        selectedBook.value = book;  // Izvēlētais darbs
+        selectedType.value = type;  // Tips: classic/user
+        showModal.value = true;
+        document.body.style.overflow = "hidden";
     };
 
-    // Pāriet uz klasiskās grāmatas izveidošānas lapu
-    const GoToCreate = () => {
-        router.get(route('NewBook'));
+    // Universāla atbloķēšanas funkcija
+    const confirmUnlock = () => {
+        if (!selectedBook.value || !selectedType.value) return;
+
+        // Nosūta bloķēšanas pieprasījumu
+        router.post(
+            selectedType.value === 'classic'
+                ? route('classicBooks.toggleBlock', { book: selectedBook.value.id })
+                : route('userBooks.toggleBlock', { userBook: selectedBook.value.id }),
+            // Tikai lietotāja stāstiem sūta tēmu un pamatojumu
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    // Aizver apstiprinājuma logu
+                    closeModal();
+                    // Atver veiksmīgas bloķēšanas logu
+                    showSuccesModal.value = true;
+                    document.body.style.overflow = 'hidden';
+                },
+                onError: (error) => {
+                    errors.value = error; // Kļūdas
+                }
+            }
+        );
+    };
+
+    // Aizver modāli
+    const closeModal = () => {
+        showModal.value = false;
+        document.body.style.overflow = "";
+    };
+
+    // Aizver modāli
+    const closeSuccesModal = () => {
+        showSuccesModal.value = false;
+        router.visit(window.location.href);
+        document.body.style.overflow = "";
     };
 
     // Pāriet uz stāsta lasīšanas lapu
     const GoToReadStory = (UserbookId) => {
         router.get(route('UserRead', { id: UserbookId }));
     };
-</script>
 
+    // Pāriet uz klasiskās grāmatas rediģēšanas lapu
+    const GoToEdit = (bookId) => {
+        router.get(route('EditClassicBook', { id: bookId }));
+    };
+</script>
 <template>
     <Navbar />
 
     <div class="main-content">
 
-        <!-- Bloķēšanas apstiprinājuma modālais logs stāstam -->
-        <div v-if="showUserModal" class="modal-overlay">
+        <!-- Atbloķēšanas apstiprinājuma modālais logs -->
+        <div v-if="showModal" class="modal-overlay">
             <div class="modal">
                 <div class="success-container">
-                    <h2>Vai tiešām vēlaties bloķēt šo darbu?</h2>
-                    <p>Lūdzu, norādiet bloķēšanas iemeslu, lai apstiprinātu.</p>
+                    <h2>Vai tiešām vēlaties atbloķēt šo darbu?</h2>
 
-                    <div class="form-group">
-                        <!-- Tēmas izvēle -->
-                        <label for="subject">Tēma:</label>
-                        <select v-model="form.subject" required>
-                            <option value="" disabled>Izvēlieties tēmu</option>
-                            <option value="Maldinošs vai kaitīgs saturs">Maldinošs vai kaitīgs saturs</option>
-                            <option value="Noteikumu pārkāpums">Noteikumu pārkāpums</option>
-                            <option value="Spams vai reklāma">Spams vai reklāma</option>
-                            <option value="Naida runa vai aizskarošs saturs">Naida runa vai aizskarošs saturs</option>
-                            <option value="Zemas kvalitātes saturs">Zemas kvalitātes saturs</option>
-                            <option value="Sūdzības no lietotājiem">Sūdzības no lietotājiem</option>
-                        </select>
-
-                        <!-- Validācijas kļūdas paziņojums tēmai -->
-                        <div v-if="form.errors.subject" class="error">
-                            {{ form.errors.subject }}
-                        </div>
-                    </div>
-
-                    <!-- Pamatojuma ievades lauks -->
-                    <div class="form-group">
-                        <label for="problem">Pamatojums:</label>
-                        <textarea v-model="form.problem" required></textarea>
-
-                        <!-- Validācijas kļūdas paziņojums pamatojumam -->
-                        <div v-if="form.errors.problem" class="error">
-                            {{ form.errors.problem }}
-                        </div>
-                    </div>
                     <div class="close">
-                        <button @click="closeAllModals" class="close-btn">Atcelt</button>
-                        <button @click="confirmUserBlock" class="block">Bloķēt</button>
+                        <button @click="closeModal" class="close-btn">Atcelt</button>
+                        <button @click="confirmUnlock" class="block">Atbloķēt</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Atbloķēšanas apstiprinājuma modālais logs grāmatai -->
-        <div v-if="showClassicModal" class="modal-overlay">
+        <!-- Veiksmīgas atbloķēšanas modālais logs -->
+        <div v-if="showSuccesModal" class="modal-overlay">
             <div class="modal">
                 <div class="success-container">
-
-                    <h2>Vai tiešām vēlaties bloķēt šo klasisko grāmatu?</h2>
-
-                    <div class="close">
-                        <button @click="closeAllModals" class="close-btn">Atcelt</button>
-                        <button @click="confirmClassicBlock" class="block">Bloķēt</button>
-                    </div>
-
+                    <h2>Darbs veiksmīgi atbloķēts!</h2>
+                    <button @click="closeSuccesModal" class="close-btn">Aizvērt</button>
                 </div>
             </div>
         </div>
 
-        <!-- Veiksmīgas bloķēšanas modālais logs -->
-        <div v-if="showSuccessModal" class="modal-overlay">
+        <!-- Dzēšanas apstiprinājuma modālais logs -->
+        <div v-if="showDeleteModal" class="modal-overlay">
             <div class="modal">
                 <div class="success-container">
-                    <h2>Darbs veiksmīgi bloķēts!</h2>
-                    <button @click="closeSuccessModal" class="close-btn">Aizvērt</button>
+                    <h2>Vai tiešām vēlaties dzēst šo stāstu?</h2>
+                    <div class="close">
+                        <button @click="closeDeleteModal" class="close-btn">Atcelt</button>
+                        <button @click="confirmDelete" class="block">Dzēst</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Veiksmīgas dzēšanas modālais logs -->
+        <div v-if="showDeleteSuccessModal" class="modal-overlay">
+            <div class="modal">
+                <div class="success-container">
+                    <h2>Grāmata veiksmīgi dzēsta!</h2>
+                    <button @click="closeDeleteSuccessModal" class="close-btn">Aizvērt</button>
                 </div>
             </div>
         </div>
@@ -225,8 +225,15 @@
 
                             <div class="work-actions">
                                 <!-- Dzēšanas poga -->
-                                <button class="delete-btn" @click="openUserBlockModal(book)">Bloķēt</button>
+                                <button
+                                    v-if="authUser.role === 'superadmin'"
+                                    class="delete-btn"
+                                    @click="openDeleteModal(book, 'user')"
+                                >
+                                    Dzēst
+                                </button>
                                 <button class="edit-btn" @click="GoToReadStory(book.id)">Apskatīt</button>
+                                <button class="edit-btn" @click="openUnblockModal(book, 'user')">Atbloķēt</button>
                             </div>
                         </div>
                     </div>
@@ -241,12 +248,8 @@
 
                     <h2>Grāmatu saraksts</h2>
 
-                    <!-- Jauna stāsta izveides sadaļa -->
-                    <div class="new_section">
-                        <div class="new" @click="GoToCreate">
-                            <h2>Pievienot jaunu grāmatu</h2>
-                            <i class="fa">&#xf055;</i>
-                        </div>
+                    <div v-if="classicBooks.length === 0" class="item">
+                        <span class="title">Šeit vēl nav pievienotu darbu.</span>
                     </div>
 
                     <!-- Darbu saraksts -->
@@ -264,8 +267,15 @@
 
                             <div class="work-actions">
                                 <!-- Blokēšana poga -->
-                                <button class="delete-btn" @click="openClassicBlockModal(classicBook)">Bloķēt</button>
+                                <button
+                                    v-if="authUser.role === 'superadmin'"
+                                    class="delete-btn"
+                                    @click="openDeleteModal(classicBook, 'classic')"
+                                >
+                                    Dzēst
+                                </button>
                                 <button class="edit-btn" @click="GoToEdit(classicBook.id)">Rediģēt</button>
+                                <button class="edit-btn" @click="openUnblockModal(classicBook, 'classic')">Atbloķēt</button>
                             </div>
                         </div>
                     </div>
@@ -287,6 +297,7 @@
 
 
 <style scoped>
+
     .main-content {
         padding-bottom: 45px; /* Apakšējais atstatums */
     }
@@ -398,36 +409,6 @@
         font-weight: bold;
     }
 
-    .new_section {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        margin-top: 20px;
-    }
-
-    .new {
-        border: 2px dashed rgba(26, 16, 8, 0.8); /* Pārtraukta apmale */
-        background-color: #ffd9c6; /* Fona krāsa */
-        padding: 20px; /* Iekšējās atstarpes */
-        border-radius: 4px; /* Noapaļoti stūri */
-        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēnas efekts */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        text-align: center;
-        cursor: pointer; /* Peles kursors mainās uz pointer */
-        height: 9rem; /* Fiksēts augstums */
-        transition: all 0.3s; /* Pāreju efekts */
-    }
-
-    .new:hover {
-        transform: translateY(-3px); /* Nedaudz paceļas uz augšu */
-        background-color: #ffc8a9; /* Fona krāsa mainās */
-        border: none; /* Noņem apmali */
-    }
-
     .work-item {
         border: 1px solid rgba(26, 16, 8, 0.8);
         background-color: #e4a27c;
@@ -529,20 +510,13 @@
         padding: 6px 20px;
         border-radius: 4px;
         cursor: pointer;
-        transition: all
-        0.3s; /* Pāreja uz mainīgām īpašībām */
+        transition: all 0.3s; /* Pāreja uz mainīgām īpašībām */
         color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
     }
 
     button:hover {
         background-color: #ffc8a9;
         border-color: #ffc8a9;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
     }
 
     label {
@@ -556,20 +530,12 @@
         font-size: 1.0rem;
     }
 
-    /* Kļūdas zem ievades lauka */
-    .error{
-        color: rgb(110, 37, 37);
-        font-size: 1rem;
-        text-align: left;
-        margin-bottom: 5px;
-    }
-
     .form-group select,
     .form-group textarea {
         padding: 10px;
         border: 1px solid rgba(26, 16, 8, 0.8);
         border-radius: 4px;
-        font-size: 1rem;
+        font-size: 16px;
     }
 
     .form-group textarea {
@@ -588,15 +554,6 @@
         h1 {
             font-size: 1.5rem;
         }
-
-        p,
-        label,
-        error,
-        select
-        {
-            font-size: 0.9rem;
-        }
-
         h2{
             font-size: 1.0rem;
         }

@@ -87,6 +87,7 @@ class BookmarkController extends Controller
         // Veido vaicājumu grāmatām ar grāmatzīmēm
         $query = $model::whereHas('bookmark', fn($q) => $q
             ->where('user_id', $userId) // Filtrē pēc lietotāja ID
+            ->where('is_blocked', false)
             ->where('bookmark_type_id', $typeId) // Filtrē pēc grāmatzīmes tipa
         );
 

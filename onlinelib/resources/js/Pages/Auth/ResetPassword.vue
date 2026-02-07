@@ -289,7 +289,7 @@
         max-width: 400px;
         width: 90%;
         position: relative;
-        background-color: #c58667; /* Fona krāsa */
+        background-color: #e4a27c; /* Fona krāsa */
         border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
         font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
     }

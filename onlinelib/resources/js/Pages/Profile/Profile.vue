@@ -46,6 +46,10 @@
                 router.get(route('book.lists')); // Pāriet uz grāmatu sarakstu
             };
 
+            const GoToBlockBookList = () => {
+                router.get(route('block.book.lists')); // Pāriet uz grāmatu sarakstu
+            };
+
             const goToRead = () => {
                 router.get(route('bookmarks.read'));
             };
@@ -73,6 +77,7 @@
                 GoToUser,
                 GoToForm,
                 GoToBookList,
+                GoToBlockBookList,
                 goToRead,
                 goToPlanned,
                 goToReading,
@@ -200,7 +205,22 @@
                         <!-- Visu stāstu pārvaldības saite -->
                         <div class="bookmark-link" @click="GoToBookList">
                             <i class="fa">&#xf2ba;</i> <!-- Grāmatu plaukta ikona -->
-                            <span class="link-text">Visi stāsti</span>
+                            <span class="link-text">Visi darbi</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="user.role === 'admin' || user.role === 'superadmin'" class="admin-actions">
+                    <div class="links-grid">
+                        <!-- Visu bloķētu stāstu pārvaldības saite -->
+                        <div class="bookmark-link" @click="GoToBlockBookList">
+                            <i class="fa">&#xf2d3;</i> <!-- Grāmatu plaukta ikona -->
+                            <span class="link-text">Bloķēti darbi</span>
+                        </div>
+                        <!-- Visu bloķētu letotāju pārvaldības saite -->
+                        <div class="bookmark-link" @click="GoToBookList">
+                            <i class="fa">&#xf235;</i> <!-- Grāmatu plaukta ikona -->
+                            <span class="link-text">Bloķētie lietotāji</span>
                         </div>
                     </div>
                 </div>

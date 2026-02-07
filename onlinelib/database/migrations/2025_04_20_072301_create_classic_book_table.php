@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('Author_name', 255);
             $table->string('Author_surname', 255);
             $table->integer('Year_publication');
+            $table->boolean('is_blocked')->default(false);
             $table->timestamps();
         });
     }

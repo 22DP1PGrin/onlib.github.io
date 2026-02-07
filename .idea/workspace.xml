@@ -5,13 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3e76eb8-75aa-48f5-a2ef-f4cf9daec5ed" name="Changes" comment="return view('example_vue', compact('story'));">
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/BlocksBook.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/views/emails/user_block.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/views/emails/user_unblock.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/TechnicalSupport/ProblemInfo.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/TechnicalSupport/ProblemInfo.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/AdminController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/AdminController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/AllBooksController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/AllBooksController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/BookmarkController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/BookmarkController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ChapterController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ChapterController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ClassicBookController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ClassicBookController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/UserBookController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/UserBookController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/UserBook.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/UserBook.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/database/migrations/2025_04_20_072301_create_classic_book_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/database/migrations/2025_04_20_072301_create_classic_book_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/database/migrations/2025_04_20_150545_create__users_books.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/database/migrations/2025_04_20_150545_create__users_books.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/database/seeders/UsersSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/database/seeders/UsersSeeder.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/ResetPassword.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/ResetPassword.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/BooksList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/BooksList.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/UserInfo.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/UserInfo.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ClassicBooks/ClassicBook.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ClassicBooks/ClassicBook.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ClassicBooks/ClassicContent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ClassicBooks/ClassicContent.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/UserBooks/UserBook.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/UserBooks/UserBook.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/UserBooks/UserContent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/UserBooks/UserContent.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/DMCAPolicy.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/DMCAPolicy.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Profile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Profile.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Settings.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Settings.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TechnicalSupport.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TechnicalSupport.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditInfo/EditStory.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditInfo/EditStory.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/StoryList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/StoryList.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,6 +49,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaScript File" />
+        <option value="Vue Composition API Component" />
       </list>
     </option>
   </component>
@@ -159,7 +177,7 @@
     </include_path>
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="QODANA_PROBLEMS_VIEW_TAB" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
@@ -172,22 +190,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/Onlib&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\PhpStorm 2024.3.2.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/xampp/htdocs/Skebob",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\PhpStorm 2024.3.2.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "vue.recent.templates": [
+      "Vue Composition API Component"
+    ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Onlib\onlinelib\resources\views\emails" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\Onlib\onlinelib\resources\js\Pages\Writing\NewInfo" />
       <recent name="C:\xampp\htdocs\Onlib\onlinelib\resources\js\Pages\Writing\EditInfo" />
@@ -281,19 +308,61 @@
       <workItem from="1746097870092" duration="49819000" />
       <workItem from="1746717665459" duration="25409000" />
       <workItem from="1747120122615" duration="1701000" />
-      <workItem from="1747209688001" duration="4515000" />
+      <workItem from="1747209688001" duration="8654000" />
+      <workItem from="1750422394686" duration="270000" />
+      <workItem from="1758096436588" duration="2000" />
+      <workItem from="1758096593183" duration="84000" />
+      <workItem from="1758097874393" duration="1109000" />
+      <workItem from="1758260136714" duration="41000" />
+      <workItem from="1758261615393" duration="128000" />
+      <workItem from="1758276896877" duration="31000" />
+      <workItem from="1759224341668" duration="803000" />
+      <workItem from="1759494690141" duration="7558000" />
+      <workItem from="1759668268654" duration="5909000" />
+      <workItem from="1759734277556" duration="11983000" />
+      <workItem from="1759837367163" duration="2338000" />
+      <workItem from="1759918595599" duration="21000" />
+      <workItem from="1760426911176" duration="1371000" />
+      <workItem from="1760428330775" duration="9000" />
+      <workItem from="1760428464524" duration="37000" />
+      <workItem from="1760428639453" duration="40000" />
+      <workItem from="1760429309027" duration="56000" />
+      <workItem from="1760429430994" duration="65000" />
+      <workItem from="1760630396442" duration="5469000" />
+      <workItem from="1760677947168" duration="891000" />
+      <workItem from="1760787732024" duration="13747000" />
+      <workItem from="1760953821331" duration="17961000" />
+      <workItem from="1761318725029" duration="3408000" />
+      <workItem from="1761640438076" duration="6000" />
+      <workItem from="1761646836734" duration="3099000" />
+      <workItem from="1762611600861" duration="13566000" />
+      <workItem from="1763467777519" duration="19503000" />
+      <workItem from="1765020819637" duration="19256000" />
+      <workItem from="1765626286640" duration="35173000" />
+      <workItem from="1768734614103" duration="39475000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/onlinelib/database/seeders/ClassicBooksChapterSeeder.php</url>
-          <line>1024</line>
+          <line>1021</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

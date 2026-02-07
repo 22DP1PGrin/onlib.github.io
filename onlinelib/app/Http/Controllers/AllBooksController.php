@@ -11,24 +11,9 @@ use Inertia\Inertia;
 
 class AllBooksController extends Controller
 {
-    //Atgriež visu grāmatu sarakstu
-    public function showAllList()
-    {
-        $book = UserBook::with('user')
-            ->orderBy('name', 'asc')
-            ->get();
-        $classicBooks = ClassicBook::orderBy('name', 'asc') ->get();
-        return Inertia::render('Control/Books/BooksList', [
-            'book' => $book,
-            'classicBooks' => $classicBooks,
-        ]);
-    }
-
-    // Atgriež visu grāmatu sarakstu ar saistītajiem datiem
+    // Atgriež visu grāmatu sarakstu ar saistītajiem datiem bibliotēkai
     public function showAll()
     {
-
-        $userId = auth()->id();
 
         // Iegūst visas lietotāju grāmatas ar saistītajiem lietotājiem un žanriem
         $books = UserBook::query()
@@ -37,6 +22,7 @@ class AllBooksController extends Controller
                 'genres',
                 'bookmark.bookmarkType'
             ])
+            ->Where('is_blocked', false)
             ->withAvg('ratings', 'grade')
             ->withCount('ratings')
             ->get()
@@ -45,14 +31,13 @@ class AllBooksController extends Controller
                 $book->current_bookmark = $book->bookmark ? $book->bookmark->bookmarkType : null;
             });
 
-
-
         // Iegūst visas klasiskās grāmatas ar saistītajiem žanriem
         $classicBooks = ClassicBook::query()
             ->with([
                 'genres',
                 'bookmark.bookmarkType'
             ])
+            ->Where('is_blocked', false)
             ->withAvg('ratings', 'grade')
             ->withCount('ratings')
             ->get()
@@ -85,12 +70,14 @@ class AllBooksController extends Controller
     {
         // Lietotāju grāmatas ar vidējo vērtējumu un skaitu
         $query = UserBook::query()
+            ->where('is_blocked', false)
             ->with(['user', 'genres'])
             ->withAvg('ratings as ratings_avg_grade', 'grade')
             ->withCount('ratings as ratings_count');
 
         // Klasiskās grāmatas ar vidējo vērtējumu un skaitu
         $classicQuery = ClassicBook::query()
+            ->where('is_blocked', false)
             ->with('genres')
             ->withAvg('ratings as ratings_avg_grade', 'grade')
             ->withCount('ratings as ratings_count');
@@ -130,7 +117,7 @@ class AllBooksController extends Controller
             }
         }
 
-        // Atgriežam Inertia skatu ar filtrētajiem rezultātiem
+        // Atgriež Inertia skatu ar filtrētajiem rezultātiem
         return Inertia::render('Reading/Library', [
             // Filtrētās lietotāju grāmatas (ja nav atlasīts tikai klasiskās)
             'books' => $request->bookType === 'classic' ? [] : $query->get(),
@@ -159,12 +146,12 @@ class AllBooksController extends Controller
 
             // Aktīvie filtri (tiek izmantoti, lai atjauninātu saskarni)
             'filters' => [
-                'bookType' => $request->bookType ?? 'all', // Grāmatu tips
-                'ratings' => $request->ratings ?? [], // Atlasītie vērtējumi
+                'bookType' => $request->bookType ?? 'all',
+                'ratings' => $request->ratings ?? [],
                 'genres' => is_array($request->genres)
-                    ? array_map('strval', $request->genres) // Pārveidojam žanru ID par string
-                    : [], // Atlasītie žanri
-                'statuses' => $request->statuses ?? [] // Atlasītie statusi
+                    ? array_map('strval', $request->genres)
+                    : [],
+                'statuses' => $request->statuses ?? []
 
             ],
             'hasFilteredResults' => ($request->bookType !== 'classic' && $query->count() > 0) ||
@@ -174,11 +161,11 @@ class AllBooksController extends Controller
     public function searchBooks(Request $request)
     {
         $query = $request->input('query');
-        $userId = auth()->id();
 
-        // Поиск пользовательских книг
+        // Lietotāju grāmatu meklēšanu
         $books = UserBook::query()
             ->where('name', 'LIKE', "%{$query}%")
+            ->where('is_blocked', false)
             ->with(['user', 'genres', 'bookmark.bookmarkType'])
             ->withAvg('ratings', 'grade')
             ->withCount('ratings')
@@ -188,9 +175,10 @@ class AllBooksController extends Controller
                 $book->current_bookmark = $book->bookmark ? $book->bookmark->bookmarkType : null;
             });
 
-        // Поиск классических книг
+        // Klasisko grāmatu meklēšanu
         $classicBooks = ClassicBook::query()
             ->where('name', 'LIKE', "%{$query}%")
+            ->where('is_blocked', false)
             ->with(['genres', 'bookmark.bookmarkType'])
             ->withAvg('ratings', 'grade')
             ->withCount('ratings')
@@ -200,6 +188,7 @@ class AllBooksController extends Controller
                 $book->current_bookmark = $book->bookmark ? $book->bookmark->bookmarkType : null;
             });
 
+        // Atgriež Inertia skatu ar meklēšanas rezultātiem
         return Inertia::render('Search/Results', [
             'books' => $books,
             'classicBooks' => $classicBooks,
@@ -215,10 +204,12 @@ class AllBooksController extends Controller
         ]);
     }
 
+    // Atgriež 3 jaunākās klasiskās un lietotāju grāmatas mājaslapas skata sākumlapai
     public function getHomePageBooks()
     {
         // Iegūst 3 jaunākās klasiskās grāmatas, sakārtotas pēc izveides datuma (jaunākās pirmās)
         $classicBooks = ClassicBook::query()
+            ->Where('is_blocked', false)
             ->orderBy('created_at', 'desc') // Sakārto dilstošā secībā pēc izveides laika
             ->take(3) // Ierobežo rezultātus līdz 3 ierakstiem
             ->with(['genres']) // Iekļauj saistītos žanrus
@@ -232,6 +223,7 @@ class AllBooksController extends Controller
 
         // Iegūst 3 jaunākās lietotāju grāmatas, sakārtotas pēc izveides datuma
         $userBooks = UserBook::query()
+            ->Where('is_blocked', false)
             ->orderBy('created_at', 'desc') // Sakārto dilstošā secībā
             ->take(3) // Ierobežo līdz 3 ierakstiem
             ->with(['user', 'genres', 'bookmark.bookmarkType']) // Iekļauj saistītos datus

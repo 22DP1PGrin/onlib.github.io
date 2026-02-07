@@ -47,4 +47,9 @@ class UserBook extends Model
         ->where('user_id', auth()->id())
             ->with('bookmarkType');
     }
+
+    public function block()
+    {
+        return $this->hasOne(StoryBlock::class, 'user_book_id', 'id');
+    }
 }

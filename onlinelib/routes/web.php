@@ -224,7 +224,7 @@ Route::middleware(['auth', 'can:Admin'])->group(function () {
     Route::get('/User/{id}/watch', [AdminController::class, 'Watch'])->name('users.watch');
 
     // Lomu mainīšana
-    Route::put('/users/{user}/role', [AdminController::class, 'updateRole'])->middleware('can:Admin');
+    Route::put('/users/{user}/role', [AdminController::class, 'updateRole'])->name('users.updateRole');
 
     // Lietotāju konta dzēšana
     Route::delete('/users/{user}', [AdminController::class, 'delete'])->name('users.destroy');
@@ -239,7 +239,18 @@ Route::middleware(['auth', 'can:Admin'])->group(function () {
     Route::delete('/Forms/{id}', [SupportController::class, 'destroy'])->name('problems.destroy');
 
     // Rāda visu grāmatu sarakstu
-    Route::get('/BookList', [AllBooksController::class, 'showAllList'])->name('book.lists');
+    Route::get('/BookList', [AdminController::class, 'showAllList'])->name('book.lists');
+
+    // Rāda visu bloķētu grāmatu sarakstu
+    Route::get('/BlockBooksList', [AdminController::class, 'showAllBlocksList'])->name('block.book.lists');
+
+    // Klasiskas grāmatas bloķēšanas/atbloķēšanas
+    Route::post('/admin/classic-books/{book}/toggle-block', [AdminController::class, 'toggleClassic'])
+        ->name('classicBooks.toggleBlock');
+
+    // Lietotāja grāmatas bloķēšanas/atbloķēšanas
+    Route::post('/admin/user-books/{userBook}/toggle-block', [AdminController::class, 'toggleUser'])
+        ->name('userBooks.toggleBlock');
 });
 
 

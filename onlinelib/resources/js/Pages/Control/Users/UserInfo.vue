@@ -1,46 +1,44 @@
 <script setup>
-import {router, useForm, usePage} from '@inertiajs/vue3';
-import Navbar from "@/Components/Navbar.vue";
-import Footer from "@/Components/Footer.vue";
-import {computed, ref} from "vue";
-import {route} from "ziggy-js";
+    import {router, useForm, usePage} from '@inertiajs/vue3';
+    import Navbar from "@/Components/Navbar.vue";
+    import Footer from "@/Components/Footer.vue";
+    import {computed, ref} from "vue";
+    import {route} from "ziggy-js";
 
-// Saņemam datus no servera kā props
-const props = defineProps({
-    users: Object, // Objekts
-});
-const currentUser = computed(() => usePage().props.auth.user)
-
-const showModal = ref(false);
-
-// Aizver profila modāli
-const closeModal = () => {
-    showModal.value = false;
-    document.body.style.overflow = "";
-};
-
-// Izveidojam veidlapas datus, sākotnēji aizpildītus ar esošo stāsta informāciju
-const form = useForm({
-    id: props.users.id,
-    nickname: props.users.nickname,
-    email: props.users.email,
-    bio: props.users.bio,
-    avatar: props.users.avatar,
-    role: props.users.role
-
-});
-
-const updateRole = () => {
-    form.put(route('users.updateRole', form.id), {
-        preserveScroll: true,
-        onSuccess: () => {
-            showModal.value = true;
-            document.body.style.overflow = "hidden";
-        }
+    // Saņemam datus no servera kā props
+    const props = defineProps({
+        users: Object, // Objekts
     });
-};
+    const currentUser = computed(() => usePage().props.auth.user)
 
+    const showModal = ref(false);
 
+    // Aizver profila modāli
+    const closeModal = () => {
+        showModal.value = false;
+        document.body.style.overflow = "";
+    };
+
+    // Izveidojam veidlapas datus, sākotnēji aizpildītus ar esošo stāsta informāciju
+    const form = useForm({
+        id: props.users.id,
+        nickname: props.users.nickname,
+        email: props.users.email,
+        bio: props.users.bio,
+        avatar: props.users.avatar,
+        role: props.users.role
+
+    });
+
+    const updateRole = () => {
+        form.put(route('users.updateRole', form.id), {
+            preserveScroll: true,
+            onSuccess: () => {
+                showModal.value = true;
+                document.body.style.overflow = "hidden";
+            }
+        });
+    };
 </script>
 
 <template>
@@ -134,7 +132,7 @@ const updateRole = () => {
         max-width: 400px;
         width: 90%;
         position: relative;
-        background-color: #c58667; /* Fona krāsa */
+        background-color: #e4a27c; /* Fona krāsa */
         border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
         font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
     }
@@ -254,7 +252,7 @@ const updateRole = () => {
         cursor: pointer;
         transition: all 0.3s;
         font-size: 1.0rem;
-        background-color: #c58667;
+        background-color: #c58667; /* Fona krāsa */
         border: 2px solid rgba(26, 16, 8, 0.8);
         color: rgba(26, 16, 8, 0.8);
     }
@@ -266,7 +264,6 @@ const updateRole = () => {
     }
     .btn {
         border: 2px solid rgba(35, 11, 11, 0.8);
-        background-color: #e4a27c; /* Fona krāsa */
         color: rgba(26, 16, 8, 0.8);
         padding: 5px 20px;
     }

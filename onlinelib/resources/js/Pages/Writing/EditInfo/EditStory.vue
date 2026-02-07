@@ -1,10 +1,10 @@
 <script setup>
-    import { Link, router, useForm } from '@inertiajs/vue3';
+    import {router, useForm } from '@inertiajs/vue3';
     import Navbar from "@/Components/Navbar.vue";
     import Footer from "@/Components/Footer.vue";
     import { route } from "ziggy-js";
 
-    // Saņemam datus no servera kā props
+    // Saņem datus no servera kā props
     const props = defineProps({
         book: Object,
         genres: Array,
@@ -12,7 +12,7 @@
         flash: Object
     });
 
-    // Paņemam žanru ID no esošā stāsta
+    // Paņema žanru ID no esošā stāsta
     const initialGenreIds = props.book.genres?.map(g => g.id) || [];
 
     // Veidlapas datus
@@ -21,7 +21,8 @@
         description: props.book.description,
         age_limit: props.book.age_limit,
         genres: [...initialGenreIds],
-        status: props.book.status || 'Procesā'
+        status: props.book.status || 'Procesā',
+        is_blocked: props.book.is_blocked
     });
 
     // Funkcija žanru pārslēgšanai (pievienošana/noņemšana)
@@ -83,6 +84,23 @@
         <div class="story-form">
 
             <h1>Stāstu rediģēšana</h1>
+
+            <!-- Paziņojums par bloķētu stāstu -->
+            <div v-if="form.is_blocked" class="warning">
+                <h2><i style="font-size:24px" class="fa">&#xf071;</i>
+                    Jūsu stāsts ir bloķēts drošības apsvērumu dēļ!</h2>
+
+                <p class="text">
+                    Lūdzu, pārskatiet un rediģējiet saturu, lai tas atbilstu mūsu platformas noteikumiem.
+                    Papildu informāciju varat saņemt, sazinoties ar tehnisko atbalstu.
+                </p>
+
+                <div class="explain">
+                    <div><h3>Bloķēšanas iemesls:</h3> {{ book.block.subject }}</div>
+                    <div><h3>Pamatojums:</h3> {{ book.block.problem }}</div>
+                </div>
+
+            </div>
 
             <!-- Veidlapas sadaļa -->
             <form @submit.prevent="submitForm" class="submit">
@@ -216,6 +234,22 @@
 </template>
 
 <style scoped>
+    h2 {
+        text-align: center; /* Teksta izlīdzinājums */
+        margin-bottom: 25px;
+        font-size: 1.1rem;
+        font-weight: bold; /* Teksta biezums */
+    }
+
+    h3{
+        font-weight: bold; /* Teksta biezums */
+    }
+
+    .text{
+        text-align: center; /* Teksta izlīdzinājums */
+        margin-bottom: 25px;
+    }
+
     option::placeholder{
         color: rgba(26, 16, 8, 0.42); /* Krāsa vietturim */
         font-size: 1.0rem; /* izmērs */
@@ -229,6 +263,20 @@
         padding: 20px; /* Iekšējā atstarpe */
     }
 
+    .warning{
+        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+        background-color: #e4a27c; /* Fona krāsa */
+        border-radius: 10px; /* Apmales noapaļojums */
+        padding: 30px; /* Iekšējā atstarpe */
+        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */
+        margin-bottom: 40px;
+    }
+
+    .explain{
+        word-wrap: break-word;
+    }
     .submit{
         color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
         font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
@@ -425,13 +473,17 @@
         h1 {
             font-size: 1.5rem;
         }
-        .form-group label {
+
+        .form-group label,
+        h2{
             font-size: 1rem;
         }
 
         .form-group input,
         .form-group textarea,
-        .form-group select {
+        .form-group select,
+        h3,
+        .explain{
             font-size: 0.9rem;
         }
         .form-group input::placeholder,

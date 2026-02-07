@@ -76,12 +76,25 @@ export default {
                     <h1>Mani darbi</h1>
                 </div>
 
+                <!-- Jauna stāsta izveides sadaļa -->
+                <div class="new_section">
+                    <div class="new" @click="GoToCreate">
+                        <h2>Izveidot jaunu stāstu</h2>
+                        <i class="fa">&#xf055;</i>
+                    </div>
+                </div>
+
                 <!-- Galvenā darbu saraksta sadaļa -->
                 <div class="my-works-section">
                     <!-- Darbu saraksts -->
                     <div class="works-list">
                         <!-- Atkārtojas katram darbam no works masīva -->
-                        <div v-for="work in works" :key="work.id" class="work-item">
+                        <div v-for="work in works" :key="work.id" class="work-item" :class="{ 'blocked': work.is_blocked }">
+
+                            <div v-if="work.is_blocked" class="warning">
+                                <p><i style="font-size:24px" class="fa">&#xf023;</i> Stāsts ir bloķēts!</p>
+                            </div>
+
                             <!-- Darba nosaukums -->
                             <h2>{{ work.name }}</h2>
                             <!-- Darba apraksts -->
@@ -92,18 +105,10 @@ export default {
                                 <span class="created">Izveidots: {{ formatDate(work.created_at) }}</span>
                                 <!-- Rediģēšanas un dzēššanas pogas -->
                                 <div class="work-actions">
-                                    <button class="edit-btn" @click="GoToEdit(work.id)">Rediģēt</button>
+                                    <button class="edit-btn" :class="{ 'blocked': work.is_blocked }" @click="GoToEdit(work.id)">Rediģēt</button>
                                     <button class="delete-btn" @click="deleteStory(work.id)">Dzēst</button>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Jauna stāsta izveides sadaļa -->
-                    <div class="new_section">
-                        <div class="new" @click="GoToCreate">
-                            <h2>Izveidot jaunu stāstu</h2>
-                            <i class="fa">&#xf055;</i>
                         </div>
                     </div>
                 </div>
@@ -150,7 +155,7 @@ export default {
         display: flex;
         flex-direction: column;
         gap: 20px;
-        margin-top: 20px;
+        margin-bottom: 20px;
     }
 
     .new {
@@ -178,11 +183,31 @@ export default {
 
 
     .work-item {
+        position: relative;
         border: 1px solid rgba(26, 16, 8, 0.8);
         background-color: #e4a27c;
         padding: 20px;
         border-radius: 4px;
         box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px;
+    }
+
+    .warning{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        padding: 8px 0;
+        font-weight: bold;
+        z-index: 2;
+        border: 2px dashed rgba(35, 11, 11, 0.8);
+        background-color: #714e3e;
+        font-size: 1rem;
+    }
+
+    .work-item.blocked {
+        padding-top: 60px;
+        background-color: #cda08c;
     }
 
     .work-item h2,
@@ -240,6 +265,15 @@ export default {
         cursor: pointer; /* Peles kursors */
         transition: all 0.3s; /* Pāreju efekts */
         font-size: 1rem; /* Teksta izmērs */
+    }
+
+    .edit-btn.blocked {
+        background-color: #a17460;
+    }
+
+    .edit-btn.blocked:hover {
+        background-color: #ffc8a9;
+        border-color: #ffc8a9;
     }
 
     button:hover {

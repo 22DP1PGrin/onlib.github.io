@@ -156,20 +156,52 @@ class ChapterController extends Controller
     // Parāda nodaļas saturu
     public function showContent(int $bookId, int $chapterId)
     {
-        // Mēģina atrast nodaļu classic grāmatā
-        $chapter = BookChapter::where('classic_book_id', $bookId)
-            ->find($chapterId);
+        // Atrod nodaļu grāmatā
+        $chapter = BookChapter::where('classic_book_id', $bookId)->find($chapterId);
 
         $type = 'classic';
 
-        // Ja nodaļa nav atrasta, mēģina user grāmatā
-        if (!$chapter) {
-            $chapter = BookChapter::where('user_book_id', $bookId)
-                ->findOrFail($chapterId);
+        // Ja nodaļa ir atrasta klasiskajā grāmatā
+        if ($chapter) {
+
+            // Iegūst klasisko grāmatu pēc ID
+            $book = ClassicBook::findOrFail($bookId);
+
+            // Tikai admin un superadmin var redzēt bloķētu klasisko grāmatu
+            if ($book->is_blocked) {
+
+                // Iegūst autentificēto lietotāju
+                $user = auth()->user();
+
+                // Ja lietotājs nav admin/superadmin mēt kļudu
+                if (!$user || !in_array($user->role, ['admin', 'superadmin'])) {
+                    abort(403, 'Grāmata ir bloķēta');
+                }
+            }
+
+        } else {
+
+            // Atrod nodaļu stāstā
+            $chapter = BookChapter::where('user_book_id', $bookId)->findOrFail($chapterId);
+
             $type = 'user';
+
+            // Iegūst lietotāja grāmatu
+            $book = UserBook::findOrFail($bookId);
+
+            // Tikai admin, superadmin un autors var redzēt bloķētu stāstu
+            if ($book->is_blocked) {
+
+                // Iegūst autentificēto lietotāju
+                $user = auth()->user();
+
+                if (!$user || (!in_array($user->role, ['admin', 'superadmin']) && $user->id !== $book->user_id)) {
+                    abort(403, 'Stāsts ir bloķēts');
+                }
+            }
         }
 
-        // Atgriež Inertia skatu ar nodaļas datiem
+        // Atgriež Inertia skatu ar nodaļas saturu
         return Inertia::render('Reading/ChapterContent', [
             'chapter' => $chapter,
             'bookChapters' => BookChapter::where(

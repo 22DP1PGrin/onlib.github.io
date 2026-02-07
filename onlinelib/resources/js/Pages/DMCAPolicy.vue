@@ -35,7 +35,7 @@
                 <li><strong>3.1</strong> Fizisks vai elektronisks paraksts no autortiesību īpašnieka vai personas, kurai ir tiesības rīkoties viņa vārdā.</li>
                 <li><strong>3.2</strong> Detalizēts apraksts par darbu, kura autortiesības ir pārkāptas.</li>
                 <li><strong>3.3</strong> Precīzs vietrādis (URL), kur pārkāptais materiāls atrodas mūsu platformā.</li>
-                <li><strong>3.4</strong> Sūdzības iesniedzēja vārds, adrese, tālruņa numurs un e-pasta adrese.</li>
+                <li><strong>3.4</strong> Sūdzības iesniedzēja vārds un e-pasta adrese.</li>
                 <li><strong>3.5</strong> Paziņojums, ka sūdzības iesniedzējs uzskata, ka materiāla izmantošana nav atļauta.</li>
                 <li><strong>3.6</strong> Paziņojums, ka sniegtā informācija ir patiesa un ka sūdzības iesniedzējs ir autortiesību īpašnieks vai personas, kurai ir tiesības rīkoties viņa vārdā.</li>
             </ul>
@@ -59,7 +59,7 @@
                 <li><strong>5.1</strong> Fizisks vai elektronisks paraksts no lietotāja vai personas, kurai ir tiesības rīkoties viņa vārdā.</li>
                 <li><strong>5.2</strong> Detalizēts apraksts par materiālu, kas tika noņemts.</li>
                 <li><strong>5.3</strong> Paziņojums, ka materiāls tika noņemts kļūdas vai pārpratuma dēļ.</li>
-                <li><strong>5.4</strong> Lietotāja vārds, adrese, tālruņa numurs un e-pasta adrese.</li>
+                <li><strong>5.4</strong> Lietotāja vārds un e-pasta adrese.</li>
                 <li><strong>5.5</strong> Paziņojums, ka lietotājs piekrīt jurisdikcijai, kurā atrodas mūsu platforma.</li>
             </ul>
 

@@ -3,14 +3,56 @@
 namespace App\Http\Controllers;
 
 use App\Mail\UpdateRoleMessage;
+use App\Mail\UserBookBlocked;
+use App\Mail\UserBookUnblocked;
+use App\Models\ClassicBook;
+use App\Models\StoryBlock;
 use App\Models\User;
+use App\Models\UserBook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class AdminController
 {
-    // Atgriež konkrēta lietotāja informācijas skatu (administratora funkcija)
+    // Atgriež visu ne-bloķēto lietotāju un klasisko grāmatu sarakstu
+    public function showAllList()
+    {
+        $book = UserBook::with('user')
+            ->Where('is_blocked', false)
+            ->orderBy('name', 'asc')
+            ->get();
+        $classicBooks = ClassicBook::orderBy('name', 'asc')
+            ->Where('is_blocked', false)
+            ->get();
+
+        // Atgriež Inertia skatu ar grāmatu datiem
+        return Inertia::render('Control/Books/BooksList', [
+            'book' => $book,
+            'classicBooks' => $classicBooks,
+        ]);
+    }
+
+    // Atgriež visu bloķēto lietotāju un klasisko grāmatu sarakstu, sakārtotu pēc nosaukuma
+    public function showAllBlocksList()
+    {
+        $book = UserBook::with('user')
+            ->Where('is_blocked', true)
+            ->orderBy('name', 'asc')
+            ->get();
+        $classicBooks = ClassicBook::orderBy('name', 'asc')
+            ->Where('is_blocked', true)
+            ->get();
+
+        // Atgriež Inertia skatu ar grāmatu datiem
+        return Inertia::render('Control/Books/BlocksBook', [
+            'book' => $book,
+            'classicBooks' => $classicBooks,
+            'authUser' => auth()->user(),
+        ]);
+    }
+
+    // Atgriež konkrēta lietotāja informācijas skatu
     public function Watch($id)
     {
         $users = User::findOrFail($id); // Atrod lietotāju pēc ID
@@ -21,7 +63,7 @@ class AdminController
         ]);
     }
 
-    // Atgriež visu lietotāju sarakstu (administratora funkcija)
+    // Atgriež visu lietotāju sarakstu
     public function showUsers()
     {
         $currentUser = auth()->user();
@@ -43,7 +85,7 @@ class AdminController
         ]);
     }
 
-    // Dzēš konkrētu lietotāju (administratora funkcija)
+    // Dzēš konkrētu lietotāju
     public function delete(User $user)
     {
         $user->delete(); // Dzēš lietotāju no datubāzes
@@ -79,5 +121,54 @@ class AdminController
 
         // Pāradresē atpakaļ
         return redirect()->back()->with('success', 'Loma veiksmīgi atjaunināta.');
+    }
+
+    // Pārslēdz klasiskās grāmatas bloķēšanas statusu
+    public function toggleClassic(ClassicBook $book)
+    {
+        // Maina grāmatas bloķēšanas statusu uz pretējo
+        $book->is_blocked = !$book->is_blocked;
+        $book->save();
+
+        return redirect()->back();
+    }
+
+    // Pārslēdz lietotāja grāmatas bloķēšanas statusu
+    public function toggleUser(Request $request, UserBook $userBook)
+    {
+        $user = $userBook->user;
+
+        // Pārbauda, vai grāmata jau ir bloķēta
+        if ($userBook->is_blocked) {
+
+            // Atbloķē grāmatu un dzēš saistītos bloķēšanas ierakstus
+            StoryBlock::where('user_book_id', $userBook->id)->delete();
+            $userBook->is_blocked = false;
+
+            // Nosūta e-pastu lietotājam, informējot, ka grāmata ir atbloķēta
+            Mail::to($user->email)->send(new UserBookUnblocked($userBook->name, $user->nickname));
+        } else {
+            // Bloķē grāmatu un validē saņemto tēmu un pamatojumu
+            $validated = $request->validate([
+                'subject' => 'required|string',
+                'problem' => 'required|string|max:500',
+            ]);
+
+           // Izveido jaunu bloķēšanas ierakstu datubāzē
+            StoryBlock::create([
+                'user_book_id' => $userBook->id,
+                'subject' => $validated['subject'],
+                'problem' => $validated['problem'],
+            ]);
+
+            $userBook->is_blocked = true;
+
+            // Nosūta e-pastu lietotājam ar bloķēšanas informāciju
+            Mail::to($user->email)->send(new UserBookBlocked($userBook->name, $user->nickname, $validated['subject'], $validated['problem']));
+        }
+
+        $userBook->save();
+
+        return redirect()->back();
     }
 }

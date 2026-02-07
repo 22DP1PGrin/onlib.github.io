@@ -68,7 +68,7 @@ export default {
             <form @submit.prevent="submitForm">
                 <!-- Vārds -->
                 <div class="form-group">
-                    <label for="name">Segvārds:</label>
+                    <label for="name">Lietotājvārds:</label>
                     <input type="text" class="input" v-model="form.nickname" required autocomplete="given-name" />
                 </div>
 
@@ -86,7 +86,7 @@ export default {
                         <option value="Tehniskas problēmas">Tehniskas problēmas</option>
                         <option value="Konts un pieteikšanās">Konts un pieteikšanās</option>
                         <option value="Satura jautājumi">Satura jautājumi</option>
-                        <option value="Satura jautājumi">Cits</option>
+                        <option value="Cits">Cits</option>
                     </select>
                 </div>
 

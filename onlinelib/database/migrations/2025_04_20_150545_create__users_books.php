@@ -16,6 +16,7 @@ return new class extends Migration
             $table->text('description');
             $table->enum('age_limit', ['0+', '6+', '12+', '16+', '18+'])->default('0+');
             $table->enum('status', ['Procesā', 'Pabeigts', 'Pamests'])->default('Procesā');
+            $table->boolean('is_blocked')->default(false);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

@@ -1,137 +1,137 @@
 <script setup>
-import { useForm, usePage, router } from "@inertiajs/vue3";
-import { computed, ref, watch } from "vue";
-import Navbar from "@/Components/Navbar.vue";
-import Footer from "@/Components/Footer.vue";
-import { route } from "ziggy-js";
+    import { useForm, usePage, router } from "@inertiajs/vue3";
+    import { computed, ref, watch } from "vue";
+    import Navbar from "@/Components/Navbar.vue";
+    import Footer from "@/Components/Footer.vue";
+    import { route } from "ziggy-js";
 
-// Iegūst pašreizējo lietotāju
-const user = computed(() => usePage().props.auth.user);
+    // Iegūst pašreizējo lietotāju
+    const user = computed(() => usePage().props.auth.user);
 
-// Modālo logu kontrole
-const showModal = ref(false);
-const showPasswordModal = ref(false);
-const showDeleteModal = ref(false);
-const showAvatarModal = ref(false);
+    // Modālo logu kontrole
+    const showModal = ref(false);
+    const showPasswordModal = ref(false);
+    const showDeleteModal = ref(false);
+    const showAvatarModal = ref(false);
 
-const avatarInput = ref(null);
+    const avatarInput = ref(null);
 
-const avatarForm = useForm({
-    avatar: null
-});
+    const avatarForm = useForm({
+        avatar: null
+    });
 
 
-// Aizver profila modāli
-const closeModal = () => {
-    showModal.value = false;
-    document.body.style.overflow = "";
-};
+    // Aizver profila modāli
+    const closeModal = () => {
+        showModal.value = false;
+        document.body.style.overflow = "";
+    };
 
-// Aizver paroles maiņas modāli
-const closePasswordModal = () => {
-    showPasswordModal.value = false;
-    document.body.style.overflow = "";
-};
+    // Aizver paroles maiņas modāli
+    const closePasswordModal = () => {
+        showPasswordModal.value = false;
+        document.body.style.overflow = "";
+    };
 
-// Aizver attēla modāli
-const closeAvatarModal = () => {
-    showAvatarModal.value = false;
-    document.body.style.overflow = "";
-};
+    // Aizver attēla modāli
+    const closeAvatarModal = () => {
+        showAvatarModal.value = false;
+        document.body.style.overflow = "";
+    };
 
-// Atver konta dzēšanas apstiprinājuma modāli
-const openDeleteModal = () => {
-    showDeleteModal.value = true;
-    document.body.style.overflow = "hidden";
-};
+    // Atver konta dzēšanas apstiprinājuma modāli
+    const openDeleteModal = () => {
+        showDeleteModal.value = true;
+        document.body.style.overflow = "hidden";
+    };
 
-// Aizver konta dzēšanas modāli
-const closeDeleteModal = () => {
-    showDeleteModal.value = false;
-    document.body.style.overflow = "";
-};
+    // Aizver konta dzēšanas modāli
+    const closeDeleteModal = () => {
+        showDeleteModal.value = false;
+        document.body.style.overflow = "";
+    };
 
-// Profila rediģēšanas forma
-const profileForm = useForm({
-    nickname: user.value?.nickname ?? "",
-    email: user.value?.email ?? "",
-    bio: user.value?.bio ?? ""
-});
+    // Profila rediģēšanas forma
+    const profileForm = useForm({
+        nickname: user.value?.nickname ?? "",
+        email: user.value?.email ?? "",
+        bio: user.value?.bio ?? ""
+    });
 
-// Paroles maiņas forma
-const passwordForm = useForm({
-    current: "",
-    new: "",
-    new_confirmation: ""
-});
+    // Paroles maiņas forma
+    const passwordForm = useForm({
+        current: "",
+        new: "",
+        new_confirmation: ""
+    });
 
-// Konta dzēšanas forma
-const deleteForm = useForm({
-    password: ""
-});
+    // Konta dzēšanas forma
+    const deleteForm = useForm({
+        password: ""
+    });
 
-// Nosūta profila saglabāšanas formu
-const handleProfileSubmit = () => {
-    profileForm.put(route("profile.update"), {
-        preserveScroll: true,
+    // Nosūta profila saglabāšanas formu
+    const handleProfileSubmit = () => {
+        profileForm.put(route("profile.update"), {
+            preserveScroll: true,
 
-        onSuccess: (page) => {
-            // Ja atgriežamies tajā pašā maršrutā, tad email nav mainīts
-            if (route().current("profile.settings")) {
-                showModal.value = true;
+            onSuccess: (page) => {
+                // Ja atgriežamies tajā pašā maršrutā, tad email nav mainīts
+                if (route().current("profile.settings")) {
+                    showModal.value = true;
+                    document.body.style.overflow = "hidden";
+                }
+            }
+        });
+    };
+
+    // Nosūta paroles maiņas formu
+    const handlePasswordSubmit = () => {
+        passwordForm.put(route("profile.password"), {
+            preserveScroll: true,
+            onSuccess: () => {
+                showPasswordModal.value = true;
                 document.body.style.overflow = "hidden";
             }
-        }
-    });
-};
+        });
+    };
 
-// Nosūta paroles maiņas formu
-const handlePasswordSubmit = () => {
-    passwordForm.put(route("profile.password"), {
-        preserveScroll: true,
-        onSuccess: () => {
-            showPasswordModal.value = true;
-            document.body.style.overflow = "hidden";
-        }
-    });
-};
+    // Apstiprina konta dzēšanu
+    const confirmDeleteAccount = () => {
+        deleteForm.delete(route("profile.destroy"), {
+            onSuccess: () => {
+                closeDeleteModal();
+            }
+        });
+    };
 
-// Apstiprina konta dzēšanu
-const confirmDeleteAccount = () => {
-    deleteForm.delete(route("profile.destroy"), {
-        onSuccess: () => {
-            closeDeleteModal();
-        }
-    });
-};
+    // Izlogo lietotāju
+    const logout = () => {
+        router.post(route("logout"), {}, {
+            onSuccess: () => window.location.href = "/"
+        });
+    };
 
-// Izlogo lietotāju
-const logout = () => {
-    router.post(route("logout"), {}, {
-        onSuccess: () => window.location.href = "/"
-    });
-};
+    const selectAvatar = () => {
+        avatarInput.value.click(); // Atver faila izvēles dialogu
+    };
 
-const selectAvatar = () => {
-    avatarInput.value.click(); // Atver faila izvēles dialogu
-};
+    // Augšpielāde attēli
+    const uploadAvatar = (event) => {
+        const file = event.target.files[0]; // Saglabā izvēlēto failu
+        if (!file) return;
 
-// Augšpielāde attēli
-const uploadAvatar = (event) => {
-    const file = event.target.files[0]; // Saglabā izvēlēto failu
-    if (!file) return;
+        avatarForm.avatar = file;
 
-    avatarForm.avatar = file;
-
-    avatarForm.post(route('profile.avatar'), {
-        preserveScroll: true,
-        onSuccess: () => {
-            avatarForm.reset('avatar');
-            showAvatarModal.value = true;
-            document.body.style.overflow = "hidden";
-        }
-    });
-};
+        avatarForm.post(route('profile.avatar'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                avatarForm.reset('avatar');
+                showAvatarModal.value = true;
+                document.body.style.overflow = "hidden";
+            }
+        });
+    };
 </script>
 <template>
     <Navbar/>
@@ -324,7 +324,7 @@ const uploadAvatar = (event) => {
         max-width: 400px;
         width: 90%;
         position: relative;
-        background-color: #c58667; /* Fona krāsa */
+        background-color: #e4a27c; /* Fona krāsa */
         border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
         font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
     }
