@@ -16,7 +16,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'nickname',
         'email',
         'password',
-        'bio'
+        'bio',
+        'role',
+        'is_blocked',
+        'blocked_until',
+        'avatar',
     ];
 
 
@@ -30,6 +34,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'blocked_until' => 'datetime',
         ];
     }
     public function books()

@@ -43,8 +43,6 @@
                         autofocus
                         autocomplete="username"
                     />
-                    <!-- Parāda kļūdu, ja e-pasts nav derīgs -->
-                    <div v-if="form.errors.email" class="input-error">{{ form.errors.email }}</div>
                 </div>
 
                 <!-- Paroles lauks -->
@@ -58,8 +56,10 @@
                         required
                         autocomplete="current-password"
                     />
-                    <!-- Parāda kļūdu, ja parole nav pareiza -->
-                    <div v-if="form.errors.password" class="input-error">{{ form.errors.password }}</div>
+                    <!-- Parāda kļūdu, ja parole vai e-pasts nav pareiza -->
+                    <div v-if="form.errors.password || form.errors.email" class="input-error">
+                        {{ form.errors.password || form.errors.email }}
+                    </div>
 
                     <!-- Saite "Aizmirsāt paroli?" tiek rādīta, ja ir kļūda -->
                     <div v-if="form.errors.email || form.errors.password" class="forgot-password">
@@ -145,6 +145,7 @@
     .input-error{
         color: rgb(110, 37, 37);
         font-size: 1rem;
+        margin-bottom: 10px;
     }
 
     input:focus {

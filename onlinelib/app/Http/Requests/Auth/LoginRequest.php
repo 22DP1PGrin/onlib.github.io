@@ -11,19 +11,13 @@ use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
+    // Pārbauda, vai lietotājs ir pilnvarots veikt šo pieprasījumu.
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
+    // Validācijas noteikumi pieprasījumam.
     public function rules(): array
     {
         return [
@@ -32,15 +26,13 @@ class LoginRequest extends FormRequest
         ];
     }
 
-    /**
-     * Attempt to authenticate the request's credentials.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
+    // Mēģina autentificēt lietotāju ar sniegtajām akreditācijām.
     public function authenticate(): void
     {
+        // Pārbauda, vai nav pārsniegts mēģinājumu limits
         $this->ensureIsNotRateLimited();
 
+        // Mēģina autentificēt ar e-pastu un paroli
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
@@ -49,22 +41,46 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Ja autentifikācija veiksmīga, notīra mēģinājumu skaitu
         RateLimiter::clear($this->throttleKey());
+        $user = Auth::user();
+
+        // Pārbauda, vai lietotājs ir bloķēts
+        if ($user->is_blocked) {
+
+            if ($user->blocked_until && now()->greaterThan($user->blocked_until)) {
+                $user->update([
+                    'is_blocked' => false,
+                    'blocked_until' => null,
+                ]);
+
+                return;
+            }
+
+            Auth::logout();
+
+            // Met kļūdu ar ziņojumu par bloķēšanu un laiku Rīgas zonā
+            throw ValidationException::withMessages([
+                'email' => 'Jūsu konts ir bloķēts līdz ' .
+                    ($user->blocked_until
+                        ? $user->blocked_until->format('d.m.Y H:i') . ' pēc Rīgas laika'
+                        : 'nenoteiktam laikam'
+                    ),
+            ]);
+        }
     }
 
-    /**
-     * Ensure the login request is not rate limited.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
+    // Pārbauda, vai pieprasījums nav pārsniedzis mēģinājumu limitu.
     public function ensureIsNotRateLimited(): void
     {
         if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 
+        // Notikums, ka lietotājs tika bloķēts
         event(new Lockout($this));
 
+        // Cik sekundes līdz atjaunošanai
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
@@ -75,9 +91,7 @@ class LoginRequest extends FormRequest
         ]);
     }
 
-    /**
-     * Get the rate limiting throttle key for the request.
-     */
+    // Atgriež atslēgu, pēc kuras tiek skaitīti mēģinājumi (throttle key)
     public function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());

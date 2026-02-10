@@ -9,29 +9,23 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class UserBookBlocked extends Mailable
+class UserUnblocked extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $bookName;
     public $nickname;
-    public $subject_pr;
-    public $problem;
 
     // Izveido jaunu vēstules instanci.
-    public function __construct($bookName, $nickname, $subject_pr, $problem)
+    public function __construct($nickname)
     {
         $this->nickname = $nickname;
-        $this->bookName = $bookName;
-        $this->subject_pr = $subject_pr;
-        $this->problem = $problem;
     }
 
     // E-pasta vēstules tēma.
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Stāsta bloķēšana',
+            subject: 'Konta atbloķēšana',
         );
     }
 
@@ -40,12 +34,9 @@ class UserBookBlocked extends Mailable
     {
 
         return new Content(
-            view: 'emails.user_block', // Blade skats, kas tiek nosūtīts kā e-pasts
+            view: 'emails.account_unblock', // Blade skats, kas tiek nosūtīts kā e-pasts
             with: [
-                'bookName' => $this->bookName,
                 'nickname' => $this->nickname,
-                'subject_pr' => $this->subject_pr,
-                'problem' => $this->problem,
             ],
         );
     }

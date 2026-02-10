@@ -1,4 +1,4 @@
-<script setup>
+    <script setup>
     import Navbar from "@/Components/Navbar.vue";
     import Footer from "@/Components/Footer.vue";
     import {router} from "@inertiajs/vue3";
@@ -33,6 +33,7 @@
     });
 
     const bookName = props.book?.name;
+    const is_blocked = props.book?.is_blocked;
     const bookDescription = props.book?.description;
     const bookAgeLimit = props.book?.age_limit;
     const bookId = props.book?.id;
@@ -150,12 +151,26 @@
 
                 </div>
 
-                <button
-                    @click="showBookmarkModal = true"
-                    class="bookmark-button"
-                >
-                    {{ currentBookmark ? currentBookmark.name : 'Pievienot grāmatzīmēm' }}
-                </button>
+                <div v-if="!is_blocked">
+                    <button
+                        @click="showBookmarkModal = true"
+                        class="bookmark-button"
+                    >
+                        {{ currentBookmark ? currentBookmark.name : 'Pievienot grāmatzīmēm' }}
+                    </button>
+                </div>
+
+                <!-- Paziņojums par bloķētu stāstu -->
+                <div v-if="is_blocked" class="warning">
+                    <h2><i style="font-size:24px" class="fa">&#xf071;</i>
+                        Stāsts ir bloķēts drošības apsvērumu dēļ!</h2>
+
+                    <div class="explain">
+                        <div><h3>Bloķēšanas iemesls:</h3> {{ book.block.subject }}</div>
+                        <div><h3>Pamatojums:</h3> {{ book.block.problem }}</div>
+                    </div>
+
+                </div>
 
                 <!-- Grāmatzīmju izvēlnes modālais logs -->
                 <div v-if="showBookmarkModal" class="modal-overlay" @click.self="showBookmarkModal = false">
@@ -316,6 +331,25 @@
         font-family: Tahoma, Helvetica, sans-serif; /* Fontu ģimene */
     }
 
+    .warning{
+        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+        background-color: #e4a27c; /* Fona krāsa */
+        border-radius: 10px; /* Apmales noapaļojums */
+        padding: 30px; /* Iekšējā atstarpe */
+        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */
+        margin-bottom: 30px;
+        margin-top: 30px;
+
+    }
+
+    .explain{
+        word-wrap: break-word;
+        text-align: left;
+        margin-top: 30px;
+    }
+
     .book-container {
         border: 1px solid rgba(26, 16, 8, 0.8); /* Apmale  */
         background-color: #e4a27c; /* Fona krāsa */
@@ -419,6 +453,10 @@
         font-weight: bold;
         color: rgba(26, 16, 8, 0.8);
         margin-bottom: 10px;
+    }
+
+    h3{
+        font-weight: bold; /* Teksta biezums */
     }
 
     .book-genres {
@@ -665,7 +703,8 @@
         }
 
 
-        .book-description {
+        p,
+        h3{
             font-size: 0.9rem;
         }
 

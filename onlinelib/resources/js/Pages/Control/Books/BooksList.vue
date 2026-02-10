@@ -147,7 +147,6 @@
                             <option value="Sūdzības no lietotājiem">Sūdzības no lietotājiem</option>
                         </select>
 
-                        <!-- Validācijas kļūdas paziņojums tēmai -->
                         <div v-if="form.errors.subject" class="error">
                             {{ form.errors.subject }}
                         </div>
@@ -176,7 +175,7 @@
             <div class="modal">
                 <div class="success-container">
 
-                    <h2>Vai tiešām vēlaties bloķēt šo klasisko grāmatu?</h2>
+                    <h2>Vai tiešām vēlaties bloķēt šo darbu?</h2>
 
                     <div class="close">
                         <button @click="closeAllModals" class="close-btn">Atcelt</button>
@@ -543,6 +542,7 @@
         display: flex;
         flex-direction: column;
         gap: 5px;
+        margin-bottom: 10px;
     }
 
     label {
@@ -572,6 +572,10 @@
         font-size: 1rem;
     }
 
+    option{
+        font-size: 1rem;
+    }
+
     .form-group textarea {
         resize: vertical; /* Atļauj tekstlaukam mainīt izmērus vertikāli */
         min-height: 100px; /* Minimālais augstums */
@@ -591,8 +595,9 @@
 
         p,
         label,
-        error,
-        select
+        .error,
+        select,
+        option
         {
             font-size: 0.9rem;
         }

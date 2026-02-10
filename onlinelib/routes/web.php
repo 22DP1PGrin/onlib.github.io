@@ -218,7 +218,12 @@ Route::middleware(['auth', 'can:Admin'])->group(function () {
 
 // ADMINISTRĀCIJA
 Route::middleware(['auth', 'can:Admin'])->group(function () {
+
+    // Rāda visu lietotāju sarakstu
     Route::get('/UserControl', [AdminController::class, 'showUsers'])->name('users');
+
+    // Rāda visu bloķētu lietotāju sarakstu
+    Route::get('/BlockUserControl', [AdminController::class, 'showBlockUsers'])->name('block.users');
 
     // Rāda konkrēta lietotāja profila apskates lapu
     Route::get('/User/{id}/watch', [AdminController::class, 'Watch'])->name('users.watch');
@@ -251,6 +256,10 @@ Route::middleware(['auth', 'can:Admin'])->group(function () {
     // Lietotāja grāmatas bloķēšanas/atbloķēšanas
     Route::post('/admin/user-books/{userBook}/toggle-block', [AdminController::class, 'toggleUser'])
         ->name('userBooks.toggleBlock');
+
+    // Lietotāja konta bloķēšanas/atbloķēšanas
+    Route::post('/admin/user/{user}/toggle-block', [AdminController::class, 'toggleUserBlock'])
+        ->name('user.toggleBlock');
 });
 
 

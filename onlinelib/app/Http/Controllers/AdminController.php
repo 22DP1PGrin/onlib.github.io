@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Mail\UpdateRoleMessage;
+use App\Mail\UserBlocked;
 use App\Mail\UserBookBlocked;
 use App\Mail\UserBookUnblocked;
+use App\Mail\UserUnblocked;
 use App\Models\ClassicBook;
 use App\Models\StoryBlock;
 use App\Models\User;
@@ -70,15 +72,43 @@ class AdminController
 
         // Visi parastie lietotāji
         $users = User::where('role', 'user')
+            ->where('is_blocked', false)
             ->orderBy('nickname', 'asc')
             ->get();
 
         // Visi administratori(tikai superadminiem)
         $admins = $currentUser->role === 'superadmin'
-            ? User::where('role', 'admin')->orderBy('nickname')->get()
+            ? User::where('role', 'admin')
+                ->where('is_blocked', false)
+                ->orderBy('nickname')->get()
             : collect();
 
         return Inertia::render('Control/Users/Users', [
+            'users' => $users,
+            'admins' => $admins,
+            'currentUser' => $currentUser
+        ]);
+    }
+
+    // Atgriež visu bloķētu lietotāju sarakstu
+    public function showBlockUsers()
+    {
+        $currentUser = auth()->user();
+
+        // Visi parastie lietotāji
+        $users = User::where('role', 'user')
+            ->where('is_blocked', true)
+            ->orderBy('nickname', 'asc')
+            ->get();
+
+        // Visi administratori(tikai superadminiem)
+        $admins = $currentUser->role === 'superadmin'
+            ? User::where('role', 'admin')
+                ->where('is_blocked', true)
+                ->orderBy('nickname')->get()
+            : collect();
+
+        return Inertia::render('Control/Users/BlockUsers', [
             'users' => $users,
             'admins' => $admins,
             'currentUser' => $currentUser
@@ -170,5 +200,48 @@ class AdminController
         $userBook->save();
 
         return redirect()->back();
+    }
+
+    // Pārslēdz lietotāja konta bloķēšanas statusu
+    public function toggleUserBlock(Request $request, User $user)
+    {
+        // Pārbauda, vai lietotājs jau ir bloķēts
+        if ($user->is_blocked) {
+
+            // Atbloķē lietotāju un noņem bloķēšanas termiņu
+            $user->update([
+                'is_blocked' => false,
+                'blocked_until' => null,
+            ]);
+
+            // Nosūta e-pastu lietotājam par atbloķēšanu
+            Mail::to((string) $user->email)->send(new UserUnblocked($user->nickname));
+
+            return back()->with('success', 'Lietotājs atbloķēts');
+        }
+
+        // Validē saņemto bloķēšanas tēmu, problēmu un ilgumu
+        $validated = $request->validate([
+            'subject' => 'required|string|max:255',
+            'problem' => 'required|string|max:500',
+            'duration' => 'nullable|integer|min:1'
+        ]);
+
+        $blockedUntil = null;
+
+        // Ja norādīts ilgums, aprēķina bloķēšanas beigu datumu
+        if (!empty($validated['duration'])) {
+            $blockedUntil = now()->addWeeks($validated['duration']);
+        }
+
+        // Atjauno lietotāja statusu — bloķē un iestata bloķēšanas termiņu
+        $user->update([
+            'is_blocked' => true,
+            'blocked_until' => $blockedUntil,
+        ]);
+
+        Mail::to($user->email)->send(new UserBlocked($user->nickname, $validated['subject'], $validated['problem'], $blockedUntil));
+
+        return back()->with('success', 'Lietotājs bloķēts');
     }
 }

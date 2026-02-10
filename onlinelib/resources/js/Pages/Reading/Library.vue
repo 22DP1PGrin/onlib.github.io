@@ -615,7 +615,6 @@
         max-height: 80vh; /* Maksimālais augstums 80% no ekrāna */
         overflow-y: auto; /* Vertikālais ritināšanas josla */
         scrollbar-width: thin; /* Plāna ritjosla */
-        scrollbar-color: #e4a27c #ffd9c6; /* Ritjoslas krāsas */
     }
 
     .close-button {

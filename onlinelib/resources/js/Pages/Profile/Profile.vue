@@ -38,6 +38,10 @@
                 router.get(route('users')); // Pāriet uz lietotāju sarakstu
             };
 
+            const GoToBlockUser = () => {
+                router.get(route('block.users')); // Pāriet uz lietotāju sarakstu
+            };
+
             const GoToForm = () => {
                 router.get(route('problems')); // Pāriet uz lietotāju sarakstu
             };
@@ -75,6 +79,7 @@
                 GoToWatch,
                 GoToCreate,
                 GoToUser,
+                GoToBlockUser,
                 GoToForm,
                 GoToBookList,
                 GoToBlockBookList,
@@ -218,7 +223,7 @@
                             <span class="link-text">Bloķēti darbi</span>
                         </div>
                         <!-- Visu bloķētu letotāju pārvaldības saite -->
-                        <div class="bookmark-link" @click="GoToBookList">
+                        <div class="bookmark-link" @click="GoToBlockUser">
                             <i class="fa">&#xf235;</i> <!-- Grāmatu plaukta ikona -->
                             <span class="link-text">Bloķētie lietotāji</span>
                         </div>
