@@ -6,12 +6,15 @@ use App\Mail\UpdateRoleMessage;
 use App\Mail\UserBlocked;
 use App\Mail\UserBookBlocked;
 use App\Mail\UserBookUnblocked;
+use App\Mail\UserDeleted;
 use App\Mail\UserUnblocked;
 use App\Models\ClassicBook;
+use App\Models\ObjectReport;
 use App\Models\StoryBlock;
 use App\Models\User;
 use App\Models\UserBook;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
@@ -118,9 +121,21 @@ class AdminController
     // Dzēš konkrētu lietotāju
     public function delete(User $user)
     {
-        $user->delete(); // Dzēš lietotāju no datubāzes
+        // Iegūst pašreiz autentificēto lietotāju
+        $currentUser = Auth::user();
 
-        return redirect()->route('users')->with('success', 'Lietotājs veiksmīgi dzēsts!');
+        // Pārbauda, vai pašreizējais lietotājs ir superadmins
+        if ($currentUser->role !== 'superadmin') {
+            abort(403, 'Jums nav atļaujas dzēst lietotājus.');
+        }
+
+        // Nosūta e-pastu dzēstā lietotāja informēšanai
+        Mail::to($user->email)->send(new UserDeleted($user));
+
+        // Dzēš lietotāju no datubāzes
+        $user->delete();
+
+        return redirect()->back()->with('success', 'Lietotājs veiksmīgi dzēsts.');
     }
 
     // Atjaunīna lietotāju lomu
@@ -243,5 +258,36 @@ class AdminController
         Mail::to($user->email)->send(new UserBlocked($user->nickname, $validated['subject'], $validated['problem'], $blockedUntil));
 
         return back()->with('success', 'Lietotājs bloķēts');
+    }
+
+    // Atgriež visu sūdzības sarakstu
+    public function indexReports()
+    {
+        // Saņem sūdzības par lietotāju stāstiem
+        $storyReports = ObjectReport::with(['userBook', 'reporter'])
+            ->whereNotNull('user_book_id')
+            ->latest()
+            ->get();
+
+        // Saņem sūdzības par klasiskajām grāmatām
+        $bookReports = ObjectReport::with(['classicBook', 'reporter'])
+            ->whereNotNull('classic_book_id')
+            ->latest()
+            ->get();
+
+        // Nosūta datus uz Inertia skatu
+        return Inertia::render('Control/Reports/Reports', [
+            'storyReports' => $storyReports,
+            'bookReports' => $bookReports,
+        ]);
+    }
+
+    // Dzēš konkrētu sūdzību
+    public function deleteReport(ObjectReport $report)
+    {
+        // Dzēš konkrēto sūdzību no datubāzes
+        $report->delete();
+
+        return back()->with('success', 'Sūdzība veiksmīgi dzēsta.');
     }
 }

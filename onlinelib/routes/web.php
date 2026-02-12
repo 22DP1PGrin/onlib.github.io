@@ -161,6 +161,9 @@ Route::middleware('auth')->group(function () {
     // Dzēšana
     Route::delete('/stories/{id}', [UserBookController::class, 'delete'])->name('deleteStory');
 
+    // Ziņošana
+    Route::post('/report/user-book/{userBook}', [UserBookController::class, 'reportUserBook'])->name('report.user.book');
+
     // LIETOTĀJA GRĀMATU NODAĻAS
     //Lapa nodaļu veidošanai
     Route::get('/user-books/{book}/chapters/create', [ChapterController::class, 'createUser'])->name('user.chapters.create');
@@ -194,6 +197,9 @@ Route::middleware(['auth', 'can:Admin'])->group(function () {
 
     // Dzēšana
     Route::delete('/classic-books/{id}', [ClassicBookController::class, 'destroyBook'])->name('classic_books.destroy');
+
+    // Ziņošana
+    Route::post('/report/classic-book/{classicBook}', [ClassicBookController::class, 'reportClassicBook'])->name('report.classic.book');
 
     // KLASiSKA GRĀMATU NODAĻAS
     //Lapa nodaļu veidošanai
@@ -260,6 +266,14 @@ Route::middleware(['auth', 'can:Admin'])->group(function () {
     // Lietotāja konta bloķēšanas/atbloķēšanas
     Route::post('/admin/user/{user}/toggle-block', [AdminController::class, 'toggleUserBlock'])
         ->name('user.toggleBlock');
+
+    // Rāda visu ziņojumu sarakastu
+    Route::get('/admin/reports', [AdminController::class, 'indexReports'])
+        ->name('admin.reports');
+
+    // Ziņojuma dzešanas
+    Route::delete('/reports/{report}', [AdminController::class, 'deleteReport'])
+        ->name('reports.delete');
 });
 
 

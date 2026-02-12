@@ -1,7 +1,7 @@
-    <script setup>
+<script setup>
     import Navbar from "@/Components/Navbar.vue";
     import Footer from "@/Components/Footer.vue";
-    import {router} from "@inertiajs/vue3";
+    import {router, useForm} from "@inertiajs/vue3";
     import {route} from "ziggy-js";
     import {computed, ref} from "vue";
 
@@ -32,6 +32,19 @@
         initialUserRating: Number
     });
 
+    // Modālo logu stāvokļi
+    const showUserModal = ref(false);
+    const showSuccessModal = ref(false);
+
+    // Veidlapas dati paziņojumam
+    const form = useForm({
+        subject: '',
+        problem: '',
+    });
+
+    // Atlasītie grāmatu dati
+    const selectedBook = ref(null);
+
     const bookName = props.book?.name;
     const is_blocked = props.book?.is_blocked;
     const bookDescription = props.book?.description;
@@ -55,6 +68,31 @@
 
     const currentBookmark = ref(props.initialUserBookmark);
     const showBookmarkModal = ref(false);
+
+    // Atver modāli lietotāja grāmatas ziņošanai
+    const openUserBlockModal = (book) => {
+        selectedBook.value = book;
+        document.body.style.overflow = "hidden";
+        showUserModal.value = true;
+    };
+
+    // Apstiprina lietotāja grāmatas ziņošanu
+    const submitReport = () => {
+        if (!selectedBook.value) return;
+
+        form.post(
+            route('report.user.book', {userBook: selectedBook.value.id}),
+            {
+                preserveScroll: true,
+
+                onSuccess: () => {
+                    form.reset();
+                    showUserModal.value = false;
+                    showSuccessModal.value = true;
+                }
+            }
+        );
+    };
 
     const handleBookmark = async (bookmarkTypeId) => {
         try {
@@ -120,6 +158,19 @@
         return ratingsCount.value;
     });
 
+    // Aizver visus bloķēšanas modāļus
+    const closeAllModals = () => {
+        showUserModal.value = false;
+        form.reset();
+        document.body.style.overflow = "";
+    };
+
+    // Aizver veiksmīgas darbības modāli
+    const closeSuccessModal = () => {
+        showSuccessModal.value = false;
+        router.visit(window.location.href);
+        document.body.style.overflow = "";
+    };
 
     const GoToRead = (bookId, chapterId) => {
         router.visit(route('chapter.content', {
@@ -134,6 +185,59 @@
     <Navbar />
 
     <div class="main-content">
+
+        <!-- Ziņošanas apstiprinājuma modālais logs stāstam -->
+        <div v-if="showUserModal" class="modal-overlay">
+            <div class="modal">
+                <div class="success-container">
+                    <h2>Vai tiešām vēlaties ziņot par šo darbu?</h2>
+                    <p>Lūdzu, norādiet ziņošanu iemeslu, lai apstiprinātu.</p>
+
+                    <div class="form-group">
+                        <!-- Tēmas izvēle -->
+                        <label for="subject">Tēma:</label>
+                        <select v-model="form.subject" required>
+                            <option value="" disabled>Izvēlieties tēmu</option>
+                            <option value="Maldinošs vai kaitīgs saturs">Maldinošs vai kaitīgs saturs</option>
+                            <option value="Noteikumu pārkāpums">Noteikumu pārkāpums</option>
+                            <option value="Spams vai reklāma">Spams vai reklāma</option>
+                            <option value="Naida runa vai aizskarošs saturs">Naida runa vai aizskarošs saturs</option>
+                            <option value="Zemas kvalitātes saturs">Zemas kvalitātes saturs</option>
+                        </select>
+
+                        <div v-if="form.errors.subject" class="error">
+                            {{ form.errors.subject }}
+                        </div>
+                    </div>
+
+                    <!-- Pamatojuma ievades lauks -->
+                    <div class="form-group">
+                        <label for="problem">Pamatojums:</label>
+                        <textarea v-model="form.problem" required></textarea>
+
+                        <!-- Validācijas kļūdas paziņojums pamatojumam -->
+                        <div v-if="form.errors.problem" class="error">
+                            {{ form.errors.problem }}
+                        </div>
+                    </div>
+                    <div class="close">
+                        <button @click="closeAllModals" class="close-btn">Atcelt</button>
+                        <button @click="submitReport" class="close-btn">Ziņot</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Veiksmīgas ziņošanas modālais logs -->
+        <div v-if="showSuccessModal" class="modal-overlay">
+            <div class="modal">
+                <div class="success-container">
+                    <h2>Sūdzība veiksmīgi nosūtīta!</h2>
+                    <button @click="closeSuccessModal" class="close-btn">Aizvērt</button>
+                </div>
+            </div>
+        </div>
+
 
         <div class="book-header">
             <!-- Grāmatas nosaukums -->
@@ -199,8 +303,13 @@
             </div>
         </div>
 
-
         <div class="book-container">
+            <div class="report-wrapper">
+                <button class="report" @click="openUserBlockModal(book)">
+                    <i style="font-size:1rem" class="fa">&#xf071;</i> Ziņot
+                </button>
+            </div>
+
             <!-- Apraksta sadaļa -->
             <h2>Par stāstu</h2>
             <div class="book-description">
@@ -329,6 +438,111 @@
         margin: 0 auto; /* Centrs lapā */
         color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
         font-family: Tahoma, Helvetica, sans-serif; /* Fontu ģimene */
+    }
+
+    /* Modala loga stils */
+    .modal-overlay {
+        position: fixed; /* Fiksēta pozicija */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(19, 8, 0, 0.59);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000; /* Virs visiem elementiem */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+    }
+
+    .modal {
+        border-radius: 12px;
+        padding: 15px;
+        max-width: 400px;
+        width: 90%;
+        position: relative;
+        background-color: #e4a27c; /* Fona krāsa */
+        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+    }
+
+    .close{
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    .close-btn{
+        align-self: flex-start;
+        margin-bottom: 5px;
+    }
+
+    .success-container {
+        text-align: center;
+        padding: 15px;
+    }
+
+    .success-container h2 {
+        margin-bottom: 15px;
+        font-size:  1.3rem;
+        font-weight: bold;
+        color: rgba(26, 16, 8, 0.8);
+    }
+
+    .success-container p {
+        margin-bottom: 15px;
+        color: rgba(26, 16, 8, 0.8);
+
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-bottom: 10px;
+    }
+
+    label {
+        font-weight: bold;
+        text-align: left;
+        color: rgba(26, 16, 8, 0.8); /* Krāsa */
+    }
+
+    textarea::placeholder {
+        color: rgba(26, 16, 8, 0.42);
+        font-size: 1.0rem;
+    }
+
+    /* Kļūdas zem ievades lauka */
+    .error{
+        color: rgb(110, 37, 37);
+        font-size: 1rem;
+        text-align: left;
+        margin-bottom: 5px;
+    }
+
+    .form-group select,
+    .form-group textarea {
+        padding: 10px;
+        border: 1px solid rgba(26, 16, 8, 0.8);
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    option{
+        font-size: 1rem;
+    }
+
+    .form-group textarea {
+        resize: vertical; /* Atļauj tekstlaukam mainīt izmērus vertikāli */
+        min-height: 100px; /* Minimālais augstums */
+    }
+
+    textarea:focus,
+    input:focus {
+        outline: none; /* Noņem apmales fokusa režīmā */
+        box-shadow: none; /* Noņem nokrāsu ap laukiem */
+        background-color: #ffc8a9; /* Fona krāsa, kad lauks ir fokusēts */
     }
 
     .warning{
@@ -657,6 +871,16 @@
         align-items: center;
     }
 
+    .report-wrapper {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .report{
+        padding: 2px 15px;
+        margin-left: auto;
+    }
+
     button:hover {
         background-color: #ffc8a9;
         border-color: #ffc8a9;
@@ -694,6 +918,28 @@
             font-size: 1.5rem;
         }
 
+        p,
+        label,
+        .error,
+        select,
+        option
+        {
+            font-size: 0.9rem;
+        }
+
+        input::placeholder,
+        textarea::placeholder{
+            font-size: 0.9rem;
+        }
+
+        .modal{
+            max-width: 300px;
+        }
+
+        .success-container h2{
+            font-size: 1.1rem;
+        }
+
         .author-name {
             font-size: 0.9rem;
         }
@@ -702,6 +948,9 @@
             font-size: 0.9rem;
         }
 
+        .report-wrapper .fa{
+            font-size: 0.9rem;
+        }
 
         p,
         h3{

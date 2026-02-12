@@ -25,7 +25,6 @@
         showAllClassicBooks.value ? classicBooks : classicBooks.slice(0, limit)
     );
 
-
     // Modālo logu stāvokļi
     const showUserModal = ref(false);
     const showClassicModal = ref(false);
@@ -627,11 +626,11 @@
         }
 
         .delete-btn {
-            padding: 3px 12px;
+            padding: 2px 8px;
             font-size: 0.9rem;
         }
         .edit-btn{
-            padding: 3px 9px;
+            padding: 2px 8px;
             font-size: 0.9rem;
         }
 

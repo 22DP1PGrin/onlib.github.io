@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Bookmark;
 use App\Models\ClassicBook;
 use App\Models\BookChapter;
+use App\Models\ObjectReport;
 use App\Models\Rating;
 use App\Models\Genre;
 use App\Models\UserBook;
@@ -263,6 +264,28 @@ class ClassicBookController extends Controller
             'ratingsCount' => $count,             // Vērtējumu skaits
             'userRating' => $rating->grade       // Lietotāja vērtējums
         ]);
+    }
 
+    // Nodrošina sūdzības iesniegšanu
+    public function reportClassicBook(Request $request, $classicBookId)
+    {
+        // Validē ienākošos datus no formas
+        $validated = $request->validate([
+            'subject' => 'required|string|max:255',
+            'problem' => 'required|string|max:500',
+        ]);
+
+        // Atrod konkrēto grāmatu pēc ID
+        $classicBook = ClassicBook::findOrFail($classicBookId);
+
+        // Izveido jaunu sūdzību datu bāzē
+        ObjectReport::create([
+            'subject' => $validated['subject'],
+            'problem' => $validated['problem'],
+            'reporter_user_id' => auth()->id(),
+            'classic_book_id' => $classicBook->id,
+        ]);
+
+        return back()->with('success', 'Sūdzība nosūtīta.');
     }
 }

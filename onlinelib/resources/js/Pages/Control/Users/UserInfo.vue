@@ -26,10 +26,13 @@
         email: props.users.email,
         bio: props.users.bio,
         avatar: props.users.avatar,
-        role: props.users.role
+        role: props.users.role,
+        blocked_until: props.users.blocked_until,
+        is_blocked: props.users.is_blocked
 
     });
 
+    // Maina lietotāju lomu
     const updateRole = () => {
         form.put(route('users.updateRole', form.id), {
             preserveScroll: true,
@@ -70,9 +73,26 @@
                 </div>
             </div>
 
+            <!-- Informācija par bloķēšānu -->
+            <div v-if="form.is_blocked" class="block">
+                <p>
+                    Šis lietotājs ir bloķēts līdz
+                    {{ form.blocked_until ? new Date(form.blocked_until).toLocaleString('lv-LV', {
+                        timeZone: 'Europe/Riga',
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })
+                    : 'uz nenoteiktu laiku'
+                    }}
+                    .
+                </p>
+            </div>
+
             <!-- Veidlapas sadaļa -->
             <div class="form">
-
                 <!-- Nosaukuma ievades lauks -->
                 <div class="form-group">
                     <h2 class="title">Lietotājsvārds</h2>
@@ -202,10 +222,22 @@
         border: 1px solid rgba(26, 16, 8, 0.8);
         background-color: #e4a27c;
         box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px;
-        border-radius: 50%; /* Pilns aplis */
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .block{
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+        color: rgba(26, 16, 8, 0.8);
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+    }
+
+    .block p{
+        font-weight: bold;
+        font-size: 1.1rem;
     }
 
     .avatar img {
@@ -278,7 +310,8 @@
         h1 {
             font-size: 1.5rem;
         }
-        .title {
+        .title,
+        .block {
             font-size: 1rem;
         }
 

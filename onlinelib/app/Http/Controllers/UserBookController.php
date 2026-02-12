@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\BookDeleted;
 use App\Models\Bookmark;
+use App\Models\ObjectReport;
 use App\Models\UserBook;
 use App\Models\Genre;
 use App\Models\Rating;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class UserBookController extends Controller
@@ -165,6 +168,11 @@ class UserBookController extends Controller
         // Pārbauda, vai lietotājs ir superadmin vai grāmatas autors
         if ($user->role === 'superadmin' || $user->id === $book->user_id) {
 
+            // Pārbauda, vai pašreizējais lietotājs ir superadmins un nav stāsta autors
+            if ($user->role === 'superadmin' && !($user->id === $book->user_id)) {
+                Mail::to($book->user->email)->send(new BookDeleted($book));
+            }
+
             // Noņem saistītus datus
             $book->genres()->detach();
             $book->chapters()->delete();
@@ -269,5 +277,28 @@ class UserBookController extends Controller
             'ratingsCount' => $count,             // Vērtējumu skaits
             'userRating' => $rating->grade       // Lietotāja vērtējums
         ]);
+    }
+
+    // Nodrošina sūdzības iesniegšanu
+    public function reportUserBook(Request $request, $userBookId)
+    {
+        // Validē ienākošos datus no formas
+        $validated = $request->validate([
+            'subject' => 'required|string|max:255',
+            'problem' => 'required|string|max:500',
+        ]);
+
+        // Atrod konkrēto stāstu pēc ID
+        $userBook = UserBook::findOrFail($userBookId);
+
+        // Izveido jaunu sūdzību datu bāzē
+        ObjectReport::create([
+            'subject' => $validated['subject'],
+            'problem' => $validated['problem'],
+            'reporter_user_id' => auth()->id(),
+            'user_book_id' => $userBook->id,
+        ]);
+
+        return back()->with('success', 'Sūdzība nosūtīta.');
     }
 }

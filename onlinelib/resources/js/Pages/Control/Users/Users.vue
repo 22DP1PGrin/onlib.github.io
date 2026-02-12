@@ -1,107 +1,85 @@
-<script>
-import {computed, ref} from "vue";
-import {usePage, router, useForm} from "@inertiajs/vue3";
-import Navbar from "@/Components/Navbar.vue";
-import Footer from "@/Components/Footer.vue";
-import {route} from "ziggy-js";
+<script setup>
+    import {computed, ref} from "vue";
+    import {usePage, router, useForm} from "@inertiajs/vue3";
+    import Navbar from "@/Components/Navbar.vue";
+    import Footer from "@/Components/Footer.vue";
+    import {route} from "ziggy-js";
 
-export default {
-    components: {
-        Navbar,
-        Footer,
-    },
-    setup() {
-        const users = computed(() => usePage().props.users);
-        const admins = computed(() => usePage().props.admins);
-        const currentUser = computed(() => usePage().props.currentUser);
+    // Saņem lietotāju sarakstu no servera
+    const users = computed(() => usePage().props.users);
+    const admins = computed(() => usePage().props.admins);
+    const currentUser = computed(() => usePage().props.currentUser);
 
-        const selectedUser = ref(null);
+    const selectedUser = ref(null);
 
-        const limit = 3;
+    const limit = 3; // Cik lietotāju rādīt sākumā
 
-        const showAllUsers = ref(false);
-        const showAllAdmins = ref(false);
+    const showAllUsers = ref(false);
+    const showAllAdmins = ref(false);
 
-        const visibleUsers = computed(() =>
-            showAllUsers.value ? users.value : users.value.slice(0, limit)
-        );
+    // Aprēķina redzamu parastu lietotāju atkarībā no showAllBooks
+    const visibleUsers = computed(() =>
+        showAllUsers.value ? users.value : users.value.slice(0, limit)
+    );
 
-        const visibleAdmins = computed(() =>
-            showAllAdmins.value ? admins.value : admins.value.slice(0, limit)
-        );
+    // Aprēķina redzamu administratoru atkarībā no showAllBooks
+    const visibleAdmins = computed(() =>
+        showAllAdmins.value ? admins.value : admins.value.slice(0, limit)
+    );
 
-        const form = useForm({
-            subject: '',
-            problem: '',
-            duration: '',
-        });
+    // Veidlapa dati bloķēšanai
+    const form = useForm({
+        subject: '',
+        problem: '',
+        duration: '',
+    });
 
-        // Modālo logu stāvokļi
-        const showUserModal = ref(false);
-        const showSuccessModal = ref(false);
+    // Modālo logu stāvokļi
+    const showUserModal = ref(false);
+    const showSuccessModal = ref(false);
 
-        // Atver modāli lietotāja konta bloķēšanai
-        const openUserBlockModal = (user) => {
-            selectedUser.value = user;
-            showUserModal.value = true;
-            document.body.style.overflow = "hidden";
-        };
+    // Atver modāli lietotāja konta bloķēšanai
+    const openUserBlockModal = (user) => {
+        selectedUser.value = user;
+        showUserModal.value = true;
+        document.body.style.overflow = "hidden";
+    };
 
-        // Apstiprina lietotāja konta bloķēšanu
-        const confirmUserBlock = () => {
-            if (!selectedUser.value) return;
-            form.post(
-                route('user.toggleBlock', { user: selectedUser.value.id }),
-                {
-                    preserveScroll: true,
+    // Apstiprina lietotāja konta bloķēšanu
+    const confirmUserBlock = () => {
+        if (!selectedUser.value) return;
+        form.post(
+            route('user.toggleBlock', { user: selectedUser.value.id }),
+            {
+                preserveScroll: true,
 
-                    onSuccess: () => {
-                        form.reset();
-                        showUserModal.value = false;
-                        showSuccessModal.value = true;
-                    }
+                onSuccess: () => {
+                    form.reset();
+                    showUserModal.value = false;
+                    showSuccessModal.value = true;
                 }
-            );
-        };
+            }
+        );
+    };
 
-        // Aizver visus bloķēšanas modāļus
-        const closeUserModals = () => {
-            showUserModal.value = false;
-            form.reset();
-            document.body.style.overflow = "";
-        };
+    // Aizver visus bloķēšanas modāļus
+    const closeUserModals = () => {
+        showUserModal.value = false;
+        form.reset();
+        document.body.style.overflow = "";
+    };
 
-        // Aizver veiksmīgas darbības modāli
-        const closeSuccessModal = () => {
-            showSuccessModal.value = false;
-            router.visit(window.location.href);
-            document.body.style.overflow = "";
-        };
+    // Aizver veiksmīgas darbības modāli
+    const closeSuccessModal = () => {
+        showSuccessModal.value = false;
+        router.visit(window.location.href);
+        document.body.style.overflow = "";
+    };
 
-        const GoToWatch = (userId) => {
-            router.get(route('users.watch', { id: userId }));
-        };
-
-        return {
-            users,
-            admins,
-            currentUser,
-            GoToWatch,
-            visibleUsers,
-            visibleAdmins,
-            showAllUsers,
-            showAllAdmins,
-            form,
-            showUserModal,
-            showSuccessModal,
-            openUserBlockModal,
-            confirmUserBlock,
-            closeUserModals,
-            closeSuccessModal,
-            limit
-        };
-    },
-};
+    // Lietotāju apskatīšana
+    const GoToWatch = (userId) => {
+        router.get(route('users.watch', { id: userId }));
+    };
 </script>
 
 <template>
@@ -109,7 +87,6 @@ export default {
     <Navbar/>
 
     <div class="main-content">
-
         <!-- Bloķēšanas apstiprinājuma modālais logs stāstam -->
         <div v-if="showUserModal" class="modal-overlay">
             <div class="modal">
@@ -199,7 +176,7 @@ export default {
 
 
                             <div class="buttons-container">
-                                <!-- Lietotāja dzēšanas poga -->
+                                <!-- Apskatīšana, bloķēšana -->
                                 <button class="delete-btn" @click="openUserBlockModal(admin)">
                                     Bloķēt
                                 </button>
@@ -208,6 +185,7 @@ export default {
                         </div>
                     </div>
 
+                    <!-- Skatī vairāk -->
                     <div class="toggle-container">
                         <button
                             v-if="admins.length > limit"
@@ -240,7 +218,7 @@ export default {
 
 
                         <div class="buttons-container">
-                            <!-- Lietotāja dzēšanas poga -->
+                            <!-- Apskatīšana, bloķēšana -->
                             <button class="delete-btn" @click="openUserBlockModal(user)">
                                 Bloķēt
                             </button>
@@ -248,6 +226,8 @@ export default {
                         </div>
                     </div>
                 </div>
+
+                <!-- Skatī vairāk -->
                 <div class="toggle-container">
                     <button
                         v-if="users.length > limit"
@@ -518,15 +498,15 @@ export default {
         }
 
         .buttons-container {
-            gap: 3px;
+            gap: 2px;
         }
 
         .delete-btn {
-            padding: 3px 12px;
+            padding: 2px 8px;
             font-size: 0.9rem;
         }
         .watch-btn{
-            padding: 3px 9px;
+            padding: 2px 8px;
             font-size: 0.9rem;
         }
 

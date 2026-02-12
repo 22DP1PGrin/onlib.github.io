@@ -1,98 +1,73 @@
-<script>
+<script setup>
     import Navbar from "@/Components/Navbar.vue";
     import Footer from "@/Components/Footer.vue";
     import { computed, ref } from "vue";
     import { router, usePage } from "@inertiajs/vue3";
     import { route } from "ziggy-js";
 
-    export default {
-        setup() {
-            // Izmanto `computed`, lai iegūtu datus par lietotāju un grāmatu skaitu no servera
-            const user = computed(() => usePage().props.auth.user); // Iegūst pašreizējo lietotāju
-            const booksCount = computed(() => usePage().props.booksCount); // Iegūst grāmatu skaitu
-            const totalRatingsCount = computed(() => usePage().props.totalRatingsCount);
-            const readBooksCount = computed(() => usePage().props.readBooksCount || 0);
+    // Iegūt datus par lietotāju un grāmatu skaitu no servera
+    const user = computed(() => usePage().props.auth.user); // Iegūst pašreizējo lietotāju
+    const booksCount = computed(() => usePage().props.booksCount); // Iegūst grāmatu skaitu
+    const totalRatingsCount = computed(() => usePage().props.totalRatingsCount);
+    const readBooksCount = computed(() => usePage().props.readBooksCount || 0);
 
-            // Izveido mainīgo, kas uzrauga profila rediģēšanas stāvokli
-            const isEditing = ref(false);
+    // Izveido mainīgo, kas uzrauga profila rediģēšanas stāvokli
+    const isEditing = ref(false);
 
-            // Lietotāja statistika
-            const stats = ref({
-                booksRead: 24, // Lasīto grāmatu skaits
-                favorites: 8, // Iepriekš izvēlēto grāmatu skaits
-                inProgress: 5, // Grāmatas, kuras tiek lasītas
-                abandoned: 3 // Grāmatas, kuras ir pamestas
-            });
+    // Lietotāja statistika
+    const stats = ref({
+        booksRead: 24,
+        favorites: 8,
+        inProgress: 5,
+        abandoned: 3
+    });
 
-            // Funkcijas, lai pārietu uz dažādiem maršrutiem
-            const goToEdit = () => {
-                router.get(route('profile.settings')); // Pāriet uz profila iestatījumiem
-            };
-            const GoToWatch = () => {
-                router.get(route('StoryList')); // Pāriet uz stāstu sarakstu
-            };
-            const GoToCreate = () => {
-                router.get(route('NewStory')); // Pāriet uz jauna stāsta izveidi
-            };
-            const GoToUser = () => {
-                router.get(route('users')); // Pāriet uz lietotāju sarakstu
-            };
 
-            const GoToBlockUser = () => {
-                router.get(route('block.users')); // Pāriet uz lietotāju sarakstu
-            };
+    // Funkcijas, lai pārietu uz dažādiem maršrutiem
+    const goToEdit = () => {
+        router.get(route('profile.settings')); // Pāriet uz profila iestatījumiem
+    };
+    const GoToWatch = () => {
+        router.get(route('StoryList')); // Pāriet uz stāstu sarakstu
+    };
+    const GoToCreate = () => {
+        router.get(route('NewStory')); // Pāriet uz jauna stāsta izveidi
+    };
+    const GoToUser = () => {
+        router.get(route('users')); // Pāriet uz lietotāju sarakstu
+    };
 
-            const GoToForm = () => {
-                router.get(route('problems')); // Pāriet uz lietotāju sarakstu
-            };
+    const GoToBlockUser = () => {
+        router.get(route('block.users')); // Pāriet uz lietotāju sarakstu
+    };
 
-            const GoToBookList = () => {
-                router.get(route('book.lists')); // Pāriet uz grāmatu sarakstu
-            };
+    const GoToForm = () => {
+        router.get(route('problems')); // Pāriet uz lietotāju sarakstu
+    };
 
-            const GoToBlockBookList = () => {
-                router.get(route('block.book.lists')); // Pāriet uz grāmatu sarakstu
-            };
+    const GoToReport = () => {
+        router.get(route('admin.reports')); // Pāriet uz lietotāju sarakstu
+    };
 
-            const goToRead = () => {
-                router.get(route('bookmarks.read'));
-            };
-            const goToPlanned = () => {
-                router.get(route('bookmarks.planned'));
-            };
-            const goToReading = () => {
-                router.get(route('bookmarks.reading'));
-            };
-            const goToDropped = () => {
-                router.get(route('bookmarks.dropped'));
-            };
+    const GoToBookList = () => {
+        router.get(route('book.lists')); // Pāriet uz grāmatu sarakstu
+    };
 
-            // Atgriež visus datus un metodes, lai izmantotu šablonā
-            return {
-                user,
-                isEditing,
-                stats,
-                booksCount,
-                totalRatingsCount,
-                readBooksCount,
-                goToEdit,
-                GoToWatch,
-                GoToCreate,
-                GoToUser,
-                GoToBlockUser,
-                GoToForm,
-                GoToBookList,
-                GoToBlockBookList,
-                goToRead,
-                goToPlanned,
-                goToReading,
-                goToDropped
-            };
-        },
-        components: {
-            Navbar, // Reģistrē Navbar komponentu, lai to varētu izmantot šablonā
-            Footer // Reģistrē Footer komponentu, lai to varētu izmantot šablonā
-        }
+    const GoToBlockBookList = () => {
+        router.get(route('block.book.lists')); // Pāriet uz grāmatu sarakstu
+    };
+
+    const goToRead = () => {
+        router.get(route('bookmarks.read'));
+    };
+    const goToPlanned = () => {
+        router.get(route('bookmarks.planned'));
+    };
+    const goToReading = () => {
+        router.get(route('bookmarks.reading'));
+    };
+    const goToDropped = () => {
+        router.get(route('bookmarks.dropped'));
     };
 </script>
 
@@ -199,17 +174,22 @@
                     <div class="links-grid">
                         <!-- Lietotāju pārvaldības saite -->
                         <div class="bookmark-link" @click="GoToUser">
-                            <i class="fa">&#xf007;</i> <!-- Lietotāja ikona -->
+                            <i class="fa">&#xf007;</i>
                             <span class="link-text">Lietotāji</span>
                         </div>
                         <!-- Jautājumu pārvaldības saite -->
                         <div class="bookmark-link" @click="GoToForm">
-                            <i class="fa">&#xf0ad;</i> <!-- Dokumenta ikona -->
+                            <i class="fa">&#xf0ad;</i>
                             <span class="link-text">Lietotāju jautājumi</span>
+                        </div>
+                        <!-- Sūdzības pārvaldības saite -->
+                        <div class="bookmark-link" @click="GoToReport">
+                            <i class="fa">&#xf071;</i>
+                            <span class="link-text">Lietotāju sūdzības</span>
                         </div>
                         <!-- Visu stāstu pārvaldības saite -->
                         <div class="bookmark-link" @click="GoToBookList">
-                            <i class="fa">&#xf2ba;</i> <!-- Grāmatu plaukta ikona -->
+                            <i class="fa">&#xf2ba;</i>
                             <span class="link-text">Visi darbi</span>
                         </div>
                     </div>

@@ -5,25 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3e76eb8-75aa-48f5-a2ef-f4cf9daec5ed" name="Changes" comment="return view('example_vue', compact('story'));">
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/BlockUsers.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/views/emails/account_block.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/views/emails/account_unblock.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Reports/Reports.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/views/emails/account_delete.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/views/emails/book_delete.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/AdminController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/AdminController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ClassicBookController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ClassicBookController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/UserBookController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/UserBookController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Requests/Auth/LoginRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Requests/Auth/LoginRequest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Mail/UserBookBlocked.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Mail/UserBookBlocked.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/database/migrations/0001_01_01_000000_create_users_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/database/migrations/0001_01_01_000000_create_users_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/database/seeders/UsersSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/database/seeders/UsersSeeder.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/BlocksBook.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/BlocksBook.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/BooksList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/BooksList.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/BlockUsers.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/BlockUsers.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/UserInfo.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/UserInfo.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/Users.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/Users.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Profile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Profile.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/Library.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/Library.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ClassicBooks/ClassicBook.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ClassicBooks/ClassicBook.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/UserBooks/UserBook.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/UserBooks/UserBook.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/views/emails/user_block.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/views/emails/user_block.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/views/emails/user_unblock.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/views/emails/user_unblock.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/routes/console.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/routes/console.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -212,11 +209,11 @@
       <recent name="C:\xampp\htdocs\Onlib\onlinelib\resources\views\emails" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\Onlib\onlinelib\resources\js\Pages\Control" />
       <recent name="C:\xampp\htdocs\Onlib\onlinelib\resources\js\Pages\Writing\NewInfo" />
       <recent name="C:\xampp\htdocs\Onlib\onlinelib\resources\js\Pages\Writing\EditInfo" />
       <recent name="C:\xampp\htdocs\Onlib\onlinelib\resources\js\Pages\Reading\UserBooks" />
       <recent name="C:\xampp\htdocs\Onlib\onlinelib\resources\js\Pages\Reading\ClassicBooks" />
-      <recent name="C:\xampp\htdocs\Onlib\onlinelib\resources\js\Pages\Control\Books\NewInfo" />
     </key>
   </component>
   <component name="RunManager">
@@ -336,7 +333,7 @@
       <workItem from="1765020819637" duration="19256000" />
       <workItem from="1765626286640" duration="35173000" />
       <workItem from="1768734614103" duration="40233000" />
-      <workItem from="1770635930399" duration="15569000" />
+      <workItem from="1770635930399" duration="33091000" />
     </task>
     <servers />
   </component>

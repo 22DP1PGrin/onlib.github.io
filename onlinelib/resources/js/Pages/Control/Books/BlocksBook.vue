@@ -178,7 +178,7 @@
         <div v-if="showDeleteModal" class="modal-overlay">
             <div class="modal">
                 <div class="success-container">
-                    <h2>Vai tiešām vēlaties dzēst šo stāstu?</h2>
+                    <h2>Vai tiešām vēlaties dzēst šo darbu?</h2>
                     <div class="close">
                         <button @click="closeDeleteModal" class="close-btn">Atcelt</button>
                         <button @click="confirmDelete" class="block">Dzēst</button>
@@ -191,7 +191,7 @@
         <div v-if="showDeleteSuccessModal" class="modal-overlay">
             <div class="modal">
                 <div class="success-container">
-                    <h2>Grāmata veiksmīgi dzēsta!</h2>
+                    <h2>Darbs veiksmīgi dzēsts!</h2>
                     <button @click="closeDeleteSuccessModal" class="close-btn">Aizvērt</button>
                 </div>
             </div>
@@ -579,11 +579,11 @@
         }
 
         .delete-btn {
-            padding: 3px 12px;
+            padding: 2px 8px;
             font-size: 0.9rem;
         }
         .edit-btn{
-            padding: 3px 9px;
+            padding: 2px 8px;
             font-size: 0.9rem;
         }
 
