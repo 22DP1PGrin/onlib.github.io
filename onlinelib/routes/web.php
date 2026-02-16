@@ -84,10 +84,14 @@ Route::get('/Filter', [AllBooksController::class, 'filter'])->name('books.filter
 Route::get('/search', [AllBooksController::class, 'searchBooks'])->name('search.books');
 
 // Klasiskas grāmatas novertēšana
-Route::post('/classic-books/{book}/rate', [ClassicBookController::class, 'rateBook'])->middleware('auth');
+Route::post('/classic-books/{book}/rate', [ClassicBookController::class, 'rateBook'])
+    ->name('classic-books.rate')
+    ->middleware('auth');
 
 // Klasiskas grāmatas novertēšana
-Route::post('/user-books/{book}/rate', [UserBookController::class, 'rateBook'])->middleware('auth');
+Route::post('/user-books/{book}/rate', [UserBookController::class, 'rateBook'])
+    ->name('user-books.rate')
+    ->middleware('auth');
 
 
 //LAPAS NO KAJIENES(STATISKAS LAPAS)
@@ -135,10 +139,16 @@ Route::middleware('auth')->group(function () {
 
     // Rādīt profila iestatījumu lapu
     Route::get('/profile/settings', [ProfileController::class, 'settings'])->name('profile.settings');
+
+    // Ziņošana
+    Route::post('/report/user-profile/{user}', [ProfileController::class, 'reportUser'])->name('report.user');
 });
+
+// Rāda konkrēta lietotāja profila apskates lapu
+Route::get('User/Profile/{id}', [ProfileController::class, 'Watch'])->name('other.users.watch');
+
 //Tehniskais atbalsts
 Route::post('/support', [SupportController::class, 'store']);
-
 
 // LIETOTĀJA GRĀMATAS
 Route::middleware('auth')->group(function () {
@@ -319,6 +329,11 @@ Route::middleware(['auth'])->group(function () {
         ->name('bookmarks.planned')
         ->defaults('typeId', 4);
 });
+
+// Skatīt cita lietotāja grāmatzīmes
+Route::get('/bookmarks/user/{userId}/{typeId}', [BookmarkController::class, 'userBookmarkPage'])
+    ->name('bookmarks.user');
+
 
 require __DIR__.'/auth.php';
 

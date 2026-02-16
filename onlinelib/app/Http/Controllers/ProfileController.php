@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\PasswordMessage;
 use App\Mail\PendingUserVerification;
 use App\Models\Bookmark;
+use App\Models\ObjectReport;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -74,7 +75,7 @@ class ProfileController extends Controller
                 Rule::unique('users', 'nickname')->ignore($user->id)],
             'email'    => ['required', 'string', 'email', 'max:50',
                 Rule::unique('users')->ignore($user->id), 'lowercase'],
-            'bio'      => ['nullable', 'string', 'max:150'],
+            'bio'      => ['nullable', 'string', 'max:400'],
         ]);
 
         // Nosaka, kuri lauki ir mainīti
@@ -270,5 +271,53 @@ class ProfileController extends Controller
             'totalRatingsCount' => $RatingsCount, // Kopējais vērtējumu skaits
             'readBooksCount' => $readBooksCount, // Izlasīto grāmatu skaits
         ]);
+    }
+
+    // Atgriež cita konkrēta lietotāja informācijas skatu
+    public function Watch($id)
+    {
+        $user = User::findOrFail($id);
+        $booksCount = $user->books()->count();
+        $ratingsCount = $user->BookRatings()->count();
+
+        // Grāmatzīmju skaits grupēts pēc tipa
+        $bookmarkCounts = Bookmark::where('user_id', $user->id)
+            ->selectRaw('bookmark_type_id, count(*) as count')
+            ->groupBy('bookmark_type_id')
+            ->pluck('count', 'bookmark_type_id')
+            ->toArray();
+
+        $readBooksCount = $bookmarkCounts[1] ?? 0; // Ja nav grāmatzīmju, tad 0
+
+        // Atgriež skatu ar lietotāja datiem
+        return Inertia::render('UserProfile', [
+            'user' => $user, // Lietotāja dati
+            'booksCount' => $booksCount, // Grāmatu skaits
+            'totalRatingsCount' => $ratingsCount, // Kopējais vērtējumu skaits
+            'readBooksCount' => $readBooksCount, // Izlasīto grāmatu skaits
+        ]);
+    }
+
+    // Nodrošina sūdzības iesniegšanu
+    public function reportUser(Request $request, $userId)
+    {
+        // Validē ienākošos datus no formas
+        $validated = $request->validate([
+            'subject' => 'required|string|max:255',
+            'problem' => 'required|string|max:500',
+        ]);
+
+        // Atrod konkrēto lietotāju pēc ID
+        $user = User::findOrFail($userId);
+
+        // Izveido jaunu sūdzību datu bāzē
+        ObjectReport::create([
+            'subject' => $validated['subject'],
+            'problem' => $validated['problem'],
+            'reporter_user_id' => auth()->id(),
+            'reported_user_id' => $user->id,
+        ]);
+
+        return back()->with('success', 'Sūdzība nosūtīta.');
     }
 }

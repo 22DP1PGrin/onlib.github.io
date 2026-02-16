@@ -5,7 +5,7 @@
     import {computed, ref} from "vue";
     import {route} from "ziggy-js";
 
-    // Saņemam datus no servera kā props
+    // Saņem datus no servera kā props
     const props = defineProps({
         users: Object, // Objekts
     });
@@ -19,7 +19,7 @@
         document.body.style.overflow = "";
     };
 
-    // Izveidojam veidlapas datus, sākotnēji aizpildītus ar esošo stāsta informāciju
+    // Izveido veidlapas datus, sākotnēji aizpildītus ar esošo stāsta informāciju
     const form = useForm({
         id: props.users.id,
         nickname: props.users.nickname,

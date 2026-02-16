@@ -275,10 +275,18 @@ class AdminController
             ->latest()
             ->get();
 
+        // Saņem sūdzības par lietotājiem
+        $userReports = ObjectReport::with(['reportedUser', 'reporter'])
+            ->whereNotNull('reported_user_id')
+            ->latest()
+            ->get();
+
+
         // Nosūta datus uz Inertia skatu
         return Inertia::render('Control/Reports/Reports', [
             'storyReports' => $storyReports,
             'bookReports' => $bookReports,
+            'userReports' => $userReports,
         ]);
     }
 

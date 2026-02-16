@@ -13,7 +13,7 @@ return new class extends Migration
         Schema::create('object_report', function (Blueprint $table) {
             $table->id();
             $table->enum('subject', ['Maldinošs vai kaitīgs saturs', 'Noteikumu pārkāpums', 'Spams vai reklāma', 'Naida runa vai aizskarošs saturs',
-                'Zemas kvalitātes saturs', 'Krāpnieciska vai maldinoša darbība', 'Naida runa vai diskriminējoša uzvedība', 'Citu lietotāju aizskaršana vai iebiedēšana'])->default('Noteikumu pārkāpums');
+                'Zemas kvalitātes saturs', 'Krāpnieciska vai maldinoša darbība', 'Naida runa vai diskriminējoša uzvedība', 'Citu lietotāju aizskaršana'])->default('Noteikumu pārkāpums');
             $table->text('problem');
             $table->unsignedBigInteger('reporter_user_id');
             $table->unsignedBigInteger('user_book_id')->nullable();;

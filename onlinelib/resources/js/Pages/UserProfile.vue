@@ -2,71 +2,143 @@
     import Navbar from "@/Components/Navbar.vue";
     import Footer from "@/Components/Footer.vue";
     import { computed, ref } from "vue";
-    import { router, usePage } from "@inertiajs/vue3";
+    import {router, useForm, usePage} from "@inertiajs/vue3";
     import { route } from "ziggy-js";
 
-    // Iegūt datus par lietotāju un grāmatu skaitu no servera
-    const user = computed(() => usePage().props.auth.user); // Iegūst pašreizējo lietotāju
-    const booksCount = computed(() => usePage().props.booksCount); // Iegūst grāmatu skaitu
+    const props = defineProps({
+        user: Object,
+    });
+
+    // Aprēķina dažādus statistikas rādītājus, izmantojot Inertia lapas props
+    const booksCount = computed(() => usePage().props.booksCount);
     const totalRatingsCount = computed(() => usePage().props.totalRatingsCount);
     const readBooksCount = computed(() => usePage().props.readBooksCount || 0);
 
-    // Funkcijas, lai pārietu uz dažādiem maršrutiem
-    const goToEdit = () => {
-        router.get(route('profile.settings')); // Pāriet uz profila iestatījumiem
-    };
-    const GoToWatch = () => {
-        router.get(route('StoryList')); // Pāriet uz stāstu sarakstu
-    };
-    const GoToCreate = () => {
-        router.get(route('NewStory')); // Pāriet uz jauna stāsta izveidi
-    };
-    const GoToUser = () => {
-        router.get(route('users')); // Pāriet uz lietotāju sarakstu
+    // Modālo logu stāvokļi
+    const showUserModal = ref(false);
+    const showSuccessModal = ref(false);
+
+    // Veidlapas dati paziņojumam
+    const form = useForm({
+        subject: '',
+        problem: '',
+    });
+
+    // Atlasītie lietotāja dati
+    const selectedUser = ref(null);
+
+    // Atver modāli lietotāja ziņošanai
+    const openUserBlockModal = (book) => {
+        selectedUser.value = book;
+        document.body.style.overflow = "hidden";
+        showUserModal.value = true;
     };
 
-    const GoToBlockUser = () => {
-        router.get(route('block.users')); // Pāriet uz lietotāju sarakstu
+    // Apstiprina lietotāja ziņošanu
+    const submitReport = () => {
+        if (!selectedUser.value) return;
+
+        form.post(
+            route('report.user', {user: selectedUser.value.id}),
+            {
+                preserveScroll: true,
+
+                onSuccess: () => {
+                    form.reset();
+                    showUserModal.value = false;
+                    showSuccessModal.value = true;
+                }
+            }
+        );
     };
 
-    const GoToForm = () => {
-        router.get(route('problems')); // Pāriet uz lietotāju sarakstu
+    // Aizver visus bloķēšanas modāļus
+    const closeAllModals = () => {
+        showUserModal.value = false;
+        form.reset();
+        document.body.style.overflow = "";
     };
 
-    const GoToReport = () => {
-        router.get(route('admin.reports')); // Pāriet uz lietotāju sarakstu
+    // Aizver veiksmīgas darbības modāli
+    const closeSuccessModal = () => {
+        showSuccessModal.value = false;
+        router.visit(window.location.href);
+        document.body.style.overflow = "";
     };
 
-    const GoToBookList = () => {
-        router.get(route('book.lists')); // Pāriet uz grāmatu sarakstu
+    // Navigācijas funkcijas uz dažādām grāmatu sadaļām
+    const goToRead = (userId) => {
+        router.get(route('bookmarks.user', { userId, typeId: 1 }));
     };
-
-    const GoToBlockBookList = () => {
-        router.get(route('block.book.lists')); // Pāriet uz grāmatu sarakstu
+    const goToPlanned = (userId) => {
+        router.get(route('bookmarks.user', { userId, typeId: 4 }));
     };
-
-    const goToRead = () => {
-        router.get(route('bookmarks.read'));
+    const goToReading = (userId) => {
+        router.get(route('bookmarks.user', { userId, typeId: 2 }));
     };
-    const goToPlanned = () => {
-        router.get(route('bookmarks.planned'));
-    };
-    const goToReading = () => {
-        router.get(route('bookmarks.reading'));
-    };
-    const goToDropped = () => {
-        router.get(route('bookmarks.dropped'));
+    const goToDropped = (userId) => {
+        router.get(route('bookmarks.user', { userId, typeId: 3 }));
     };
 </script>
 
 
 <template>
-
     <Navbar />
 
     <div class="main-content">
-        <div class="content">
 
+        <!-- Ziņošanas apstiprinājuma modālais logs stāstam -->
+        <div v-if="showUserModal" class="modal-overlay">
+            <div class="modal">
+                <div class="success-container">
+                    <h2>Vai tiešām vēlaties ziņot par šo lietotāju?</h2>
+                    <p>Lūdzu, norādiet ziņošanu iemeslu, lai apstiprinātu.</p>
+
+                    <div class="form-group">
+                        <!-- Tēmas izvēle -->
+                        <label for="subject">Tēma:</label>
+                        <select v-model="form.subject" required>
+                            <option value="" disabled>Izvēlieties tēmu</option>
+                            <option value="Krāpnieciska vai maldinoša darbība">Krāpnieciska vai maldinoša darbība</option>
+                            <option value="Noteikumu pārkāpums">Noteikumu pārkāpums</option>
+                            <option value="Naida runa vai diskriminējoša uzvedība"> Naida runa vai diskriminējoša uzvedība</option>
+                            <option value="Citu lietotāju aizskaršana">Citu lietotāju aizskaršana</option>
+                        </select>
+
+                        <div v-if="form.errors.subject" class="error">
+                            {{ form.errors.subject }}
+                        </div>
+                    </div>
+
+                    <!-- Pamatojuma ievades lauks -->
+                    <div class="form-group">
+                        <label for="problem">Pamatojums:</label>
+                        <textarea v-model="form.problem" required></textarea>
+
+                        <!-- Validācijas kļūdas paziņojums pamatojumam -->
+                        <div v-if="form.errors.problem" class="error">
+                            {{ form.errors.problem }}
+                        </div>
+                    </div>
+                    <div class="close">
+                        <button @click="closeAllModals" class="close-btn">Atcelt</button>
+                        <button @click="submitReport" class="close-btn">Ziņot</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Veiksmīgas ziņošanas modālais logs -->
+        <div v-if="showSuccessModal" class="modal-overlay">
+            <div class="modal">
+                <div class="success-container">
+                    <h2>Sūdzība veiksmīgi nosūtīta!</h2>
+                    <button @click="closeSuccessModal" class="close-btn">Aizvērt</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
             <!-- Lietotāja profila sadaļa -->
             <div class="profile-header">
                 <!-- Lietotājvārds kā virsraksts -->
@@ -81,16 +153,19 @@
                 <div class="bio-section">
                     <!-- Biogrāfijas teksts (ja tukšs - rāda aizvietotājtekstu) -->
                     <p class="bio-text">{{ user.bio || 'Šeit pagaidām tukšs' }}</p>
-                    <!-- Profila rediģēšanas poga -->
-                    <button class="edit-btn" @click="goToEdit">Rediģēt profilu</button>
                 </div>
             </div>
 
             <!-- Satura panelis ar statistikām un saistēm -->
             <div class="content-panel">
+                <div class="report-wrapper">
+                    <button class="report" @click="openUserBlockModal(user)">
+                        <i style="font-size:1rem" class="fa">&#xf071;</i> Ziņot
+                    </button>
+                </div>
                 <!-- Lietotāja aktivitātes statistika -->
                 <div class="stats-section">
-                    <h2>Manā aktivitāte</h2>
+                    <h2>{{ user.nickname }} aktivitāte</h2>
                     <div class="stats-grid">
                         <!-- Izlasīto grāmatu skaits -->
                         <div class="stat-item">
@@ -112,88 +187,30 @@
 
                 <!-- Grāmatzīmju sadaļa -->
                 <div class="bookmarks-links">
-                    <h2>Manas grāmatzīmes</h2>
+                    <h2>{{ user.nickname }} grāmatzīmes</h2>
                     <div class="links-grid">
                         <!-- Izlasīto grāmatu saite -->
-                        <div class="bookmark-link read" @click="goToRead">
+                        <div class="bookmark-link read" @click="goToRead(user.id)">
                             <span class="fa">&#xf02d;</span> <!-- Grāmatas ikona -->
                             <span class="link-text">Izlasītās grāmatas</span>
                         </div>
 
                         <!-- Plānoto grāmatu saite -->
-                        <div class="bookmark-link" @click="goToPlanned">
+                        <div class="bookmark-link" @click="goToPlanned(user.id)">
                             <span class="fa">&#xf046;</span> <!-- Atzīmēšanas ikona -->
                             <span class="link-text">Plānotās grāmatas</span>
                         </div>
 
                         <!-- Pašlaik lasāmo grāmatu saite -->
-                        <div class="bookmark-link" @click="goToReading">
+                        <div class="bookmark-link" @click="goToReading(user.id)">
                             <span class="fa">&#xf02e;</span> <!-- Atvērtas grāmatas ikona -->
                             <span class="link-text">Lasu tagad</span>
                         </div>
 
                         <!-- Pamesto grāmatu saite -->
-                        <div class="bookmark-link" @click="goToDropped">
+                        <div class="bookmark-link" @click="goToDropped(user.id)">
                             <span class="fa">&#xf1f8;</span> <!-- Dzēšanas ikona -->
                             <span class="link-text">Pamestās grāmatas</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Literāro darbu sadaļa -->
-                <h2>Mani literārie darbi</h2>
-                <div class="links-grid">
-                    <!-- Jauna darba izveides saite -->
-                    <div class="bookmark-link" @click="GoToCreate">
-                        <span class="fa">&#xf067;</span> <!-- Plusa ikona -->
-                        <span class="link-text">Izveidot jaunu darbu</span>
-                    </div>
-
-                    <!-- Esošo darbu rediģēšanas saite -->
-                    <div class="bookmark-link" @click="GoToWatch">
-                        <span class="fa">&#xf040;</span> <!-- Rediģēšanas ikona -->
-                        <span class="link-text">Rediģēt esošos darbus</span>
-                    </div>
-                </div>
-
-                <!-- Administratora funkcionalitāte (rādās tikai adminiem) -->
-                <div v-if="user.role === 'admin' || user.role === 'superadmin'" class="admin-actions">
-                    <h2>Pārvaldība</h2>
-                    <div class="links-grid">
-                        <!-- Lietotāju pārvaldības saite -->
-                        <div class="bookmark-link" @click="GoToUser">
-                            <i class="fa">&#xf007;</i>
-                            <span class="link-text">Lietotāji</span>
-                        </div>
-                        <!-- Jautājumu pārvaldības saite -->
-                        <div class="bookmark-link" @click="GoToForm">
-                            <i class="fa">&#xf0ad;</i>
-                            <span class="link-text">Lietotāju jautājumi</span>
-                        </div>
-                        <!-- Sūdzības pārvaldības saite -->
-                        <div class="bookmark-link" @click="GoToReport">
-                            <i class="fa">&#xf071;</i>
-                            <span class="link-text">Lietotāju sūdzības</span>
-                        </div>
-                        <!-- Visu stāstu pārvaldības saite -->
-                        <div class="bookmark-link" @click="GoToBookList">
-                            <i class="fa">&#xf2ba;</i>
-                            <span class="link-text">Visi darbi</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div v-if="user.role === 'admin' || user.role === 'superadmin'" class="admin-actions">
-                    <div class="links-grid">
-                        <!-- Visu bloķētu stāstu pārvaldības saite -->
-                        <div class="bookmark-link" @click="GoToBlockBookList">
-                            <i class="fa">&#xf2d3;</i> <!-- Grāmatu plaukta ikona -->
-                            <span class="link-text">Bloķēti darbi</span>
-                        </div>
-                        <!-- Visu bloķētu letotāju pārvaldības saite -->
-                        <div class="bookmark-link" @click="GoToBlockUser">
-                            <i class="fa">&#xf235;</i> <!-- Grāmatu plaukta ikona -->
-                            <span class="link-text">Bloķētie lietotāji</span>
                         </div>
                     </div>
                 </div>
@@ -213,6 +230,110 @@
         padding-bottom: 60px; /* Apakšējais izsistējs */
     }
 
+    /* Modala loga stils */
+    .modal-overlay {
+        position: fixed; /* Fiksēta pozicija */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(19, 8, 0, 0.59);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000; /* Virs visiem elementiem */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+    }
+
+    .modal {
+        border-radius: 12px;
+        padding: 15px;
+        max-width: 400px;
+        width: 90%;
+        position: relative;
+        background-color: #e4a27c; /* Fona krāsa */
+        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+    }
+
+    .close{
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    .close-btn{
+        align-self: flex-start;
+        margin-bottom: 5px;
+    }
+
+    .success-container {
+        text-align: center;
+        padding: 15px;
+    }
+
+    .success-container h2 {
+        margin-bottom: 15px;
+        font-size:  1.3rem;
+        font-weight: bold;
+        color: rgba(26, 16, 8, 0.8);
+    }
+
+    .success-container p {
+        margin-bottom: 15px;
+        color: rgba(26, 16, 8, 0.8);
+
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-bottom: 10px;
+    }
+
+    label {
+        font-weight: bold;
+        text-align: left;
+        color: rgba(26, 16, 8, 0.8); /* Krāsa */
+    }
+
+    textarea::placeholder {
+        color: rgba(26, 16, 8, 0.42);
+        font-size: 1.0rem;
+    }
+
+    /* Kļūdas zem ievades lauka */
+    .error{
+        color: rgb(110, 37, 37);
+        font-size: 1rem;
+        text-align: left;
+        margin-bottom: 5px;
+    }
+
+    .form-group select,
+    .form-group textarea {
+        padding: 10px;
+        border: 1px solid rgba(26, 16, 8, 0.8);
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    option{
+        font-size: 1rem;
+    }
+
+    .form-group textarea {
+        resize: vertical; /* Atļauj tekstlaukam mainīt izmērus vertikāli */
+        min-height: 100px; /* Minimālais augstums */
+    }
+
+    textarea:focus,
+    input:focus {
+        outline: none; /* Noņem apmales fokusa režīmā */
+        box-shadow: none; /* Noņem nokrāsu ap laukiem */
+        background-color: #ffc8a9; /* Fona krāsa, kad lauks ir fokusēts */
+    }
     .content {
         max-width: 1000px; /* Maksimālais platums */
         margin: 0 auto; /* Centrē saturs */
@@ -258,19 +379,47 @@
         margin-bottom: 10px;
     }
 
-
-
     .bio-text {
         font-size: 1.0rem; /* Fonta lielums */
         line-height: 1.6; /* Rindu augstums */
         margin-bottom: 15px;
         color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-        max-width: 500px; /* Maksimālais platums */
+        max-width: 700px; /* Maksimālais platums */
         margin-left: auto; /* Automātiska centēšana pa kreisi */
         margin-right: auto; /* Automātiska centēšana pa labi */
-        text-align: center;
-        word-wrap: break-word;
+        word-wrap:break-word
+    }
 
+    button {
+        background-color: #c58667;
+        border: 2px solid rgba(26, 16, 8, 0.8);
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        font-family: Tahoma, Helvetica, sans-serif;
+        font-size: 1rem;
+        padding: 3px 20px;
+        align-items: center;
+    }
+
+    .close-btn{
+        align-self: flex-start;
+        margin-bottom: 5px;
+    }
+
+    .report-wrapper {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .report{
+        padding: 2px 15px;
+        margin-left: auto;
+    }
+
+    .report .fa{
+        margin-bottom: 0 !important;
     }
 
     .content-panel {
@@ -291,6 +440,7 @@
         font-size: 1.1rem;
         font-weight: bold; /* Teksta biezums */
     }
+
 
     .stats-grid {
         display: grid;
@@ -345,10 +495,6 @@
         cursor: pointer; /* Rādīt kursoru kā pogu */
     }
 
-    .admin-actions {
-        margin-top: 25px;
-    }
-
     .bookmark-link:hover {
         transform: translateY(-3px); /* Pārvieto elementu uz augšu */
         background-color: #ffc8a9; /* Fona krāsa pelēkajā režīmā */
@@ -381,17 +527,6 @@
     button:hover {
         background-color: #ffc8a9;
         border-color: #ffc8a9;
-    }
-
-    .edit-btn {
-        background-color: #c58667;
-        color: rgba(26, 16, 8, 0.8);
-        border: 2px solid rgba(26, 16, 8, 0.8);
-        border-radius: 4px;
-        font-size: 1.0rem;
-        transition: background-color 0.3s, border-color 0.3s;
-        padding: 8px 15px;
-        cursor: pointer;
     }
 
     @media (max-width: 768px) {
@@ -427,10 +562,6 @@
         .link-text,
         .stat-label{
             font-size: 0.9rem;
-        }
-        .edit-btn{
-            font-size: 0.9rem;
-            padding: 8px 13px;
         }
 
         .stats-grid,

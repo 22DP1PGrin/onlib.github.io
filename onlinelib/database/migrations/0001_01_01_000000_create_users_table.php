@@ -19,7 +19,7 @@ return new class extends Migration
             $table->enum('role', ['admin', 'user', 'superadmin'])->default('user');
             $table->boolean('is_blocked')->default(false);
             $table->timestamp('blocked_until')->nullable();
-            $table->string('bio')->nullable();
+            $table->text('bio')->nullable();
             $table->string('avatar')->nullable();
             $table->timestamps();
         });

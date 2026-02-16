@@ -35,7 +35,6 @@ class ClassicBook extends Model
     public function bookmark()
     {
         return $this->hasOne(Bookmark::class, 'classic_book_id')
-            ->where('user_id', auth()->id())
             ->with('bookmarkType');
     }
 }

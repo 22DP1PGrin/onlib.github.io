@@ -189,7 +189,7 @@ class UserBookController extends Controller
     public function showInfo($id)
     {
         // Atrod grāmatu ar visiem saistītajiem datiem
-        $book = UserBook::with(['genres', 'block', 'chapters', 'user'=> function($query) {}])->findOrFail($id);
+        $book = UserBook::with(['genres', 'block', 'chapters', 'user'])->findOrFail($id);
 
         // Tikai admin, superadmin un autors var redzēt bloķētu stāstu
         if ($book->is_blocked) {

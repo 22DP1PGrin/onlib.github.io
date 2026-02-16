@@ -55,7 +55,7 @@ class BookmarkController extends Controller
         return response()->json(['success' => true]);
     }
 
-     //Atgriež grāmatzīmju lapu pēc tipa
+    //Atgriež grāmatzīmju lapu pēc tipa
     public function bookmarkPage($typeId)
     {
         $userId = auth()->id(); // Pašreizējā lietotāja ID
@@ -63,36 +63,61 @@ class BookmarkController extends Controller
 
         // Kartēšana starp grāmatzīmju tipu ID un nosaukumiem
         $typeTitles = [
-            1 => 'Izlasītās grāmatas',    // ID 1 = izlasītās
-            2 => 'Grāmatas lasāmas',      // ID 2 = lasāmas
-            3 => 'Pamestas grāmatas',     // ID 3 = pamestas
-            4 => 'Plānotās grāmatas'      // ID 4 = plānotās
+            1 => 'Izlasītās grāmatas',
+            2 => 'Grāmatas lasāmas',
+            3 => 'Pamestas grāmatas',
+            4 => 'Plānotās grāmatas'
         ];
 
         // Sagatavo datus skatam
         $data = [
-            'books' => $this->getBooks(UserBook::class, 'user_book_id', $userId, $bookmarkType->id), // Lietotāja grāmatas
-            'classicBooks' => $this->getBooks(ClassicBook::class, 'classic_book_id', $userId, $bookmarkType->id), // Klasiskās grāmatas
-            'pageTitle' => $typeTitles[$bookmarkType->id] ?? 'Grāmatas', // Lapas virsraksts
-            'activeTab' => $bookmarkType->id // Aktīvā cilne
+            'books' => $this->getBooks(UserBook::class, 'user_book_id', $userId, $bookmarkType->id),
+            'classicBooks' => $this->getBooks(ClassicBook::class, 'classic_book_id', $userId, $bookmarkType->id),
+            'pageTitle' => $typeTitles[$bookmarkType->id] ?? 'Grāmatas',
+            'activeTab' => $bookmarkType->id,
+            'viewingUserId' => $userId
         ];
 
         return Inertia::render('Bookmarks/SingleBookmarkPage', $data);
     }
 
+    // Atgriež cita lietotāja grāmatzīmes pēc tipa
+    public function userBookmarkPage($userId, $typeId)
+    {
+        // Atro grāmatzīmes tipu, lai iegūtu nosaukumu
+        $bookmarkType = BookmarkType::findOrFail($typeId);
+
+        $typeTitles = [
+            1 => 'Izlasītās grāmatas',
+            2 => 'Grāmatas lasāmas',
+            3 => 'Pamestas grāmatas',
+            4 => 'Plānotās grāmatas'
+        ];
+
+        // Sagatavo datus skatam
+        $data = [
+            'books' => $this->getBooks(UserBook::class, 'user_book_id', $userId, $bookmarkType->id),
+            'classicBooks' => $this->getBooks(ClassicBook::class, 'classic_book_id', $userId, $bookmarkType->id),
+            'pageTitle' => $typeTitles[$bookmarkType->id] ?? 'Grāmatas',
+            'activeTab' => $bookmarkType->id,
+            'viewingUserId' => $userId
+        ];
+
+        return Inertia::render('Bookmarks/UserSingleBookmarkPage', $data);
+    }
 
      //Iegūst grāmatas ar noteikto grāmatzīmi
     protected function getBooks($model, $field, $userId, $typeId)
     {
         // Veido vaicājumu grāmatām ar grāmatzīmēm
-        $query = $model::whereHas('bookmark', fn($q) => $q
-            ->where('user_id', $userId) // Filtrē pēc lietotāja ID
-            ->where('is_blocked', false)
-            ->where('bookmark_type_id', $typeId) // Filtrē pēc grāmatzīmes tipa
+        $query = $model::where('is_blocked', false)
+        ->whereHas('bookmark', fn($q) => $q
+            ->where('bookmark_type_id', $typeId)
+            ->where('user_id', $userId)
         );
 
         // Pievieno attiecības atkarībā no modeļa tipa
-        $query->with(['genres', 'ratings']); // Iekļauj žanrus un vērtējumus
+        $query->with(['genres', 'ratings', 'bookmark.user:id,nickname']);
 
         // Lietotāja grāmatām pievieno arī lietotāja datus
         if ($model === UserBook::class) {
@@ -100,13 +125,12 @@ class BookmarkController extends Controller
         }
 
         // Atgriež sagatavoto grāmatu sarakstu
-        return $query->withAvg('ratings', 'grade') // Vērtējumu vidējais
-        ->withCount('ratings') // Vērtējumu skaits
-        ->latest() // Jaunākās pirmās
-        ->get()
-            ->map(function($book) use ($model) {
-                $book->is_classic = $model === ClassicBook::class; // Atzīmē klasiskās grāmatas
-                return $book;
-            });
+        return $query->withAvg('ratings', 'grade')
+            ->withCount('ratings')
+            ->latest()
+            ->get()
+            ->map(function ($book) use ($model) {
+                $book->is_classic = $model === ClassicBook::class;
+                return $book;});
     }
 }

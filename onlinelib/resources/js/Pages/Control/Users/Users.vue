@@ -102,7 +102,7 @@
                             <option value="Krāpnieciska vai maldinoša darbība">Krāpnieciska vai maldinoša darbība</option>
                             <option value="Noteikumu pārkāpums">Noteikumu pārkāpums</option>
                             <option value="Naida runa vai diskriminējoša uzvedība"> Naida runa vai diskriminējoša uzvedība</option>
-                            <option value="Citu lietotāju aizskaršana">Citu lietotāju aizskaršana vai iebiedēšana</option>
+                            <option value="Citu lietotāju aizskaršana">Citu lietotāju aizskaršana</option>
                             <option value="Sūdzības no lietotājiem">Sūdzības no lietotājiem</option>
                         </select>
 

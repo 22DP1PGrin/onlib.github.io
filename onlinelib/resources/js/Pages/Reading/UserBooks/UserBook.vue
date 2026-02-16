@@ -66,6 +66,11 @@
         { id: 4, name: 'Plānots' }
     ]);
 
+
+    const ratingForm = useForm({
+        grade: tempRating.value
+    });
+
     const currentBookmark = ref(props.initialUserBookmark);
     const showBookmarkModal = ref(false);
 
@@ -122,32 +127,27 @@
         }
     };
 
-    const submitRating = async () => {
-        try {
-            console.log('Iesniedzams vērtējums:', { bookId, grade: tempRating.value });
+    const submitRating = () => {
+        // Atjauna atzīme pirms nosūtīšanas
+        ratingForm.grade = tempRating.value;
 
-            // Nosūta POST pieprasījumu uz serveri, lai saglabātu vērtējumu
-            const response = await axios.post(route('user-books.rate', {
-                book: bookId
-            }), {
-                grade: tempRating.value
-            });
-
-            // Ja atbilde ir veiksmīga, atjaunina datus
-            if (response.data.success) {
-                averageRating.value = response.data.averageRating;
-                ratingsCount.value = response.data.ratingsCount;
-                userRating.value = response.data.userRating;
-                alert('Vērtējums veiksmīgi saglabāts!');
-                showModal.value = false; // Aizver modalā logu
-            } else {
-                console.error('Servera kļūda:', response.data.message);
+        ratingForm.post(route('user-books.rate', { book: bookId }), {
+            preserveScroll: true, // saglabā skrolu, ja nepieciešams
+            onSuccess: (response) => {
+                if (response.success) {
+                    averageRating.value = response.averageRating;
+                    ratingsCount.value = response.ratingsCount;
+                    userRating.value = response.userRating;
+                    showModal.value = false; // aizver modālo logu
+                    alert('Vērtējums veiksmīgi saglabāts!');
+                } else {
+                    console.error('Servera kļūda:', response.message);
+                }
+            },
+            onError: (errors) => {
+                console.error('Validācijas kļūdas:', errors);
             }
-        } catch (error) {
-            if (error.response?.status === 401) {
-                window.location.href = route('login');
-            }
-        }
+        });
     };
 
     // Aprēķina formatētu vērtējumu skaitu (piemēram, "1.5k", ja vairāk par 1000)
@@ -246,7 +246,12 @@
             <div class="book-meta">
                 <!-- Autora informācija -->
                 <div class="author-info">
-                    <span class="author-name">{{ user.nickname }}</span>
+                    <a
+                        :href="route('other.users.watch', { id: book.user.id })"
+                        class="author-name"
+                    >
+                        {{ book.user.nickname }}
+                    </a>
                 </div>
 
                 <div class="meta-items">
@@ -691,6 +696,14 @@
         border-radius: 20px; /* Apaļi stūri */
         font-size: 0.9rem;
         transition: all 0.3s;
+    }
+
+    a{
+        transition: color 0.3s;
+    }
+
+    a:hover {
+        color: rgba(255, 187, 142, 0.8); /* Teksta krāsa saitēm, kad pele tiek pārvilkta */
     }
 
     .rating-container {

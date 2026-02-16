@@ -65,6 +65,11 @@
         { id: 4, name: 'Plānots' }
     ]);
 
+    const ratingForm = useForm({
+        grade: tempRating.value // sākotnējais vērtējums
+    });
+
+
     const currentBookmark = ref(props.initialUserBookmark);
     const showBookmarkModal = ref(false);
     const localUserRating = ref(props.initialUserRating || null);
@@ -126,33 +131,34 @@
     };
 
     // Funkcija vērtējuma iesniegšanai
-    const submitRating = async () => {
-        try {
-            console.log('Iesniedzams vērtējums:', { bookId, grade: tempRating.value });
+    const submitRating = () => {
+        // Atjaunojam veidlapas datus pirms iesniegšanas
+        ratingForm.grade = tempRating.value;
 
-            // Nosūta POST pieprasījumu uz serveri, lai saglabātu vērtējumu
-            const response = await axios.post(route('classic-books.rate', {
-                book: bookId
-            }), {
-                grade: tempRating.value
-            });
+        // Nosūta POST pieprasījumu uz serveri
+        ratingForm.post(route('classic-books.rate', { book: bookId }), {
+            preserveScroll: true, // saglabā skrolu
+            onSuccess: (response) => {
+                if (response.success) {
+                    // Atjaunina vidējo vērtējumu un lietotāja vērtējumu
+                    localUserRating.value = response.userRating;
+                    averageRating.value = response.averageRating;
+                    ratingsCount.value = response.ratingsCount;
 
-            // Ja atbilde ir veiksmīga, atjaunina datus
-            if (response.data.success) {
-                localUserRating.value = response.data.userRating;
-                averageRating.value = response.data.averageRating;
-                ratingsCount.value = response.data.ratingsCount;
-                alert('Vērtējums veiksmīgi saglabāts!');
-                showModal.value = false; // Aizver modalā logu
-                router.reload({ only: ['initialUserRating'] });
-            } else {
-                console.error('Servera kļūda:', response.data.message);
+                    // Paziņojums lietotājam
+                    alert('Vērtējums veiksmīgi saglabāts!');
+
+                    // Aizver modalā logu
+                    showModal.value = false;
+                } else {
+                    console.error('Servera kļūda:', response.message);
+                }
+            },
+            onError: (errors) => {
+                // Validācijas kļūdas
+                console.error('Validācijas kļūdas:', errors);
             }
-        } catch (error) {
-            if (error.response?.status === 401) {
-                window.location.href = route('login');
-            }
-        }
+        });
     };
 
     // Aprēķina formatētu vērtējumu skaitu (piemēram, "1.5k", ja vairāk par 1000)

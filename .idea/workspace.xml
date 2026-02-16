@@ -5,17 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3e76eb8-75aa-48f5-a2ef-f4cf9daec5ed" name="Changes" comment="return view('example_vue', compact('story'));">
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Reports/Reports.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/views/emails/account_delete.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/views/emails/book_delete.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Bookmarks/UserSingleBookmarkPage.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/UserProfile.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/AdminController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/AdminController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ClassicBookController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ClassicBookController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/BookmarkController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/BookmarkController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ProfileController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ProfileController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/UserBookController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/UserBookController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/database/seeders/UsersSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/database/seeders/UsersSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/BlocksBook.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/BlocksBook.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/BooksList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/BooksList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/BlockUsers.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/BlockUsers.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/ClassicBook.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/ClassicBook.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/UserBook.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/UserBook.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/database/migrations/0001_01_01_000000_create_users_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/database/migrations/0001_01_01_000000_create_users_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/database/migrations/2026_02_11_104949_object_report.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/database/migrations/2026_02_11_104949_object_report.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Reports/Reports.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Reports/Reports.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/UserInfo.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/UserInfo.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/Users.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/Users.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Profile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Profile.vue" afterDir="false" />
@@ -333,7 +334,7 @@
       <workItem from="1765020819637" duration="19256000" />
       <workItem from="1765626286640" duration="35173000" />
       <workItem from="1768734614103" duration="40233000" />
-      <workItem from="1770635930399" duration="33091000" />
+      <workItem from="1770635930399" duration="49335000" />
     </task>
     <servers />
   </component>
