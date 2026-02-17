@@ -3,6 +3,7 @@
     import Footer from '@/Components/Footer.vue'
     import {router} from "@inertiajs/vue3";
     import {route} from "ziggy-js";
+    import {ref} from "vue";
 
     // Definē komponenta datus, kas tiek padoti no servera
     const props = defineProps({
@@ -10,6 +11,18 @@
         userBooks: Array    // Lietotāju stāstu masīvs
     });
 
+    const searchQuery = ref('');
+
+    const performSearch = () => {
+        if (searchQuery.value.trim()) {
+            router.get(route('search.books'), {
+                query: searchQuery.value
+            }, {
+                preserveState: true,
+                replace: true
+            })
+        }
+    };
 
      //Aprēķina grāmatas vērtējumu
     const getBookRating = (book) => {
@@ -61,6 +74,18 @@
                     lasiet nemirstīgo klasiku un radiet savus stāstus.
                     Jūsu radošums šeit atradīs savus lasītājus, un Jūsu dvēsele atradīs savas dzimtos vārdus.
                 </p> <!-- Platformas apraksts -->
+
+                <div class="search">
+                    <input
+                        v-model="searchQuery"
+                        type="text"
+                        class="input"
+                        placeholder="Meklēt grāmatu..."
+                    >
+                    <button class="btn" @click="performSearch">
+                        <i class="fa bar">&#xf002;</i>
+                    </button>
+                </div>
             </div>
 
             <!-- Klasiskās literatūras sadaļa -->
@@ -231,6 +256,74 @@
         min-height: 100vh; /* Minimālais augstums - visa ekrāna augstums */
         display: flex; /* Flexbox izkārtojums */
         flex-direction: column; /* Elementus novieto vertikāli */
+    }
+
+    /* Meklēšanas josla */
+    .search {
+        display: flex;  /* Flexbox izkārtojums konta sadaļai */
+        justify-content: center;
+        align-items: center;  /* Elementu vertikāla izlīdzināšana */
+        margin: 40px auto;
+        max-width: 800px;
+        margin-bottom: 30px;
+    }
+
+    .search:hover {
+        transform: none; /*noņemam transformāciju, kad pele tiek pārvilkta */
+    }
+
+    .search .input {
+        background-color: #ffffff; /*Krasa fona */
+        border: 0; /* Noņemam apmales */
+        border-radius: 20px; /* Noapaļo apmalas*/
+        border-color: rgba(26, 16, 8, 0.8); /* Mainam apmales krāsu */
+        font-size: 1rem; /* Fonta izmērs */
+        padding: 10px; /* Iekšējās atstarpes */
+        height: 15%;
+        width: 90%; /* Sakam ar nulles platumu */
+    }
+
+    /* Poga meklēšanai */
+    .search .btn {
+        background-color: #c58667;
+        border: 2px solid rgba(26, 16, 8, 0.8); /*apmales vērtības */
+        padding: 0;
+        border-radius: 20px;
+        cursor: pointer; /* Peles formāts */
+        outline: none; /* Noņemam noklusēto apmales stāvokli */
+        margin-left: 7px; /* Atstarpe no labās puses */
+        width: 41px;
+        height: 40px;
+        transition: border-color 0.3s;
+    }
+
+    .btn .fa{
+        font-size: 20px;
+        text-align: center;
+        transition: color 0.3s !important;
+    }
+
+    .input{
+        color: rgba(26, 16, 8, 0.8);
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
+    }
+    .search input::placeholder {
+        color: rgba(26, 16, 8, 0.42); /* Krāsa */
+    }
+
+    .input:focus {
+        outline: none !important; /* Noņemam noklusēto apmales stāvokli */
+        box-shadow: none !important;
+        background-color: #ffd9c6; /* Fona krāsa */
+    }
+    .btn:hover {
+        border-color: rgba(255, 187, 142, 0.8); /* Mainam apmales krāsu, kad pele tiek pārvilkta */
+    }
+    .btn:hover .fa {
+        color: rgba(255, 187, 142, 0.8); /* Mainam ikonas krāsu, kad pele tiek pārvilkta */
+    }
+    .fa{
+        color: rgba(26, 16, 8, 0.8);  /* Fonta krāsa */
     }
 
     .library-container {
@@ -492,6 +585,23 @@
     }
 
     @media (max-width: 500px) {
+
+        .search .input {
+            font-size: 0.9rem; /* Fonta izmērs */
+            height: 30px;
+            width: 75%;
+        }
+
+        /* Poga meklēšanai */
+        .search .btn {
+            padding: 0;
+            width: 34px;
+            height: 34px;
+        }
+
+        .btn .fa{
+            font-size: 18px;
+        }
 
         .platform-title {
             font-size: 1.5rem;

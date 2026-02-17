@@ -6,8 +6,9 @@
     import { computed, ref } from "vue";
 
     // Saņem stāstu sarakstu no servera
-    const books = usePage().props.book;
-    const classicBooks = usePage().props.classicBooks;
+    const books = computed(() => usePage().props.book);
+    const classicBooks = computed(() => usePage().props.classicBooks);
+    const search = ref(usePage().props.filters?.search || '');
 
     const limit = 3; // Cik grāmatas rādīt sākumā
 
@@ -17,12 +18,16 @@
 
     // Aprēķina redzamās lietotāju grāmatas atkarībā no showAllBooks
     const visibleBooks = computed(() =>
-        showAllBooks.value ? books : books.slice(0, limit)
+        showAllBooks.value
+            ? books.value
+            : books.value?.slice(0, limit) ?? []
     );
 
     // Aprēķina redzamās klasiskās grāmatas atkarībā no showAllClassicBooks
     const visibleClassicBooks = computed(() =>
-        showAllClassicBooks.value ? classicBooks : classicBooks.slice(0, limit)
+        showAllClassicBooks.value
+            ? classicBooks.value
+            : classicBooks.value?.slice(0, limit) ?? []
     );
 
     // Modālo logu stāvokļi
@@ -52,6 +57,17 @@
         selectedBook.value = book;
         document.body.style.overflow = "hidden";
         showClassicModal.value = true;
+    };
+
+    // Meklēt grāmatu pēc nosaukuma
+    const searchUsers = () => {
+        router.get(route('book.lists'),
+            { search: search.value },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
     };
 
     // Apstiprina lietotāja grāmatas bloķēšanu
@@ -195,6 +211,18 @@
             </div>
         </div>
 
+        <div class="search">
+            <input
+                v-model="search"
+                type="text"
+                class="input"
+                placeholder="Meklēt darbu..."
+            >
+            <button class="btn" @click="searchUsers">
+                <i class="fa bar">&#xf002;</i>
+            </button>
+        </div>
+
         <!-- Darbu pārvaldības sadaļa -->
         <div class="story-form">
 
@@ -245,6 +273,10 @@
                             <h2>Pievienot jaunu grāmatu</h2>
                             <i class="fa">&#xf055;</i>
                         </div>
+                    </div>
+
+                    <div v-if="classicBooks.length === 0" class="item">
+                        <span class="title">Šeit vēl nav pievienotu darbu.</span>
                     </div>
 
                     <!-- Darbu saraksts -->
@@ -342,6 +374,73 @@
         margin-bottom: 15px;
         color: rgba(26, 16, 8, 0.8);
 
+    }
+
+    /* Meklēšanas josla */
+    .search {
+        display: flex;  /* Flexbox izkārtojums konta sadaļai */
+        justify-content: center;
+        align-items: center;  /* Elementu vertikāla izlīdzināšana */
+        margin: 80px auto;
+        max-width: 800px;
+        margin-bottom: 30px;
+    }
+
+    .search:hover {
+        transform: none; /*noņemam transformāciju, kad pele tiek pārvilkta */
+    }
+
+    .search .input {
+        background-color: #ffffff; /*Krasa fona */
+        border: 0; /* Noņemam apmales */
+        border-radius: 20px; /* Noapaļo apmalas*/
+        border-color: rgba(26, 16, 8, 0.8); /* Mainam apmales krāsu */
+        font-size: 1rem; /* Fonta izmērs */
+        padding: 10px; /* Iekšējās atstarpes */
+        height: 15%;
+        width: 90%; /* Sakam ar nulles platumu */
+    }
+
+    /* Poga meklēšanai */
+    .search .btn {
+        background-color: #c58667;
+        border: 2px solid rgba(26, 16, 8, 0.8); /*apmales vērtības */
+        border-radius: 20px;
+        cursor: pointer; /* Peles formāts */
+        outline: none; /* Noņemam noklusēto apmales stāvokli */
+        margin-left: 7px; /* Atstarpe no labās puses */
+        width: 41px;
+        height: 40px;
+        transition: border-color 0.3s;
+    }
+
+    .btn .fa{
+        font-size: 20px;
+        text-align: center;
+        transition: color 0.3s !important;
+    }
+
+    .input{
+        color: rgba(26, 16, 8, 0.8);
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
+    }
+    .search input::placeholder {
+        color: rgba(26, 16, 8, 0.42); /* Krāsa */
+    }
+
+    .input:focus {
+        outline: none !important; /* Noņemam noklusēto apmales stāvokli */
+        box-shadow: none !important;
+        background-color: #ffd9c6; /* Fona krāsa */
+    }
+    .btn:hover {
+        border-color: rgba(255, 187, 142, 0.8); /* Mainam apmales krāsu, kad pele tiek pārvilkta */
+    }
+    .btn:hover .fa {
+        color: rgba(255, 187, 142, 0.8); /* Mainam ikonas krāsu, kad pele tiek pārvilkta */
+    }
+    .fa{
+        color: rgba(26, 16, 8, 0.8);  /* Fonta krāsa */
     }
 
     .story-form {
@@ -588,6 +687,23 @@
     }
 
     @media (max-width: 500px) {
+        .search .input {
+            font-size: 0.9rem; /* Fonta izmērs */
+            height: 30px;
+            width: 75%;
+        }
+
+        /* Poga meklēšanai */
+        .search .btn {
+            padding: 0;
+            width: 34px;
+            height: 34px;
+        }
+
+        .btn .fa{
+            font-size: 18px;
+        }
+
         h1 {
             font-size: 1.5rem;
         }

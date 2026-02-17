@@ -18,7 +18,7 @@ const form = useForm({
     Author_name: '',
     Author_surname: '',
     Year_publication: '',
-    rating_id: null,
+    rating_id: '',
     genres: [],
 });
 
@@ -144,7 +144,7 @@ const submit = () => {
                 <div class="form-group">
                     <label for="rating">Vecuma ierobežojums</label>
                     <select id="rating" v-model="form.rating_id" required>
-                        <option disabled value="" class="placeholder-option">Izvēlieties reitingu</option>
+                        <option disabled value="" class="placeholder-option">Izvēlieties vecuma ierobežojumu</option>
                         <!-- Dinamiski ģenerētas izvēles iespējas -->
                         <option
                             v-for="rating in ratings"

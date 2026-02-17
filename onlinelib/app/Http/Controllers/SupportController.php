@@ -39,12 +39,22 @@ class SupportController extends Controller
     }
 
     // Atgriež visu tehnisko atbalsta pieteikumu sarakstu
-    public function showProblems()
+    public function showProblems(Request $request)
     {
-        $technical_support_form = TechnicalSupportForm::latest()->get();
+        $search = $request->input('search');
+
+        $technical_support_form = TechnicalSupportForm::query()
+            ->when($search, function ($query) use ($search) {
+                $query->where('nickname', 'like', "%{$search}%");
+            })
+            ->latest()
+            ->get();
 
         return Inertia::render('Control/TechnicalSupport/Problems', [
             'technical_support_form' => $technical_support_form,
+            'filters' => [
+                'search' => $search
+            ]
         ]);
     }
 

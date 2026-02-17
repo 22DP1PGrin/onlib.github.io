@@ -6,9 +6,10 @@
     import { computed, ref } from "vue";
 
     // Saņem ziņotu objektu sarakstu no servera
-    const storyReports = usePage().props.storyReports;
-    const bookReports = usePage().props.bookReports;
-    const userReports = usePage().props.userReports;
+    const storyReports = computed(() => usePage().props.storyReports);
+    const bookReports = computed(() => usePage().props.bookReports);
+    const userReports = computed(() => usePage().props.userReports);
+    const search = ref(usePage().props.filters?.search || '');
 
     const selectedReport = ref(null);
 
@@ -21,17 +22,23 @@
 
     // Aprēķina redzamās sudzības uz lietotāju grāmatas
     const visibleBooks = computed(() =>
-        showAllBooks.value ? storyReports : storyReports.slice(0, limit)
+        showAllBooks.value
+            ? storyReports.value
+            : storyReports.value?.slice(0, limit) ?? []
     );
 
     // Aprēķina redzamās sūdzības uz klasiskās grāmatas
     const visibleClassicBooks = computed(() =>
-        showAllClassicBooks.value ? bookReports : bookReports.slice(0, limit)
+        showAllClassicBooks.value
+            ? bookReports.value
+            : bookReports.value?.slice(0, limit) ?? []
     );
 
     // Aprēķina redzamās sūdzības uz lietotājus
     const visibleUsers = computed(() =>
-        showAllUsers.value ? userReports : userReports.slice(0, limit)
+        showAllUsers.value
+            ? userReports.value
+            : userReports.value?.slice(0, limit) ?? []
     );
 
     // Modālo logu stāvokļi
@@ -58,6 +65,17 @@
         showDeleteModal.value = false;
         selectedReport.value = null;
         document.body.style.overflow = "";
+    };
+
+    // Meklēt sudzība pēc  grāmata/stāsta nosaukuma vai lietotājvārdu
+    const searchUsers = () => {
+        router.get(route('admin.reports'),
+            { search: search.value },
+            {
+                preserveState: true,
+                replace: true,
+            }
+        );
     };
 
     // Apstiprina ziņojuma dzēšanu
@@ -121,6 +139,17 @@
             </div>
         </div>
 
+        <div class="search">
+            <input
+                v-model="search"
+                type="text"
+                class="input"
+                placeholder="Meklēt sūdzību..."
+            >
+            <button class="btn" @click="searchUsers">
+                <i class="fa bar">&#xf002;</i>
+            </button>
+        </div>
 
         <!-- Lietotāju sūdzību pārvaldības sadaļa -->
         <div class="story-form">
@@ -316,6 +345,73 @@
 
     }
 
+    /* Meklēšanas josla */
+    .search {
+        display: flex;  /* Flexbox izkārtojums konta sadaļai */
+        justify-content: center;
+        align-items: center;  /* Elementu vertikāla izlīdzināšana */
+        margin: 80px auto;
+        max-width: 800px;
+        margin-bottom: 30px;
+    }
+
+    .search:hover {
+        transform: none; /*noņemam transformāciju, kad pele tiek pārvilkta */
+    }
+
+    .search .input {
+        background-color: #ffffff; /*Krasa fona */
+        border: 0; /* Noņemam apmales */
+        border-radius: 20px; /* Noapaļo apmalas*/
+        border-color: rgba(26, 16, 8, 0.8); /* Mainam apmales krāsu */
+        font-size: 1rem; /* Fonta izmērs */
+        padding: 10px; /* Iekšējās atstarpes */
+        height: 15%;
+        width: 90%; /* Sakam ar nulles platumu */
+    }
+
+    /* Poga meklēšanai */
+    .search .btn {
+        background-color: #c58667;
+        border: 2px solid rgba(26, 16, 8, 0.8); /*apmales vērtības */
+        border-radius: 20px;
+        cursor: pointer; /* Peles formāts */
+        outline: none; /* Noņemam noklusēto apmales stāvokli */
+        margin-left: 7px; /* Atstarpe no labās puses */
+        width: 41px;
+        height: 40px;
+        transition: border-color 0.3s;
+    }
+
+    .btn .fa{
+        font-size: 20px;
+        text-align: center;
+        transition: color 0.3s !important;
+    }
+
+    .input{
+        color: rgba(26, 16, 8, 0.8);
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
+    }
+    .search input::placeholder {
+        color: rgba(26, 16, 8, 0.42); /* Krāsa */
+    }
+
+    .input:focus {
+        outline: none !important; /* Noņemam noklusēto apmales stāvokli */
+        box-shadow: none !important;
+        background-color: #ffd9c6; /* Fona krāsa */
+    }
+    .btn:hover {
+        border-color: rgba(255, 187, 142, 0.8); /* Mainam apmales krāsu, kad pele tiek pārvilkta */
+    }
+    .btn:hover .fa {
+        color: rgba(255, 187, 142, 0.8); /* Mainam ikonas krāsu, kad pele tiek pārvilkta */
+    }
+    .fa{
+        color: rgba(26, 16, 8, 0.8);  /* Fonta krāsa */
+    }
+
     .story-form {
         max-width: 800px; /* Maksimālais platums */
         margin: 0 auto; /* Centrē forma horizontāli */
@@ -507,6 +603,23 @@
     }
 
     @media (max-width: 500px) {
+        .search .input {
+            font-size: 0.9rem; /* Fonta izmērs */
+            height: 30px;
+            width: 75%;
+        }
+
+        /* Poga meklēšanai */
+        .search .btn {
+            padding: 0;
+            width: 34px;
+            height: 34px;
+        }
+
+        .btn .fa{
+            font-size: 18px;
+        }
+
         h1 {
             font-size: 1.5rem;
         }

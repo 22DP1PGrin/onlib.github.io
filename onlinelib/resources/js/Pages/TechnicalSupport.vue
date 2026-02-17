@@ -75,7 +75,7 @@ export default {
                 <!-- E-pasta adrese -->
                 <div class="form-group">
                     <label for="email">E-pasta adrese:</label>
-                    <input type="email" class="input" v-model="form.email" required />
+                    <input type="email" class="input" v-model="form.email" autocomplete="username" required />
                 </div>
 
                 <!-- Tēma -->

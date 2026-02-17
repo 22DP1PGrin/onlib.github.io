@@ -13,7 +13,6 @@ export default {
 
         const searchQuery = ref('')
 
-
         const handleWritingClick = (e) => {
             if (!isLoggedIn.value) {
                 router.get('/login');
@@ -372,7 +371,7 @@ export default {
        font-size: 27px;
    }
 
-    /* Meklēšanas josla */
+   /* Meklēšanas josla */
    .search {
         display: flex;  /* Flexbox izkārtojums konta sadaļai */
         align-items: center;  /* Elementu vertikāla izlīdzināšana */

@@ -258,8 +258,6 @@
         margin-bottom: 10px;
     }
 
-
-
     .bio-text {
         font-size: 1.0rem; /* Fonta lielums */
         line-height: 1.6; /* Rindu augstums */
@@ -298,6 +296,7 @@
         gap: 20px; /* Attālums starp elementiem */
         max-width: 800px;
         margin: 0 auto;
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
     }
 
     .stat-item {
@@ -306,6 +305,7 @@
         padding: 15px;
         text-align: center;
         box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 10px;
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
     }
 
     .stat-number {
