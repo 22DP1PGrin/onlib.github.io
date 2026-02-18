@@ -123,6 +123,13 @@
       <excludeFolder url="file://$MODULE_DIR$/onlinelib/vendor/vlucas/phpdotenv" />
       <excludeFolder url="file://$MODULE_DIR$/onlinelib/vendor/voku/portable-ascii" />
       <excludeFolder url="file://$MODULE_DIR$/onlinelib/vendor/webmozart/assert" />
+      <excludeFolder url="file://$MODULE_DIR$/onlinelib/vendor/barryvdh/laravel-dompdf" />
+      <excludeFolder url="file://$MODULE_DIR$/onlinelib/vendor/dompdf/dompdf" />
+      <excludeFolder url="file://$MODULE_DIR$/onlinelib/vendor/dompdf/php-font-lib" />
+      <excludeFolder url="file://$MODULE_DIR$/onlinelib/vendor/dompdf/php-svg-lib" />
+      <excludeFolder url="file://$MODULE_DIR$/onlinelib/vendor/masterminds/html5" />
+      <excludeFolder url="file://$MODULE_DIR$/onlinelib/vendor/sabberworm/php-css-parser" />
+      <excludeFolder url="file://$MODULE_DIR$/onlinelib/vendor/thecodingmachine/safe" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

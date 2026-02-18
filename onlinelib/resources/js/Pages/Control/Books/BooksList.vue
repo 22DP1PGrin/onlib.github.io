@@ -121,6 +121,11 @@
         document.body.style.overflow = "";
     };
 
+    // Lejupielādēt PDF ar visiem darbiem
+    const downloadPdf = () => {
+        window.location.href = route('admin.books.pdf');
+    };
+
     // Pāriet uz klasiskās grāmatas rediģēšanas lapu
     const GoToEdit = (bookId) => {
         router.get(route('EditClassicBook', { id: bookId }));
@@ -211,6 +216,14 @@
             </div>
         </div>
 
+        <!-- PDF lejupielādes poga -->
+        <div class="pdf-wrapper">
+            <button @click="downloadPdf" class="pdf">
+                Lejupielādēt PDF
+            </button>
+        </div>
+
+        <!-- Meklēšanas josla -->
         <div class="search">
             <input
                 v-model="search"
@@ -447,6 +460,18 @@
         max-width: 800px; /* Maksimālais platums */
         margin: 0 auto; /* Centrē forma horizontāli */
         padding: 20px; /* Piepildījums ap saturu */
+    }
+
+    .pdf-wrapper {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+        margin-right: 20px;
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */    }
+
+    .pdf{
+        padding: 2px 15px;
+        margin-left: auto;
     }
 
     h1 {
@@ -712,9 +737,14 @@
         label,
         .error,
         select,
-        option
+        option,
+        button
         {
             font-size: 0.9rem;
+        }
+
+        .pdf{
+            padding: 1px 10px;
         }
 
         h2{

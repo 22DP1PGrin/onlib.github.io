@@ -94,6 +94,11 @@
         );
     };
 
+    // Lejupielādēt PDF ar visām sūdzībām
+    const downloadPdf = () => {
+        window.location.href = route('admin.reports.pdf');
+    };
+
     // Navigācija uz klasiskās grāmatas lasīšanas lapu
     const GoToReadClassic = (bookId) => {
         router.get(route('ClassicRead', { id: bookId }));
@@ -139,6 +144,14 @@
             </div>
         </div>
 
+        <!-- PDF lejupielādes poga -->
+        <div class="pdf-wrapper">
+            <button @click="downloadPdf" class="pdf">
+                Lejupielādēt PDF
+            </button>
+        </div>
+
+        <!-- Meklēšanas josla -->
         <div class="search">
             <input
                 v-model="search"
@@ -418,6 +431,19 @@
         padding: 20px; /* Piepildījums ap saturu */
     }
 
+    .pdf-wrapper {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+        margin-right: 20px;
+    }
+
+    .pdf{
+        padding: 2px 15px;
+        margin-left: auto;
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+    }
+
     p{
         font-size: 1rem; /* Fonta lielums */
         color: rgba(26, 16, 8, 0.8); /* Krāsa */
@@ -624,10 +650,15 @@
             font-size: 1.5rem;
         }
 
+        .pdf{
+            padding: 1px 10px;
+        }
+
         p,
         label,
         select,
-        option
+        option,
+        button
         {
             font-size: 0.9rem;
         }

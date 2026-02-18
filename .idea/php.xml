@@ -127,6 +127,13 @@
       <path value="$PROJECT_DIR$/onlinelib/vendor/symfony/yaml" />
       <path value="$PROJECT_DIR$/onlinelib/vendor/symfony/string" />
       <path value="$PROJECT_DIR$/onlinelib/vendor/symfony/service-contracts" />
+      <path value="$PROJECT_DIR$/onlinelib/vendor/masterminds/html5" />
+      <path value="$PROJECT_DIR$/onlinelib/vendor/thecodingmachine/safe" />
+      <path value="$PROJECT_DIR$/onlinelib/vendor/barryvdh/laravel-dompdf" />
+      <path value="$PROJECT_DIR$/onlinelib/vendor/sabberworm/php-css-parser" />
+      <path value="$PROJECT_DIR$/onlinelib/vendor/dompdf/php-svg-lib" />
+      <path value="$PROJECT_DIR$/onlinelib/vendor/dompdf/dompdf" />
+      <path value="$PROJECT_DIR$/onlinelib/vendor/dompdf/php-font-lib" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.4">

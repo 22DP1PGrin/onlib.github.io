@@ -74,6 +74,11 @@
         );
     };
 
+    // Lejupielādēt PDF ar visiem lietotajiem
+    const downloadPdf = () => {
+        window.location.href = route('admin.users.pdf');
+    };
+
     // Aizver visus bloķēšanas modāļus
     const closeUserModals = () => {
         showUserModal.value = false;
@@ -170,6 +175,14 @@
             </div>
         </div>
 
+        <!-- PDF lejupielādes poga -->
+        <div class="pdf-wrapper">
+            <button @click="downloadPdf" class="pdf">
+                Lejupielādēt PDF
+            </button>
+        </div>
+
+        <!-- Meklēšanas josla -->
         <div class="search">
             <input
                 v-model="search"
@@ -337,7 +350,7 @@
         display: flex;  /* Flexbox izkārtojums konta sadaļai */
         justify-content: center;
         align-items: center;  /* Elementu vertikāla izlīdzināšana */
-        margin: 80px auto;
+        margin: 60px auto;
         max-width: 800px;
         margin-bottom: 30px;
     }
@@ -426,6 +439,18 @@
         margin-bottom: 20px;
     }
 
+    .pdf-wrapper {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+        margin-right: 20px;
+    }
+
+    .pdf{
+        padding: 2px 15px;
+        margin-left: auto;
+    }
+
     .item {
         border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
         background-color: #e4a27c;
@@ -462,7 +487,7 @@
         margin-left: 3px;
     }
 
-    button {
+    button{
         border: 2px solid rgba(26, 16, 8, 0.8);
         background-color: #c58667; /* Fona krāsa */
         color: rgba(26, 16, 8, 0.8);
@@ -508,7 +533,7 @@
         color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
     }
 
-    button:hover {
+    button:hover{
         background-color: #ffc8a9;
         border-color: #ffc8a9;
     }
@@ -595,7 +620,8 @@
         option,
         option::placeholder,
         input::placeholder,
-        textarea::placeholder
+        textarea::placeholder,
+        button
         {
             font-size: 0.9rem;
         }
@@ -606,6 +632,10 @@
 
         .buttons-container {
             gap: 2px;
+        }
+
+        .pdf{
+            padding: 1px 10px;
         }
 
         .delete-btn {

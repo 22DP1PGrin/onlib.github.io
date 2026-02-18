@@ -8,6 +8,7 @@ use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\ClassicBookController;
 use App\Http\Controllers\GenreController;
+use App\Http\Controllers\PdfExport;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SupportController;
 use App\Http\Controllers\UserBookController;
@@ -253,9 +254,6 @@ Route::middleware(['auth', 'can:Admin'])->group(function () {
     // Rāda tehniskā atbalsta iesniegumu sarakstu
     Route::get('/Forms', [SupportController::class, 'showProblems'])->name('problems');
 
-    // Rāda konkrētu tehniskā atbalsta iesniegumu
-    Route::get('/Forms/{id}', [SupportController::class, 'showForm'])->name('problems.show');
-
     // Formu dzēšana
     Route::delete('/Forms/{id}', [SupportController::class, 'destroy'])->name('problems.destroy');
 
@@ -284,8 +282,23 @@ Route::middleware(['auth', 'can:Admin'])->group(function () {
     // Ziņojuma dzešanas
     Route::delete('/reports/{report}', [AdminController::class, 'deleteReport'])
         ->name('reports.delete');
-});
 
+    // Lietotāja datu eksportēšana PDF formātā
+    Route::get('/admin/users/pdf', [PdfExport::class, 'exportUsersPdf'])
+        ->name('admin.users.pdf');
+
+    // Stāstu un grānmats datu eksportēšana PDF formātā
+    Route::get('/admin/books/pdf', [PdfExport::class, 'exportBooksPdf'])
+        ->name('admin.books.pdf');
+
+    // Sūdzības datu eksportēšana PDF formātā
+    Route::get('/admin/reports/pdf', [PdfExport::class, 'exportReportsPdf'])
+        ->name('admin.reports.pdf');
+
+    // Pieteikumu datu eksportēšana PDF formātā
+    Route::get('/admin/forms/pdf', [PdfExport::class, 'exportProblemsPdf'])
+        ->name('admin.forms.pdf');
+});
 
 // LASĪŠANA
 // Lapa ar visiem grāmatām

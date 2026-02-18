@@ -187,6 +187,7 @@
             </div>
         </div>
 
+        <!-- Meklēšanas josla -->
         <div class="search">
             <input
                 v-model="search"
