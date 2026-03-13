@@ -57,49 +57,33 @@ class PdfExport
     public function exportBooksPdf()
     {
         // Saņem lietotāju stāstus un klasiskās grāmatas
-        $userBooksRaw = UserBook::with('user')->get();
-        $classicBooksRaw = ClassicBook::get();
+        $userBooks = UserBook::with('user')->get();
+        $classicBooks = ClassicBook::get();
 
         // Skaits katram tipam
-        $userBooksCount = $userBooksRaw->count();
-        $classicBooksCount = $classicBooksRaw->count();
+        $userBooksCount = $userBooks->count();
+        $classicBooksCount = $classicBooks->count();
         $totalCount = $userBooksCount + $classicBooksCount;
 
-        // Pārveido lietotāju stāstus PDF formātam
-        $userBooks = UserBook::with('user')->get()->map(function ($book) {
-            return [
-                'name' => $book->name,
-                'age_limit' => $book->age_limit,
-                'author' => $book->user->nickname ?? '—',
-                'created_at' => $book->created_at,
-                'is_blocked' => $book->is_blocked,
-                'type' => 'Stāsts' // tips
-            ];
-        });
-
-        // Pārveido klasiskās grāmatas PDF formātam
-        $classicBooks = ClassicBook::get()->map(function ($book) {
-            return [
-                'name' => $book->name,
-                'age_limit' => $book->age_limit,
-                'author' => $book->Author_name . ' ' . $book->Author_surname,
-                'created_at' => $book->created_at,
-                'is_blocked' => $book->is_blocked,
-                'type' => 'Grāmata' // tips
-            ];
-        });
-
-        // Apvieno abas kolekcijas
-        $books = $userBooks->merge($classicBooks);
+        // Pārveido lietotāju stāstus un grāmatas PDF formātam un apvieno viena kolekcijā
+        $books = $userBooks->map(function ($book) {
+            $book->type = 'Stāsts';
+            $book->author_name = $book->user->nickname ?? '—';
+            return $book;
+        })->merge(
+            $classicBooks->map(function ($book) {
+                $book->type = 'Grāmata';
+                $book->author_name = $book->Author_name . ' ' . $book->Author_surname;
+                return $book;
+            })
+        );
 
         // Kārto: vispirms Grāmatas, pēc tam Stāsti
-        $books = $books->sortBy(function ($item) {
-            return $item['type'] === 'Grāmata' ? 1 : 2;
-        });
+        $books = $books->sortBy(fn($b) => $b->type === 'Grāmata' ? 1 : 2);
 
         // Pievieno bloķēšanas statusu
         $books = $books->map(function ($book) {
-            $book['block_status'] = $book['is_blocked']
+            $book->block_status = $book->is_blocked
                 ? 'Bloķēts'
                 : 'Nav bloķēts';
             return $book;
@@ -127,6 +111,7 @@ class PdfExport
             'reportedUser',
             'userBook',
             'classicBook',
+            'comment',
             'reporter'
         ])->get();
 
@@ -144,10 +129,15 @@ class PdfExport
                 $targetName = $report->userBook->name ?? '—';
                 $sortPriority = 2;
             }
-            else {
+            elseif ($report->classic_book_id) {
                 $type = 'Grāmata';
                 $targetName = $report->classicBook->name ?? '—';
                 $sortPriority = 3;
+            }
+            else{
+                $type = 'Komentārs';
+                $targetName = $report->comment->content ?? '—';
+                $sortPriority = 4;
             }
 
             return [

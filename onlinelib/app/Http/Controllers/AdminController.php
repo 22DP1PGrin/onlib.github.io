@@ -350,11 +350,22 @@ class AdminController
             ->get();
 
         // Saņem sūdzības par lietotājiem
-        $userReports = ObjectReport::with(['reportedUser', 'reporter'])
+        $userReports = ObjectReport::with(['reportedUser', 'reporter',])
             ->whereNotNull('reported_user_id')
             ->when($search, function ($query) use ($search) {
                 $query->whereHas('reportedUser', function ($q) use ($search) {
                     $q->where('nickname', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->get();
+
+        // Saņem sūdzības par komentāriem
+        $commentReports = ObjectReport::with(['comment.user', 'reporter', 'classicBook', 'userBook'])
+            ->whereNotNull('comment_id')
+            ->when($search, function ($query) use ($search) {
+                $query->whereHas('comment.user', function ($q) use ($search) {
+                    $q->where('nickname',    'like', "%{$search}%");
                 });
             })
             ->latest()
@@ -366,6 +377,7 @@ class AdminController
             'storyReports' => $storyReports,
             'bookReports' => $bookReports,
             'userReports' => $userReports,
+            'commentReports' => $commentReports,
             'filters' => [
                 'search' => $search
             ]

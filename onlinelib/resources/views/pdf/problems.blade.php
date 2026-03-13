@@ -48,6 +48,7 @@
         <th>Lietotājvārds</th>
         <th>E-pasts</th>
         <th>Tēma</th>
+        <th>Izveidots</th>
     </tr>
     </thead>
     <tbody>
@@ -56,11 +57,12 @@
             <td>{{ $form->nickname }}</td>
             <td>{{ $form->email }}</td>
             <td>{{ $form->subject }}</td>
+            <td>{{ $form->created_at }}</td>
 
         </tr>
     @endforeach
     <tr>
-        <td colspan="2" class="total">Kopējais pieteikumu skaits:</td>
+        <td colspan="3" class="total">Kopējais pieteikumu skaits:</td>
         <td>{{ $totalForms }}</td>
     </tr>
     </tbody>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Bookmark;
 use App\Models\ClassicBook;
 use App\Models\BookChapter;
+use App\Models\Comment;
 use App\Models\ObjectReport;
 use App\Models\Rating;
 use App\Models\Genre;
@@ -218,15 +219,30 @@ class ClassicBookController extends Controller
             }
         }
 
-        // Atgriežam rediģēšanas skatu ar nepieciešamajiem datiem
+        // Saņema komentārus
+        $comments = Comment::with([
+            'user:id,nickname,avatar',
+            'replies.user:id,nickname,avatar'
+        ])
+            ->where('classic_book_id', $id)
+            ->whereNull('comment_parent_id')
+            ->latest()
+            ->get();
+
+        $commentsCount = Comment::where('classic_book_id', $id)->count();
+
+        // Atgriež rediģēšanas skatu ar nepieciešamajiem datiem
         return Inertia::render('Reading/ClassicBooks/ClassicBook', [
             'book' => $book,
             'genres' => $book->genres,
             'chapters' => $book->chapters,
+            'comments' => $comments,
+            'authUser' => auth()->user(),
             'initialAverageRating' => (float) ($ratingsData->average ?? 0),
             'initialRatingsCount' => $ratingsData->count ?? 0,
             'initialUserRating' => $userRating,
-            'initialUserBookmark' => $userBookmark
+            'initialUserBookmark' => $userBookmark,
+            'commentsCount' => $commentsCount,
         ]);
     }
 

@@ -16,15 +16,17 @@ return new class extends Migration
                 'Zemas kvalitātes saturs', 'Krāpnieciska vai maldinoša darbība', 'Naida runa vai diskriminējoša uzvedība', 'Citu lietotāju aizskaršana'])->default('Noteikumu pārkāpums');
             $table->text('problem');
             $table->unsignedBigInteger('reporter_user_id');
-            $table->unsignedBigInteger('user_book_id')->nullable();;
-            $table->unsignedBigInteger('classic_book_id')->nullable();;
-            $table->unsignedBigInteger('reported_user_id')->nullable();;
+            $table->unsignedBigInteger('user_book_id')->nullable();
+            $table->unsignedBigInteger('classic_book_id')->nullable();
+            $table->unsignedBigInteger('reported_user_id')->nullable();
+            $table->unsignedBigInteger('comment_id')->nullable();
             $table->timestamps();
 
             $table->foreign('reporter_user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('user_book_id')->references('id')->on('user_books')->onDelete('cascade');
             $table->foreign('classic_book_id')->references('id')->on('classic_book')->onDelete('cascade');
             $table->foreign('reported_user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('comment_id')->references('id')->on('comments')->onDelete('cascade');
         });
     }
 

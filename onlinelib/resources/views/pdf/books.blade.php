@@ -59,7 +59,7 @@
             <td>{{ $book['name'] }}</td>
             <td>{{ $book['type'] }}</td>
             <td>{{ $book['age_limit'] }}</td>
-            <td>{{ $book['author'] }}</td>
+            <td>{{ $book['author_name'] }}</td>
             <td>{{ $book['created_at'] }}</td>
             <td>{{ $book['block_status'] }}</td>
         </tr>

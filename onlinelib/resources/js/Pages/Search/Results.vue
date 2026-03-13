@@ -151,7 +151,7 @@ const GoToReadStory = (UserbookId) => {
             </section>
 
             <div v-if="books.length === 0 && classicBooks.length === 0" class="empty-message">
-                <p>Nav atrastu grāmatu ar nosaukumu "{{ searchQuery }}"</p>
+                <p>Nav atrastu darbu ar nosaukumu "{{ searchQuery }}"</p>
             </div>
         </div>
     </div>

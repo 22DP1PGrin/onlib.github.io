@@ -9,6 +9,7 @@
     const storyReports = computed(() => usePage().props.storyReports);
     const bookReports = computed(() => usePage().props.bookReports);
     const userReports = computed(() => usePage().props.userReports);
+    const commentReports = computed(() => usePage().props.commentReports);
     const search = ref(usePage().props.filters?.search || '');
 
     const selectedReport = ref(null);
@@ -19,6 +20,7 @@
     const showAllBooks = ref(false);
     const showAllClassicBooks = ref(false);
     const showAllUsers = ref(false);
+    const showAllComments = ref(false);
 
     // Aprēķina redzamās sudzības uz lietotāju grāmatas
     const visibleBooks = computed(() =>
@@ -39,6 +41,13 @@
         showAllUsers.value
             ? userReports.value
             : userReports.value?.slice(0, limit) ?? []
+    );
+
+    // Aprēķina redzamās sūdzības uz komentārus
+    const visibleComments = computed(() =>
+        showAllComments.value
+            ? commentReports.value
+            : commentReports.value?.slice(0, limit) ?? []
     );
 
     // Modālo logu stāvokļi
@@ -67,7 +76,7 @@
         document.body.style.overflow = "";
     };
 
-    // Meklēt sudzība pēc  grāmata/stāsta nosaukuma vai lietotājvārdu
+    // Meklēt sudzība pēc  grāmata/stāsta nosaukuma, lietotājvārdu, komentāru saturu
     const searchUsers = () => {
         router.get(route('admin.reports'),
             { search: search.value },
@@ -113,6 +122,19 @@
     const GoToUser = (userId) => {
         if (!userId) return;
         router.get(route('other.users.watch', { id: userId }));
+    };
+
+    // Funkcija, kas pārvieto lietotāju uz konkrētu komentāru
+    const GoToComment = (commentId, comment) => {
+        if (!comment) return;
+
+        if (comment.user_book_id) {
+            // Ja komentārs pieder lietotāja stāstam
+            router.visit(route('UserRead', { bookId: comment.user_book_id }) + `?comment=${commentId}`);
+        } else if (comment.classic_book_id) {
+            // Ja komentārs pieder klasiskajai grāmatai
+            router.visit(route('ClassicRead', { bookId: comment.classic_book_id }) + `?comment=${commentId}`);
+        }
     };
 </script>
 
@@ -288,6 +310,49 @@
                             @click="showAllClassicBooks = !showAllClassicBooks"
                         >
                             {{ showAllClassicBooks ? 'Paslēpt' : 'Skatīt vairāk' }}
+                        </button>
+                    </div>
+
+                    <h2>Ziņotie komentāri</h2>
+
+                    <!-- Paziņojums, ja nav ziņojumu par komentāriem -->
+                    <div v-if="commentReports.length === 0" class="item">
+                        <span class="title">Nav ziņojumu par komentāriem.</span>
+                    </div>
+
+                    <!-- Saraksts ar ziņotajām grāmatām -->
+                    <div v-for="report in visibleComments" :key="report.id" class="work-item">
+                        <!-- Grāmatas virsraksts -->
+                        <h2>Komentārs no {{ report.comment.user.nickname }}</h2>
+
+                        <!-- Ziņojuma saturs -->
+                        <p><b>Iemesls:</b> {{ report.subject }}</p>
+                        <p><b>Pamatojums:</b> {{ report.problem }}</p>
+
+                        <div class="work-meta">
+                            <!-- Ziņotāja informācija -->
+                            <span class="author">No: {{ report.reporter?.nickname }}</span>
+
+                            <div class="work-actions">
+                                <!-- Dzēšana, apskatīšana -->
+                                <button class="delete-btn" @click="openDeleteModal(report)">
+                                    Dzēst
+                                </button>
+                                <button class="edit-btn" @click="GoToComment(report.comment.id, report.comment)">
+                                    Apskatīt
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skatī vairāk -->
+                    <div class="toggle-container">
+                        <button
+                            v-if="commentReports.length > limit"
+                            class="toggle-btn"
+                            @click="showAllComments = !showAllComments"
+                        >
+                            {{ showAllComments ? 'Paslēpt' : 'Skatīt vairāk' }}
                         </button>
                     </div>
                 </div>

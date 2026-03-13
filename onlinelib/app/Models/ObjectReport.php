@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\Comment;
 use Illuminate\Database\Eloquent\Model;
 
 class ObjectReport extends Model
@@ -15,6 +15,7 @@ class ObjectReport extends Model
         'user_book_id',
         'classic_book_id',
         'reported_user_id',
+        'comment_id',
     ];
 
     public function reporter()
@@ -35,5 +36,10 @@ class ObjectReport extends Model
     public function reportedUser()
     {
         return $this->belongsTo(User::class, 'reported_user_id');
+    }
+
+    public function comment()
+    {
+        return $this->belongsTo(Comment::class, 'comment_id');
     }
 }

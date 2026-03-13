@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\ClassicBookController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\PdfExport;
 use App\Http\Controllers\ProfileController;
@@ -346,6 +347,28 @@ Route::middleware(['auth'])->group(function () {
 // Skatīt cita lietotāja grāmatzīmes
 Route::get('/bookmarks/user/{userId}/{typeId}', [BookmarkController::class, 'userBookmarkPage'])
     ->name('bookmarks.user');
+
+// KOMENTĀRI
+Route::middleware(['auth'])->group(function () {
+    // Izveido komentārus klasiskai grāmatai
+    Route::post('/classic_book/{classic_book}/comments', [CommentController::class, 'CreateCommentForClassic'])
+        ->name('classic.comments.store');
+
+    // Izveido komentārus lietotāja stāstam
+    Route::post('/user-book/{user_book}/comments', [CommentController::class, 'CreateCommentForUser'])
+        ->name('user.comments.store');
+
+    // Komentāra dzešanas
+    Route::delete('/delete-comment/{comment}', [CommentController::class, 'destroy'])
+        ->name('comments.delete');
+
+    // Komentāra rediģēšanas
+    Route::put('/comments/{comment}', [CommentController::class, 'update'])
+        ->name('comments.update');
+
+    // Ziņošana
+    Route::post('/report/comment/{comment}', [CommentController::class, 'reportComment'])->name('report.comment');
+});
 
 
 require __DIR__.'/auth.php';

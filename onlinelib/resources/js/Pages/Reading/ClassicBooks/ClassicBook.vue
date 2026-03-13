@@ -3,13 +3,25 @@
     import Footer from "@/Components/Footer.vue";
     import {router, useForm} from "@inertiajs/vue3";
     import {route} from "ziggy-js";
-    import {computed, ref} from "vue";
+    import {computed, nextTick, onMounted, ref, watch} from "vue";
 
     // Define saņemtos datus
     const props = defineProps({
         book: {
             type: Object,
             default: () => ({})
+        },
+        comments: {
+            type: Array,
+            default: () => []
+        },
+        commentsCount: {
+            type: Number,
+            default: 0
+        },
+        authUser: {
+            type: Object,
+            default: null
         },
         genres: {
             type: Array,
@@ -28,15 +40,178 @@
         initialUserRating: Number,
     });
 
+
     // Modālo logu stāvokļi
     const showClassicModal = ref(false);
     const showSuccessModal = ref(false);
+    const showBookmarkModal = ref(false);
+    const showModal = ref(false);
+    const activeMenu = ref(null);
+    const showDeleteModal = ref(false);
+    const showDeleteSuccessModal = ref(false);
+    const selectedComment = ref(null);
+    const editingCommentId = ref(null);
+    const editedContent = ref('');
+    const reportType = ref(null);
+
+    // Saņem pieprasījuma parametru 'comment' no URL
+    const urlParams = new URLSearchParams(window.location.search)
+    const commentId = urlParams.get('comment')
+
+    // Novēro izmaiņas komentāru masīvā
+    watch(
+        () => props.comments,
+        async () => {
+            if (!commentId) return;
+
+            // Gaida, līdz DOM tiek atjaunināts
+            await nextTick();
+
+            // Mēģina atrast komentāra elementu pēc ID
+            let el = document.getElementById('comment-' + commentId);
+
+            // Ja elements jau pastāv — tiek veiktas ritināšanas darbības
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            // Meklē komentāra vecāku, ja tas ir atbilde
+            const parent = props.comments.find(c =>
+                c.replies?.some(r => r.id == commentId)
+            );
+
+            if (parent) {
+                // Atver visas atbildes konkrētā komentārā
+                showAllReplies.value = {
+                    ...showAllReplies.value,
+                    [parent.id]: true
+                };
+
+                // Gaidām, līdz DOM tiek atjaunināts pēc atbilžu atvēršanas
+                await nextTick();
+
+                // Mēģina vēlreiz atrast komentāra elementu pēc ID
+                el = document.getElementById('comment-' + commentId);
+
+                if (el) {
+                    // Veic gludu ritināšanu līdz komentāram
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        },
+        { immediate: true, deep: true } // Sākotnēji izpilda un seko dziļām izmaiņām masīvā
+    );
+
+    // Funkcija, kas automātiski pielāgo textarea augstumu atkarībā no teksta daudzuma
+    const resizeTextarea = (el) => {
+        el.style.height = "auto"
+        el.style.height = el.scrollHeight + "px"
+
+        // Ja teksts pārsniedz 200px, tiek parādīts vertikālais scroll
+        el.style.overflowY = el.scrollHeight > 200 ? "auto" : "hidden"
+    }
+
+    // Funkcija datuma formatēšanai
+    const formatDate = (date) => {
+        return new Date(date).toLocaleString('lv-LV', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        })
+    }
+
+    // Funkcija, kas izsauc textarea izmēra pielāgošanu ievades laikā
+    const autoResize = (e) => resizeTextarea(e.target)
+
+    // Funkcija komentāra izvēlnes atvēršanai vai aizvēršanai
+    const toggleMenu = (commentId) => {
+        activeMenu.value =
+            activeMenu.value === commentId
+                ? null
+                : commentId;
+    };
+
+    const repliesLimit = 3; // Cik atbildes rādīt sākumā
+
+    // Pārslēdzams statuss, vai rāda visu sarakstu
+    const showAllReplies = ref({});
+
+    // Atgriež redzamās atbildes konkrētam komentāram
+    const visibleReplies = (comment) => {
+        // Ja komentāram nav atbilžu, atgriež tukšu masīvu
+        if (!comment.replies) return [];
+
+        return showAllReplies.value[comment.id]
+            ? comment.replies
+            : comment.replies.slice(0, repliesLimit);
+    };
 
     // Veidlapas dati paziņojumam
     const form = useForm({
         subject: '',
         problem: '',
     });
+
+    // Veidlapas dati komentaram
+    const comment = useForm({
+       content: '',
+    });
+
+    // Komentāru atbildes veidlapas dati
+    const replyForm = useForm({
+        content: '',
+        comment_parent_id: null
+    });
+
+    // Mainīgais, kas glabā pašlaik aktīvā komentāra ID
+    const activeReplyId = ref(null);
+
+    // Funkcija atbildes formas atvēršanai vai aizvēršanai
+    const openReply = (commentId) => {
+        if (activeReplyId.value === commentId) {
+            // Ja lietotājs nospiež pogu pie tā paša komentāra, atbildes forma tiek aizvērta
+            cancelReply();
+        } else {
+            // Ja tiek nospiests cits komentārs, tiek atvērta jauna atbildes forma
+            activeReplyId.value = commentId;
+            replyForm.comment_parent_id = commentId;
+        }
+    };
+
+    // Funkcija atbildes formas aizvēršanai
+    const cancelReply = () => {
+        activeReplyId.value = null;
+        replyForm.reset();
+    };
+
+    // Funkcija komentāra rediģēšanas režīma aktivizēšanai
+    const startEdit = async (comment) => {
+        editingCommentId.value = comment.id
+        editedContent.value = comment.content
+
+        // Aizver aktīvo izvēlni un atbilžu formu
+        activeMenu.value = activeReplyId.value = null
+
+        await nextTick()
+
+        // Automātiski pielāgo textarea augstumu rediģēšanas laukiem
+        document.querySelectorAll('.reply').forEach(resizeTextarea)
+    }
+
+    // Funkcija komentāra izmaiņu saglabāšanai
+    const saveEdit = async (commentId) => {
+        await axios.put(route('comments.update', commentId), {
+            content: editedContent.value
+        })
+
+        // Iziet no rediģēšanas režīma pēc veiksmīgas saglabāšanas
+        editingCommentId.value = null
+
+        router.reload({ only: ['comments'] })
+    }
 
     // Atlasītie grāmatu dati
     const selectedBook = ref(null);
@@ -50,14 +225,17 @@
     const bookYear = props.book?.Year_publication;
     const bookId = props.book?.id;
 
-
     // Definē vērtējumu stāvokļa mainīgos
     const averageRating = ref(props.initialAverageRating); // Vidējais vērtējums
     const ratingsCount = ref(props.initialRatingsCount); // Vērtējumu skaits
     const userRating = ref(props.initialUserRating); // Lietotāja vērtējums
-    const showModal = ref(false); // Modalā loga redzamība
     const tempRating = ref(userRating.value || 0); // Pagaidu vērtējums
 
+    const ratingForm = useForm({
+        grade: tempRating.value // sākotnējais vērtējums
+    });
+
+    // Definē grāmatzīmes nosaukumu
     const bookmarkTypes = ref([
         { id: 1, name: 'Izlasīts' },
         { id: 2, name: 'Lasu' },
@@ -65,38 +243,61 @@
         { id: 4, name: 'Plānots' }
     ]);
 
-    const ratingForm = useForm({
-        grade: tempRating.value // sākotnējais vērtējums
-    });
-
-
+    // Mainīgais, kas glabā lietotāja pašreizējo grāmatzīmi
     const currentBookmark = ref(props.initialUserBookmark);
-    const showBookmarkModal = ref(false);
+
+    // Mainīgais, kas glabā lietotāja vērtējumu konkrētajai grāmatai
     const localUserRating = ref(props.initialUserRating || null);
 
-    // Atver modāli lietotāja grāmatas ziņošanai
-    const openClassicBlockModal = (book) => {
-        selectedBook.value = book;
+    // Atver modāli grāmatas ziņošanai
+    const openBookReport = (book) => {
+        reportType.value = 'book'
+        selectedBook.value = book
+        showClassicModal.value = true
+    }
+
+    // Atver modāli komentāru ziņošanai
+    const openCommentReport = (comment) => {
+        reportType.value = 'comment'
+        selectedComment.value = comment
+        showClassicModal.value = true
+    }
+
+    // Atver dzēšanas modālo logu
+    const openDeleteModal = (comment) => {
+        selectedComment.value = comment;
+        showDeleteModal.value = true;
         document.body.style.overflow = "hidden";
-        showClassicModal.value = true;
     };
 
-    // Apstiprina lietotāja grāmatas ziņošanu
+    // Atver modālo logu grāmatzīmes izvēlei
+    const openBookmarkModal = () => {
+        document.body.style.overflow = "hidden";
+        showBookmarkModal.value = true;
+    };
+
+    // Apstiprina ziņošanu (grāmata vai komentārs)
     const submitReport = () => {
-        if (!selectedBook.value) return;
+        let url = null;
 
-        form.post(
-            route('report.classic.book', {classicBook: selectedBook.value.id}),
-            {
-                preserveScroll: true,
+        if (reportType.value === 'book' && selectedBook.value) {
+            url = route('report.classic.book', { classicBook: selectedBook.value.id });
+        }
 
-                onSuccess: () => {
-                    form.reset();
-                    showClassicModal.value = false;
-                    showSuccessModal.value = true;
-                }
+        if (reportType.value === 'comment' && selectedComment.value) {
+            url = route('report.comment', { comment: selectedComment.value.id });
+        }
+
+        if (!url) return; // Nekas nav izvēlēts
+
+        form.post(url, {
+            preserveScroll: true,
+            onSuccess: () => {
+                form.reset();
+                showClassicModal.value = false;
+                showSuccessModal.value = true;
             }
-        );
+        });
     };
 
     // Grāmatu pievinošana grāmatzīmem
@@ -169,6 +370,56 @@
         return ratingsCount.value;
     });
 
+    // Funkcija jauna komentāra iesniegšanai
+    const submitComment = () => {
+
+        // Tiek nosūtīti komentāra dati uz serveri
+        comment.post(
+            route('classic.comments.store', { classic_book: bookId }),
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    comment.reset();
+                    comment.comment_parent_id = null;
+                }
+            }
+        )
+    };
+
+    // Apstiprina dzēšanu
+    const confirmDelete = () => {
+        if (!selectedComment.value) return;
+
+        router.delete(route('comments.delete', { id: selectedComment.value.id }), {
+            preserveScroll: true,
+
+            // Ja dzēšana veiksmīga
+            onSuccess: () => {
+                showDeleteModal.value = false;
+                showDeleteSuccessModal.value = true;
+            },
+
+            // Ja radās kļūda
+            onError: (error) => {
+                console.error(error);
+            }
+        });
+    };
+
+    // Funkcija atbildes uz komentāru iesniegšanai
+    const submitReply = () => {
+        // Tiek nosūtīti atbildes dati uz serveri
+        replyForm.post(
+            route('classic.comments.store', { classic_book: bookId }),
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    cancelReply();
+                }
+            }
+        );
+    };
+
     // Funkcija, lai pārvietotos uz klasiskās grāmatas lasīšanas lapu
     const GoToReadClassic = (bookId, chapterId) => {
         router.visit(route('chapter.content', {
@@ -180,6 +431,7 @@
     // Aizver visus bloķēšanas modāļus
     const closeAllModals = () => {
         showClassicModal.value = false;
+        showBookmarkModal.value = false;
         form.reset();
         document.body.style.overflow = "";
     };
@@ -191,17 +443,49 @@
         document.body.style.overflow = "";
     };
 
+    // Aizver dzēšanas apstiprinājuma modāli
+    const closeDeleteModal = () => {
+        showDeleteModal.value = false;
+        document.body.style.overflow = "";
+    };
+
+    // Aizver veiksmīgas dzēšanas modāli un atsvaidzina lapu
+    const closeDeleteSuccessModal = () => {
+        showDeleteSuccessModal.value = false;
+        document.body.style.overflow = "";
+    };
 </script>
 <template>
     <Navbar />
-
     <div class="main-content">
+        <!-- Dzēšanas apstiprinājuma modālais logs -->
+        <div v-if="showDeleteModal" class="modal-overlay">
+            <div class="modal">
+                <div class="success-container">
+                    <h2>Vai tiešām vēlaties dzēst šo komentāru?</h2>
+                    <div class="close">
+                        <button @click="closeDeleteModal" class="close-btn">Atcelt</button>
+                        <button @click="confirmDelete" class="block">Dzēst</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Veiksmīgas dzēšanas modālais logs -->
+        <div v-if="showDeleteSuccessModal" class="modal-overlay">
+            <div class="modal">
+                <div class="success-container">
+                    <h2>Komentārs veiksmīgi dzēsts!</h2>
+                    <button @click="closeDeleteSuccessModal" class="close-btn">Aizvērt</button>
+                </div>
+            </div>
+        </div>
 
         <!-- Ziņošanas apstiprinājuma modālais logs stāstam -->
         <div v-if="showClassicModal" class="modal-overlay">
             <div class="modal">
                 <div class="success-container">
-                    <h2>Vai tiešām vēlaties ziņot par šo darbu?</h2>
+                    <h2>Vai tiešām vēlaties ziņot par šo {{ reportType === 'comment' ? 'komentāru' : 'darbu' }}?</h2>
                     <p>Lūdzu, norādiet ziņošanu iemeslu, lai apstiprinātu.</p>
 
                     <div class="form-group">
@@ -224,7 +508,10 @@
                     <!-- Pamatojuma ievades lauks -->
                     <div class="form-group">
                         <label for="problem">Pamatojums:</label>
-                        <textarea v-model="form.problem" required></textarea>
+                        <textarea v-model="form.problem"
+                                  required
+                                  @input="autoResize"
+                        ></textarea>
 
                         <!-- Validācijas kļūdas paziņojums pamatojumam -->
                         <div v-if="form.errors.problem" class="error">
@@ -266,7 +553,7 @@
 
                 <!-- Grāmatzīmju poga - rāda pašreizējo statusu vai aicina pievienot -->
                 <button
-                    @click="showBookmarkModal = true"
+                    @click="openBookmarkModal"
                     class="bookmark-button"
                 >
                     {{ currentBookmark ? currentBookmark.name : 'Pievienot grāmatzīmēm' }}
@@ -277,7 +564,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h3>Grāmatzīmes</h3>
-                            <button class="close-button" @click="showBookmarkModal = false">
+                            <button class="close-button" @click="closeAllModals">
                                 <i class="fa">&#xf00d;</i>
                             </button>
                         </div>
@@ -301,7 +588,7 @@
 
         <div class="book-container">
             <div class="report-wrapper">
-                <button class="report" @click="openClassicBlockModal(book)">
+                <button class="report" @click="openBookReport(book)">
                     <i style="font-size:1rem" class="fa">&#xf071;</i> Ziņot
                 </button>
             </div>
@@ -421,8 +708,264 @@
                 </div>
             </div>
         </div>
-    </div>
 
+        <!-- Komentāri -->
+        <div class="book-header">
+            <h1>
+                Komentāri
+            </h1>
+        </div>
+
+        <div class="book-container">
+            <div v-if="authUser">
+                <form @submit.prevent="submitComment" class="form-group">
+                    <textarea
+                        v-model="comment.content"
+                        rows="3"
+                        placeholder="Ievadiet savu komentāru"
+                        @input="autoResize"
+                        required
+                    ></textarea>
+                    <div v-if="comment.errors.content" class="error-message">
+                        {{ comment.errors.content }}
+                    </div>
+                    <div class="form-actions">
+                        <button
+                            type="submit"
+                            class="submit-btn"
+                            :disabled="comment.processing"
+                        >
+                            Nosūtīt
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <h2>{{ commentsCount }} komentāri</h2>
+
+            <!-- Jā nav komentārus -->
+            <div v-if="comments.length === 0" class="item">
+                <span class="title">Šeit vēl nav pievienotu komentāru.</span>
+            </div>
+
+            <div v-if="comments?.length" class="comments-list">
+
+                <div
+                    v-for="comment in comments"
+                    :key="comment.id"
+                    class="comment-item"
+                    :id="'comment-' + comment.id"
+                >
+                    <!-- Lietotāja avatars, lietotājvards, izveidošanas laiks un opcijas rediģēšanai, dzešanai, ziņošanai -->
+                    <div class="comment-header">
+                            <div class="comment-user-info">
+                                <div class="comment-user-row">
+                                    <div class="avatar-wrapper">
+                                        <div class="avatar">
+                                            <i v-if="!comment.user?.avatar" class="fa profile-icon">&#xf2be;</i>
+                                            <img v-else :src="`/storage/${comment.user?.avatar}`" alt="avatar" />
+                                        </div>
+                                    </div>
+
+                                    <div class="comment-user-name">
+                                        <a
+                                            :href="route('other.users.watch', { id: comment.user?.id })"
+                                            class="author-name"
+                                        >
+                                            {{ comment.user?.nickname }}
+                                        </a>
+                                    </div>
+
+                                    <div v-if="comment.updated_at && comment.created_at !== comment.updated_at" class="comment-time-update">
+                                        (Rediģēts)
+                                    </div>
+                                </div>
+
+                            <!-- Komentāra izveidošanas laiks -->
+                            <div class="comment-time">
+                                {{ formatDate(comment.created_at) }}
+                            </div>
+                        </div>
+
+                        <div class="comment-menu-wrapper">
+                            <button v-if="authUser" class="comment-menu-button"  @click="toggleMenu(comment.id)">
+                                ⋮
+                            </button>
+                            <div v-if="activeMenu === comment.id" class="comment-menu">
+                                <button
+                                    v-if="authUser?.id === comment.user?.id"
+                                    class="menu-item"
+                                    @click="startEdit(comment)"
+                                >
+                                    Rediģēt
+                                </button>
+
+                                <button v-if="authUser?.id === comment.user?.id || authUser?.role === 'admin' || authUser?.role === 'superadmin'" class="menu-item" @click="openDeleteModal(comment)">
+                                    Dzēst
+                                </button>
+
+                                <button class="menu-item" @click="openCommentReport(comment)">
+                                    Ziņot
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Komentāra saturs -->
+                    <div class="reply-form" v-if="editingCommentId === comment.id">
+                        <textarea class="reply"
+                                  @focus="autoResize"
+                                  v-model="editedContent"
+                                  required
+                                  @input="autoResize"
+                                  rows="3"
+                        ></textarea>
+
+                        <div class="reply-actions">
+                            <button @click="saveEdit(comment.id)">
+                                Saglabāt
+                            </button>
+
+                            <button @click="editingCommentId = null">
+                                Atcelt
+                            </button>
+                        </div>
+                    </div>
+                    <div class="comment-content" v-else >
+                        {{ comment.content }}
+                    </div>
+
+                    <div v-if="authUser && editingCommentId !== comment.id" class="reply-button-wrapper">
+                        <button
+                            @click="openReply(comment.id)"
+                            class="reply-btn"
+                        >
+                            Atbildēt
+                        </button>
+                    </div>
+
+                    <!-- Lai uzrakstīt atbilde -->
+                    <form v-if="activeReplyId === comment.id" @submit.prevent="submitReply" class="content-form">
+                    <textarea
+                        class="reply"
+                        v-model="replyForm.content"
+                        placeholder="Rakstīt atbildi..."
+                        required
+                        @input="autoResize"
+                        rows="2"
+                    ></textarea>
+
+                        <div v-if="replyForm.errors.content" class="error">
+                            {{ replyForm.errors.content }}
+                        </div>
+
+                        <div class="reply-actions">
+                            <button
+                                type="submit"
+                                class="reply-submit-btn"
+                            >
+                                Nosūtīt
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Atbildes -->
+                    <div v-if="comment.replies?.length" class="comment-replies">
+
+                        <div v-for="reply in visibleReplies(comment)"
+                             :key="reply.id"
+                             class="comment-reply"
+                             :id="'comment-' + reply.id">
+
+                            <div class="comment-header">
+                                <div class="comment-user-info">
+                                    <div class="comment-user-row">
+                                        <div class="avatar-wrapper">
+                                            <div class="avatar">
+                                                <i v-if="!reply.user?.avatar" class="fa profile-icon">&#xf2be;</i>
+                                                <img v-else :src="`/storage/${reply.user?.avatar}`" alt="avatar" />
+                                            </div>
+                                        </div>
+
+                                        <div class="comment-user-name">
+                                            <a
+                                                :href="route('other.users.watch', { id: reply.user?.id })"
+                                                class="author-name"
+                                            >
+                                                {{ reply.user?.nickname }}
+                                            </a>
+                                        </div>
+
+                                        <div v-if="reply.updated_at && reply.created_at !== reply.updated_at" class="comment-time-update">
+                                            (Rediģēts)
+                                        </div>
+                                    </div>
+
+                                    <div class="comment-time">
+                                        {{ formatDate(comment.created_at) }}
+                                    </div>
+                                </div>
+
+                                <div class="comment-menu-wrapper">
+                                    <button v-if="authUser" class="comment-menu-button"  @click="toggleMenu(reply.id)">
+                                        ⋮
+                                    </button>
+                                    <div v-if="activeMenu === reply.id" class="comment-menu">
+                                        <button v-if="authUser?.id === reply.user?.id" class="menu-item" @click="startEdit(reply)">
+                                            Rediģēt
+                                        </button>
+                                        <button v-if="authUser?.id === reply.user?.id || authUser?.role === 'admin' || authUser?.role === 'superadmin'" class="menu-item" @click="openDeleteModal(reply)">
+                                            Dzēst
+                                        </button>
+                                        <button class="menu-item" @click="openCommentReport(reply)">
+                                            Ziņot
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Komentāra saturs -->
+                            <div class="reply-form" v-if="editingCommentId === reply.id">
+                                <textarea class="reply"
+                                          @focus="autoResize"
+                                          v-model="editedContent"
+                                          @input="autoResize"
+                                          required
+                                          rows="3"
+                                ></textarea>
+
+                                <div class="reply-actions">
+                                    <button @click="saveEdit(reply.id)">
+                                        Saglabāt
+                                    </button>
+
+                                    <button @click="editingCommentId = null">
+                                        Atcelt
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="comment-content" v-else >
+                                {{ reply.content }}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Skatīt vairāk -->
+                    <div class="toggle-container">
+                        <button v-if="comment.replies?.length > repliesLimit"  class="toggle-btn" @click="showAllReplies[comment.id] = !showAllReplies[comment.id]">
+                            {{
+                                showAllReplies[comment.id]
+                                    ? 'Paslēpt'
+                                    : 'Skatīt vairāk'
+                            }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <Footer />
 </template>
 
@@ -459,6 +1002,12 @@
         background-color: #e4a27c; /* Fona krāsa */
         border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
         font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 5px;
     }
 
     .close{
@@ -518,6 +1067,8 @@
 
     .form-group select,
     .form-group textarea {
+        resize: none;
+        overflow: hidden;
         padding: 10px;
         border: 1px solid rgba(26, 16, 8, 0.8);
         border-radius: 4px;
@@ -528,9 +1079,17 @@
         font-size: 1rem;
     }
 
-    .form-group textarea {
-        resize: vertical; /* Atļauj tekstlaukam mainīt izmērus vertikāli */
-        min-height: 100px; /* Minimālais augstums */
+    textarea {
+        resize: none;
+        overflow: hidden;
+        min-height: 40px;
+        max-height: 300px;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+        border: 1px solid rgba(26, 16, 8, 0.8);
+        border-radius: 4px;
+        font-size: 1rem;
     }
 
     textarea:focus,
@@ -555,7 +1114,7 @@
         text-align: center; /* Teksts centrēts */
     }
 
-    .book-header h1 {
+    h1  {
         color: rgba(26, 16, 8, 0.8);
         font-size: 1.7rem; /* Fonta izmērs */
         margin-bottom: 20px;
@@ -843,9 +1402,60 @@
         align-items: center;
     }
 
+    .reply-actions {
+        gap:5px;
+    }
+
+    .reply-actions button{
+        padding: 1px 6px;
+    }
+
+    .block {
+        align-self: flex-start;
+        margin-bottom: 5px;
+        border: 2px solid rgba(35, 11, 11, 0.8);
+        background-color: #714e3e;
+    }
+
+    .reply-button-wrapper {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 8px;
+    }
+
+    .toggle-container {
+        margin-top: 5px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .toggle-btn{
+        padding: 2px 10px;
+        margin-top: 5px;
+    }
+
+    .reply-btn{
+        padding: 1px 6px;
+        margin-top: -20px;
+    }
+
+    .reply{
+        margin-top: 7px;
+    }
+
     .report-wrapper {
         display: flex;
         justify-content: flex-end;
+    }
+
+    .reply-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 5px;
+    }
+
+    .reply-submit-btn {
+            padding: 1px 10px;
     }
 
     .report{
@@ -856,6 +1466,174 @@
     button:hover {
         background-color: #ffc8a9;
         border-color: #ffc8a9;
+    }
+
+    .item {
+        background-color: #ffc8a9;
+        border-radius: 8px; /* Noapaļotas malas */
+        text-align: center;
+        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 10px; /* Ēna*/
+        font-family: Tahoma, Helvetica, sans-serif;
+        display: flex; /* Izmanto flexbox režīmu */
+        justify-content: space-between; /* Izlīdzina saturu horizontāli */
+        align-items: center;
+        padding: 10px 15px; /* Piepildījums ap saturu */
+        margin-bottom: 10px;
+    }
+
+    .title {
+        color: rgba(26, 16, 8, 0.8);
+        font-family: Tahoma, Helvetica, sans-serif;
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+
+    .comments-list {
+        margin-top: 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .comment-item {
+        background-color: #ffd9c6;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(63, 31, 4, 0.8);
+    }
+
+    .comment-header {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 10px;
+        margin-top: -5px;
+        font-size: 1rem;
+        justify-content: space-between;
+    }
+
+    .comment-menu-wrapper {
+        position: relative;
+    }
+
+    .comment-menu-button {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: rgba(26, 16, 8, 0.8);
+        transition: color 0.3s;
+    }
+
+    .comment-menu-button:hover {
+        color: rgba(106, 51, 0, 0.8);
+        background-color: transparent !important;
+    }
+
+    .comment-menu {
+        position: absolute;
+        right: 0;
+        top: 25px;
+        background-color: #e4a27c;
+        border: 1px solid rgba(26, 16, 8, 0.8);
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(63, 31, 4, 0.8);
+        display: flex;
+        flex-direction: column;
+        min-width: 120px;
+        z-index: 50;
+    }
+
+    .menu-item {
+        background: none;
+        border: none;
+        padding: 8px 12px;
+        text-align: left;
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+
+    .menu-item:hover {
+        background-color: #ffc8a9;
+    }
+
+    .avatar-wrapper {
+        display: flex;
+        justify-content: center; /* Horizontāli centrēts */
+    }
+
+    .avatar {
+        width: 25px; /* Avatar platums */
+        height: 25px; /* Avatar augstums */
+        border-radius: 50%; /* Padara avataru pilnīgu apli */
+        border: 1px solid rgba(26, 16, 8, 0.8);
+        background-color: #e4a27c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .avatar img {
+        width: 100%; /* Attēla platums pilnībā atbilst avataram */
+        height: 100%; /* Attēla augstums pilnībā atbilst avataram */
+        object-fit: cover; /* Attēls aptver visu aplīti, saglabājot proporcijas */
+        border-radius: 50%;
+    }
+    .comment-user-info {
+        display: flex;
+        flex-direction:column;
+    }
+
+    .comment-user-row{
+        display:flex;
+        align-items:center;
+        gap:8px;
+    }
+
+    .comment-user-name a {
+        font-weight: bold;
+        color: rgba(26, 16, 8, 0.8) !important;
+        transition: color 0.3s;
+    }
+
+    .comment-user-name a:hover {
+        color: rgba(106, 51, 0, 0.8) !important;
+    }
+
+    .comment-time,
+    .comment-time-update{
+        font-size: 0.9rem;
+        opacity: 0.7;
+        line-height: 1;
+    }
+
+    .comment-time{
+        margin-top: 5px;
+    }
+
+    .comment-time-update{
+        margin-left: -5px;
+    }
+
+    .comment-content {
+        line-height: 1.5;
+        word-wrap:break-word;
+        font-size: 1rem;
+    }
+
+    .comment-replies {
+        margin-left: 30px;
+        margin-top: 15px;
+        padding-left: 15px;
+        border-left: 2px solid rgba(26, 16, 8, 0.3);
+        word-wrap:break-word
+    }
+
+    .comment-reply {
+        background-color: #ffc8a9;
+        padding: 10px;
+        border-radius: 6px;
+        margin-top: 8px;
     }
 
     @media (max-width: 768px) {
@@ -885,11 +1663,31 @@
     }
 
     @media (max-width:500px) {
+        .title{
+            font-size: 1rem;
+        }
+
+        .reply-btn{
+            margin-top: -5px;
+        }
+
+        .comment-content,
+        select{
+            font-size: 0.9rem;
+        }
+
+        .comment-header{
+           font-size: 0.9rem;
+        }
+
+        .comment-time,
+        .comment-time-update{
+            font-size: 0.85rem;
+        }
 
         .book-header h1 {
             font-size: 1.5rem;
         }
-
         .report-wrapper .fa{
             font-size: 0.9rem;
         }
