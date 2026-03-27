@@ -51,4 +51,9 @@ class UserBook extends Model
     {
         return $this->hasOne(StoryBlock::class, 'user_book_id', 'id');
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'user_book_id');
+    }
 }

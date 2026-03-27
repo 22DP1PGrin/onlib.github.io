@@ -1,10 +1,9 @@
 <script setup>
-
     import Navbar from '@/Components/Navbar.vue';
     import Footer from '@/Components/Footer.vue';
-    import {router} from "@inertiajs/vue3";
+    import { router} from "@inertiajs/vue3";
     import {route} from "ziggy-js";
-    import {computed, ref, watch} from "vue";
+    import {onMounted, ref} from "vue";
 
     // Definē komponenta ievaddatus
     const props = defineProps({
@@ -30,22 +29,59 @@
                 {id: 'Pamests', label: 'Pamests'}
             ]
         },
-
     });
 
-    // Vēro izmaiņas filtriem un atjauno atlasītās vērtības
-    watch(() => props.filters, (newFilters) => {
-        selectedGenres.value = newFilters.genres || [];
-        selectedRatings.value = newFilters.ratings || [];
-        selectedStatuses.value = newFilters.statuses || [];
-        filters.value.bookType = newFilters.bookType || 'all';
+    // Inicializē filtrus
+    const initFilters = () => {
+        selectedRatings.value = [...(props.filters.ratings || [])];
 
+        selectedStatuses.value = [...(props.filters.statuses || [])];
+
+        // Iestata grāmatu tipu (noklusējums: 'all')
+        filtersState.value.bookType = props.filters.bookType || 'all';
+
+        // Izveido jaunu objektu žanru stāvokļiem
+        const newStates = {};
+
+        // Katram žanram piešķir sākotnējo stāvokli 'none'
+        props.allGenres.forEach(g => {
+            newStates[g.id] = 'none';
+        });
+
+        // Iestata žanrus, kuri jāiekļauj
+        (props.filters.includeGenres || []).forEach(id => {
+            newStates[id] = 'include';
+        });
+
+        // Iestata žanrus, kuri jāizslēdz
+        (props.filters.excludeGenres || []).forEach(id => {
+            newStates[id] = 'exclude';
+        });
+
+        // Saglabā aprēķinātos žanru stāvokļus
+        genreStates.value = newStates;
+    };
+
+    // Inicializē kārtošanas parametrus
+    const initSort = () => {
+        // Iestata kārtošanas lauku vai null, ja nav definēts
+        filtersState.value.sort = props.filters?.sort || null;
+
+        // Iestata kārtošanas virzienu
+        filtersState.value.direction = props.filters?.direction || 'desc';
+    };
+
+    // Izsauc inicializācijas funkcijas, kad komponents tiek ielādēts
+    onMounted(() => {
+        initFilters();
+        initSort();
     });
 
     // Mainīgie modāļa loga redzamībai un datiem
     const showFilterModal = ref(false);
     const books = ref(props.books);
     const classicBooks = ref(props.classicBooks);
+    const showSortMenu = ref(false);
 
     // Atlasītie žanri, reitings un statusi
     const selectedGenres = ref(
@@ -55,46 +91,80 @@
     );
     const selectedRatings = ref(props.filters?.ratings || []);
     const selectedStatuses = ref(props.filters?.statuses || []);
+    const genreStates = ref({});
 
-
+    // Funkcija aprēķina grāmatas vidējo vērtējumu un atsauksmju skaitu
     const getBookRating = (book) => {
         const avg = book.ratings_avg_grade !== null && book.ratings_avg_grade !== undefined
             ? parseFloat(book.ratings_avg_grade).toFixed(1)
-            : '0.0';
+            : '0.0'; // Ja nav vērtējuma, iestata 0.0
 
+        // Iegūst atsauksmju skaitu vai 0, ja nav definēts
         const count = book.ratings_count || 0;
 
+        // Atgriež objektu ar vidējo vērtējumu un atsauksmju skaitu
         return {
             average: avg,
             count: count
         };
     };
 
+    // Funkcija formatē atsauksmju skaitu cilvēkam saprotamā formātā
     const formattedRatingsCount = (count) => {
         if (typeof count !== 'number' || isNaN(count)) {
             return '0';
         }
 
+        // Ja atsauksmes ir vairāk nekā 1000, formatē ar 'k' sufiksu
         if (count >= 1000) {
             return (count / 1000).toFixed(1) + 'k';
         }
+
+        // Pretējā gadījumā atgriež skaitu kā tekstu
         return count.toString();
     };
 
+    // Funkcija iestata kārtošanas kritēriju
+    const setSort = (sort) => {
+        filtersState.value.sort = sort;
+    };
 
-    // Filtri, kas ietver tikai grāmatu tipu
-    const filters = ref({
+    // Funkcija atiestata kārtošanu uz noklusējuma vērtībām un piemēro filtrus
+    const resetSort = () => {
+        filtersState.value.sort = null;
+        filtersState.value.direction = 'desc';
+
+        applyFilters();
+    };
+
+    // Glabā filtrēšanas un kārtošanas stāvokli
+    const filtersState = ref({
         bookType: props.filters?.bookType || 'all',
+        sort: props.filters?.sort || null,
+        direction: props.filters?.direction || 'desc',
     });
 
     // Funkcija žanra izvēles pārslēgšanai
     function toggleGenre(id) {
-        const genreId = id.toString(); // Nodrošina, ka ID vienmēr ir string
-        if (selectedGenres.value.includes(genreId)) {
-            selectedGenres.value = selectedGenres.value.filter(g => g !== genreId);
+        const current = genreStates.value[id];
+        if (current === 'none') {
+            genreStates.value[id] = 'include';
+        } else if (current === 'include') {
+            genreStates.value[id] = 'exclude';
         } else {
-            selectedGenres.value.push(genreId);
+            genreStates.value[id] = 'none';
         }
+    }
+
+    // Funkcija nosaka CSS klasi žanra chip elementam pēc tā stāvokļa
+    function genreClass(id) {
+        const state = genreStates.value[id];
+
+        return {
+            'genre-include': state === 'include',
+            'genre-exclude': state === 'exclude',
+            'genre-none': state === 'none',
+        };
     }
 
     // Funkcija reitinga izvēles pārslēgšanai
@@ -117,36 +187,94 @@
         }
     };
 
-    // Funkcija filtru piemērošanai
+    // Funkcija filtru piemērošanai un lapas atjaunināšanai
     const applyFilters = () => {
-        showFilterModal.value = false; // Aizver modāli pirms pāriešanas
+        showFilterModal.value = false; // Aizver filtru modāli pirms pārejas
+
+        const includeGenres = [];
+        const excludeGenres = [];
+
+        // Pāriet cauri visiem žanru stāvokļiem un atbilstoši sadala tos iekļaušanai vai izslēgšanai
+        Object.entries(genreStates.value).forEach(([id, state]) => {
+            if (state === 'include') includeGenres.push(id);
+            if (state === 'exclude') excludeGenres.push(id);
+        });
+
+        // Sagatavo datu objektu, kas tiks nosūtīts serverim
+        const data = {
+            bookType: filtersState.value.bookType,
+            ratings: selectedRatings.value,
+            statuses: selectedStatuses.value,
+            includeGenres,
+            excludeGenres,
+            direction: filtersState.value.direction,
+        };
+
+        // Pievieno kārtošanas lauku, ja tas ir iestatīts
+        if (filtersState.value.sort) {
+            data.sort = filtersState.value.sort;
+        }
 
         router.visit(route('books.filter'), {
             method: 'get',
-            data: {
-                bookType: filters.value.bookType,
-                ratings: selectedRatings.value,
-                genres: selectedGenres.value,
-                statuses: selectedStatuses.value
-            },
-            preserveScroll: true, // Saglabā lapas ritinājuma pozīciju
+            data,
+            preserveScroll: true,
         });
+
+        document.body.style.overflow = '';
+        showFilterModal.value = false;
     };
 
     // Funkcija filtru atiestatīšanai
     const resetFilters = () => {
-        showFilterModal.value = false; // Aizver modāli
+        showFilterModal.value = false;
+
+        const data = {
+            bookType: 'all',
+            ratings: [],
+            statuses: [],
+            includeGenres: [],
+            excludeGenres: [],
+            direction: filtersState.value.direction,
+        };
+
+        if (filtersState.value.sort) {
+            data.sort = filtersState.value.sort;
+        }
 
         router.visit(route('books.filter'), {
             method: 'get',
-            data: {
-                bookType: 'all',
-                ratings: [],
-                genres: [],
-                statuses: []
-            },
-            preserveScroll: true
+            data,
+            preserveScroll: true,
         });
+
+        document.body.style.overflow = '';
+    };
+
+    // Funkcija filtru modāļa atvēršanai
+    const openFilterModal = () => {
+        showFilterModal.value = true;
+        document.body.style.overflow = 'hidden';
+        showFilterModal.value = true;
+    };
+
+    // Funkcija filtru modāļa aizvēršanai
+    const closeFilterModal = () => {
+        showFilterModal.value = false;
+        document.body.style.overflow = '';
+        showFilterModal.value = false;
+    };
+
+    // Funkcija kārtošanas modāļa atvēršanai
+    const openSortModal = () => {
+        showSortMenu.value = true;
+        document.body.style.overflow = 'hidden';
+    };
+
+    // Funkcija kārtošanas modāļa aizvēršanai
+    const closeSortModal = () => {
+        showSortMenu.value = false;
+        document.body.style.overflow = '';
     };
 
     // Navigācija uz klasiskās grāmatas lasīšanas lapu
@@ -160,30 +288,106 @@
     };
 
 </script>
-
-
 <template>
 
     <Navbar />
-
     <div class="page-wrapper">
-
         <div class="library-container">
-
             <div class="library-header">
                 <!-- Galvenais virsraksts -->
                 <h1 class="library-title">Bibliotēka</h1>
-                <!-- Poga filtrešānai -->
-                <button class="filter-btn" @click="showFilterModal = true">
-                    Filtrēt
-                </button>
+                <div class="buttons">
+                    <!-- Pogas filtrešānai un kartošanai-->
+                    <button class="filter-btn" @click="openFilterModal">
+                        Filtrēt
+                    </button>
+                    <button class="filter-btn" @click="openSortModal">
+                        Kārtot
+                    </button>
+                </div>
+            </div>
+
+            <!-- Kartošana -->
+            <div v-if="showSortMenu" class="modal-overlay" @click.self="closeSortModal">
+                <div class="modal-content">
+                    <button class="close-button" @click="closeSortModal">
+                        <i class="fa">&#xf00d;</i>
+                    </button>
+
+                    <h3>Kārtošanas opcijas</h3>
+                    <div class="filter-group">
+                        <div class="sort">
+                            <div
+                                class="status-option"
+                                :class="{ selected: filtersState.sort === 'date' }"
+                                @click="setSort('date')"
+                            >
+                                Pēc datuma
+                            </div>
+
+                            <div
+                                class="status-option"
+                                :class="{ selected: filtersState.sort === 'rating' }"
+                                @click="setSort('rating')"
+                            >
+                                Pēc vērtējumiem
+                            </div>
+
+                            <div
+                                class="status-option"
+                                :class="{ selected: filtersState.sort === 'chapters' }"
+                                @click="setSort('chapters')"
+                            >
+                                Pēc nodaļām
+                            </div>
+
+                            <div
+                                class="status-option"
+                                :class="{ selected: filtersState.sort === 'comments' }"
+                                @click="setSort('comments')"
+                            >
+                                Pēc komentāriem
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <div class="status-options">
+                            <div
+                                class="status-option"
+                                :class="{ selected: filtersState.direction === 'desc' }"
+                                @click="filtersState.direction = 'desc'"
+                            >
+                                Dilstoši
+                            </div>
+
+                            <div
+                                class="status-option"
+                                :class="{ selected: filtersState.direction === 'asc' }"
+                                @click="filtersState.direction = 'asc'"
+                            >
+                                Augoši
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button class="reset-btn" @click="resetSort">
+                            Atiestatīt
+                        </button>
+                        <button class="apply-btn" @click="applyFilters">
+                            Lietot
+                        </button>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Filtrēšanas modālais logs -->
-            <div v-if="showFilterModal" class="modal-overlay" @click.self="showFilterModal = false">
+            <div v-if="showFilterModal" class="modal-overlay" @click.self="closeFilterModal">
                 <div class="modal-content">
 
-                    <button class="close-button" @click="showFilterModal = false">
+                    <button class="close-button" @click="closeFilterModal">
                         <i class="fa">&#xf00d;</i>
                     </button>
 
@@ -191,7 +395,7 @@
 
                     <div class="filter-group">
                         <label>Grāmatu tips:</label>
-                        <select v-model="filters.bookType">
+                        <select v-model="filtersState.bookType">
                             <option value="all">Visas grāmatas</option>
                             <option value="classic">Klasiskās grāmatas</option>
                             <option value="user">Lietotāju grāmatas</option>
@@ -214,20 +418,32 @@
 
                     <div class="filter-group">
                         <label>Žanri:</label>
+                        <div class="filter-info">
+                            <div class="legend-item">
+                                <div class="cube"></div>
+                                <span>Ietver</span>
+                            </div>
+
+                            <div class="legend-item">
+                                <div class="cube2"></div>
+                                <span>Izslēgts</span>
+                            </div>
+                        </div>
+
                         <div class="genre-options">
                             <div
                                 v-for="genre in allGenres"
                                 :key="genre.id"
-                                class="genre-checkbox"
-                                :class="{ 'selected': selectedGenres.includes(genre.id.toString()) }"
                                 @click="toggleGenre(genre.id)"
+                                :class="genreClass(genre.id)"
+                                class="genre-chip"
                             >
                                 {{ genre.name }}
                             </div>
                         </div>
                     </div>
 
-                        <div class="filter-group" v-if="filters.bookType !== 'classic'">
+                        <div class="filter-group" v-if="filtersState.bookType !== 'classic'">
                             <label>Statusi:</label>
                             <div class="status-options">
                                 <div v-for="status in statuses"
@@ -239,6 +455,7 @@
                                 </div>
                             </div>
                         </div>
+
 
                     <div class="modal-actions">
                         <button class="reset-btn" @click="resetFilters">
@@ -657,6 +874,18 @@
         margin-bottom: 10px;
     }
 
+    .buttons{
+        flex-direction: row;
+        display: flex;
+        gap: 5px;
+    }
+
+    .sort {
+        display: flex;
+        flex-direction: column;
+        gap:10px;
+    }
+
     /* Filtru grupas konteiners */
     .filter-group {
         margin-bottom: 12px;
@@ -705,7 +934,7 @@
 
 
     .rating-checkbox.selected {
-        background-color: #ffc8a9;
+        background-color: #ffb18e;
     }
 
     .fastar{
@@ -719,7 +948,7 @@
         margin-top: 8px;
     }
 
-    .genre-checkbox {
+    .genre-chip {
         background-color: #ffd9c6;
         padding: 6px 12px;
         border-radius: 4px;
@@ -728,9 +957,43 @@
         font-size: 1rem;
     }
 
-    .genre-checkbox.selected {
-        background-color: #ffc8a9;
+    .genre-include {
+        background-color: #ffb18e;
     }
+
+    .genre-exclude {
+        background-color: #a5705b;
+        text-decoration: line-through;
+    }
+
+    .filter-info {
+        display: flex;
+        flex-direction: row;
+        gap: 18px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .cube,
+    .cube2 {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        border: 1px solid rgba(35, 11, 11, 0.8);
+    }
+
+    .cube {
+        background-color: #ffb18e;
+    }
+
+    .cube2 {
+        background-color: #a5705b;
+    }
+
 
     .status-options {
         display: flex;
@@ -749,7 +1012,7 @@
     }
 
     .status-option.selected {
-        background-color: #ffc8a9;
+        background-color: #ffb18e;
     }
 
     .modal-actions {
@@ -860,7 +1123,7 @@
             font-size: 0.9rem;
         }
 
-        .genre-checkbox {
+        .genre-chip {
             padding: 5px 10px;
             font-size: 0.9rem;
         }

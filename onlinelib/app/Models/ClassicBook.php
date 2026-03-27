@@ -37,4 +37,9 @@ class ClassicBook extends Model
         return $this->hasOne(Bookmark::class, 'classic_book_id')
             ->with('bookmarkType');
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'user_book_id');
+    }
 }

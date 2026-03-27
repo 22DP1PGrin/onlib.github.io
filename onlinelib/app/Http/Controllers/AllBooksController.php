@@ -68,19 +68,27 @@ class AllBooksController extends Controller
     //Metode filtrešānai
     public function filter(Request $request)
     {
+        $sort = $request->sort ?? 'date';
+        $direction = $request->direction ?? 'desc';
+
         // Lietotāju grāmatas ar vidējo vērtējumu un skaitu
         $query = UserBook::query()
             ->where('is_blocked', false)
             ->with(['user', 'genres'])
             ->withAvg('ratings as ratings_avg_grade', 'grade')
-            ->withCount('ratings as ratings_count');
+            ->withCount('ratings as ratings_count')
+            ->withCount('comments as comments_count')
+            ->withCount('chapters as chapters_count');
+
 
         // Klasiskās grāmatas ar vidējo vērtējumu un skaitu
         $classicQuery = ClassicBook::query()
             ->where('is_blocked', false)
             ->with('genres')
             ->withAvg('ratings as ratings_avg_grade', 'grade')
-            ->withCount('ratings as ratings_count');
+            ->withCount('ratings as ratings_count')
+            ->withCount('comments as comments_count')
+            ->withCount('chapters as chapters_count');
 
         // Lietotāju grāmatu filtrēšana (ja nav atlasīts tikai klasiskās)
         if ($request->bookType !== 'classic') {
@@ -90,16 +98,20 @@ class AllBooksController extends Controller
             }
 
             // Filtrē pēc žanriem
-            if (!empty($request->genres)) {
-                $query->whereHas('genres', function($q) use ($request) {
-                    $q->whereIn('genres.id', $request->genres); // Precīzi norādam tabulu
-                });
+            if (!empty($request->includeGenres)) {
+                $query->whereHas('genres', fn($q) => $q->whereIn('genres.id', $request->includeGenres));
+            }
+
+            if (!empty($request->excludeGenres)) {
+                $query->whereDoesntHave('genres', fn($q) => $q->whereIn('genres.id', $request->excludeGenres));
             }
 
             // Filtrē pēc statusa (tikai lietotāju grāmatām)
             if (!empty($request->statuses)) {
                 $query->whereIn('status', $request->statuses);
             }
+
+            $this->applySorting($query, $sort, $direction);
         }
 
         // Klasisko grāmatu filtrēšana (ja nav atlasīts tikai lietotāju grāmatas)
@@ -110,20 +122,27 @@ class AllBooksController extends Controller
             }
 
             // Filtrē pēc žanriem
-            if (!empty($request->genres)) {
-                $classicQuery->whereHas('genres', function($q) use ($request) {
-                    $q->whereIn('genres.id', $request->genres); // Precīzi norādam tabulu
-                });
+            if (!empty($request->includeGenres)) {
+                $classicQuery->whereHas('genres', fn($q) => $q->whereIn('genres.id', $request->includeGenres));
             }
+
+            if (!empty($request->excludeGenres)) {
+                $classicQuery->whereDoesntHave('genres', fn($q) => $q->whereIn('genres.id', $request->excludeGenres));
+            }
+
+            $this->applySorting($classicQuery, $sort, $direction);
         }
+
+        $books = $request->bookType === 'classic' ? [] : $query->get();
+        $classicBooks = $request->bookType === 'user' ? [] : $classicQuery->get();
 
         // Atgriež Inertia skatu ar filtrētajiem rezultātiem
         return Inertia::render('Reading/Library', [
             // Filtrētās lietotāju grāmatas (ja nav atlasīts tikai klasiskās)
-            'books' => $request->bookType === 'classic' ? [] : $query->get(),
+            'books' => $books,
 
             // Filtrētās klasiskās grāmatas (ja nav atlasīts tikai lietotāju grāmatas)
-            'classicBooks' => $request->bookType === 'user' ? [] : $classicQuery->get(),
+            'classicBooks' => $classicBooks,
 
             // Visi pieejamie žanri (sakārtoti pēc nosaukuma)
             'allGenres' => Genre::orderBy('name')->get(),
@@ -148,16 +167,45 @@ class AllBooksController extends Controller
             'filters' => [
                 'bookType' => $request->bookType ?? 'all',
                 'ratings' => $request->ratings ?? [],
-                'genres' => is_array($request->genres)
-                    ? array_map('strval', $request->genres)
-                    : [],
-                'statuses' => $request->statuses ?? []
-
+                'statuses' => $request->statuses ?? [],
+                'includeGenres' => $request->includeGenres ?? [],
+                'excludeGenres' => $request->excludeGenres ?? [],
+                'sort' => $request->sort ?? 'date',
+                'direction' => $request->direction ?? 'desc',
             ],
-            'hasFilteredResults' => ($request->bookType !== 'classic' && $query->count() > 0) ||
-                ($request->bookType !== 'user' && $classicQuery->count() > 0)
+
+            'hasFilteredResults' => count($books) > 0 || count($classicBooks) > 0,
         ]);
     }
+
+    // Kārto grāmatas vai stāstus
+    private function applySorting($query, $sort, $direction = 'desc')
+    {
+        // Aizsardzība pret nederīgu virzienu: ja nav "asc", tad tiek izmantots "desc"
+        $direction = $direction === 'asc' ? 'asc' : 'desc';
+
+        // Pārslēgšanās pēc kārtošanas parametra
+        switch ($sort) {
+            case 'rating':
+                // Kārto pēc vidējā vērtējuma; NULL vērtības aizstāj ar 0
+                return $query->orderByRaw('COALESCE(ratings_avg_grade, 0) ' . $direction);
+
+            case 'chapters':
+                // Kārto pēc nodaļu skaita
+                return $query->orderBy('chapters_count', $direction);
+
+            case 'comments':
+                // Kārto pēc komentāru skaita
+                return $query->orderBy('comments_count', $direction);
+
+            case 'date':
+            default:
+                // Noklusējuma kārtošana pēc izveides datuma
+                return $query->orderBy('created_at', $direction);
+        }
+    }
+
+    // Mēkle grāmatu vai stāstu pēc to nosaukuma
     public function searchBooks(Request $request)
     {
         $query = $request->input('query');
