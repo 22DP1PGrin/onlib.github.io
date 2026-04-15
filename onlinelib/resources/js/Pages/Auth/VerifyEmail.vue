@@ -1,12 +1,11 @@
 <script setup>
-    // Importē nepieciešamās funkcijas un komponentes
     import { computed, ref } from 'vue';
     import { usePage, useForm } from '@inertiajs/vue3';
     import Navbar from '@/Components/Navbar.vue';
     import Footer from '@/Components/Footer.vue';
     import { route } from "ziggy-js";
 
-    // Saņem props, kas tiek padoti no servera puses
+    // Komponenta ievaddati
     const props = defineProps({
         status: {
             type: String,
@@ -33,7 +32,7 @@
         window.history.back();
     };
 
-    // Iegūst informāciju par pašreizējo lapu (URL un datus) no Inertia.js
+    // Iegūst informāciju par pašreizējo lapu (URL un datus)
     const page = usePage();
 
     // Aprēķinātais mainīgais, kas pārbauda, vai URL satur "verified=1" (tas nozīmē, ka e-pasts jau ir apstiprināts)
@@ -41,6 +40,7 @@
 </script>
 
 <template>
+    <!-- Navigācijas josla -->
     <Navbar />
     <div class="center-container">
         <!-- Ja lietotājs jau ir apstiprinājis savu e-pastu -->
@@ -73,6 +73,7 @@
             </div>
         </div>
     </div>
+    <!-- Kājene -->
     <Footer />
 </template>
 

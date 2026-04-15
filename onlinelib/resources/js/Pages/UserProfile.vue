@@ -4,15 +4,19 @@
     import { computed, ref } from "vue";
     import {router, useForm, usePage} from "@inertiajs/vue3";
     import { route } from "ziggy-js";
+    import FormModal from "@/Components/Modal/FormModal.vue";
+    import SuccessModal from "@/Components/Modal/SuccessModal.vue";
 
+    // Komponenta ievaddati
     const props = defineProps({
         user: Object,
     });
 
-    // Aprēķina dažādus statistikas rādītājus, izmantojot Inertia lapas props
+    // Aprēķina dažādus statistikas rādītājus
     const booksCount = computed(() => usePage().props.booksCount);
     const totalRatingsCount = computed(() => usePage().props.totalRatingsCount);
     const readBooksCount = computed(() => usePage().props.readBooksCount || 0);
+    const CommentsCount = computed(() => usePage().props.commentsCount || 0);
 
     // Modālo logu stāvokļi
     const showUserModal = ref(false);
@@ -24,7 +28,7 @@
         problem: '',
     });
 
-    // Atlasītie lietotāja dati
+    // Uzglabā izvēlēto lietotāju ziņošanai
     const selectedUser = ref(null);
 
     // Atver modāli lietotāja ziņošanai
@@ -35,14 +39,16 @@
     };
 
     // Apstiprina lietotāja ziņošanu
-    const submitReport = () => {
-        if (!selectedUser.value) return;
+    const submitReport = (data) => {
 
+        form.subject = data.subject;
+        form.problem = data.problem;
+
+        if (!selectedUser.value) return;
         form.post(
             route('report.user', {user: selectedUser.value.id}),
             {
                 preserveScroll: true,
-
                 onSuccess: () => {
                     form.reset();
                     showUserModal.value = false;
@@ -52,91 +58,52 @@
         );
     };
 
-    // Aizver visus bloķēšanas modāļus
-    const closeAllModals = () => {
-        showUserModal.value = false;
-        form.reset();
-        document.body.style.overflow = "";
-    };
-
-    // Aizver veiksmīgas darbības modāli
-    const closeSuccessModal = () => {
-        showSuccessModal.value = false;
-        router.visit(window.location.href);
-        document.body.style.overflow = "";
-    };
-
-    // Navigācijas funkcijas uz dažādām grāmatu sadaļām
     const goToRead = (userId) => {
-        router.get(route('bookmarks.user', { userId, typeId: 1 }));
+        router.get(route('bookmarks.user', { userId, typeId: 1 })); // Pāriet uz izlasīto grāmatu sarakstu
     };
     const goToPlanned = (userId) => {
-        router.get(route('bookmarks.user', { userId, typeId: 4 }));
+        router.get(route('bookmarks.user', { userId, typeId: 4 })); // Pāriet uz plānoto grāmatu sarakstu
     };
     const goToReading = (userId) => {
-        router.get(route('bookmarks.user', { userId, typeId: 2 }));
+        router.get(route('bookmarks.user', { userId, typeId: 2 })); // Pāriet uz pašlaik lasāmo grāmatu sarakstu
     };
     const goToDropped = (userId) => {
-        router.get(route('bookmarks.user', { userId, typeId: 3 }));
+        router.get(route('bookmarks.user', { userId, typeId: 3 })); // Pāriet uz pamesto grāmatu sarakstu
     };
 </script>
-
-
 <template>
+    <!-- Navigācijas josla -->
     <Navbar />
-
     <div class="main-content">
 
-        <!-- Ziņošanas apstiprinājuma modālais logs stāstam -->
-        <div v-if="showUserModal" class="modal-overlay">
-            <div class="modal">
-                <div class="success-container">
-                    <h2>Vai tiešām vēlaties ziņot par šo lietotāju?</h2>
-                    <p>Lūdzu, norādiet ziņošanu iemeslu, lai apstiprinātu.</p>
+        <!-- Veiksmīgas grāmatzīmes pievienošanas modālis -->
+        <SuccessModal
+            :is-open="showSuccessModal"
+            title="Sūdzība veiksmīgi nosūtīta!"
+            @close="showSuccessModal = false"
+        />
 
-                    <div class="form-group">
-                        <!-- Tēmas izvēle -->
-                        <label for="subject">Tēma:</label>
-                        <select v-model="form.subject" required>
-                            <option value="" disabled>Izvēlieties tēmu</option>
-                            <option value="Krāpnieciska vai maldinoša darbība">Krāpnieciska vai maldinoša darbība</option>
-                            <option value="Noteikumu pārkāpums">Noteikumu pārkāpums</option>
-                            <option value="Naida runa vai diskriminējoša uzvedība"> Naida runa vai diskriminējoša uzvedība</option>
-                            <option value="Citu lietotāju aizskaršana">Citu lietotāju aizskaršana</option>
-                        </select>
-
-                        <div v-if="form.errors.subject" class="error">
-                            {{ form.errors.subject }}
-                        </div>
-                    </div>
-
-                    <!-- Pamatojuma ievades lauks -->
-                    <div class="form-group">
-                        <label for="problem">Pamatojums:</label>
-                        <textarea v-model="form.problem" required></textarea>
-
-                        <!-- Validācijas kļūdas paziņojums pamatojumam -->
-                        <div v-if="form.errors.problem" class="error">
-                            {{ form.errors.problem }}
-                        </div>
-                    </div>
-                    <div class="close">
-                        <button @click="closeAllModals" class="close-btn">Atcelt</button>
-                        <button @click="submitReport" class="close-btn">Ziņot</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Veiksmīgas ziņošanas modālais logs -->
-        <div v-if="showSuccessModal" class="modal-overlay">
-            <div class="modal">
-                <div class="success-container">
-                    <h2>Sūdzība veiksmīgi nosūtīta!</h2>
-                    <button @click="closeSuccessModal" class="close-btn">Aizvērt</button>
-                </div>
-            </div>
-        </div>
+        <!-- Ziņošanas modālis -->
+        <FormModal
+            :is-open="showUserModal"
+            title="Vai tiešām vēlaties ziņot par šo lietotāju?'"
+            message="Lūdzu, norādiet ziņošanu iemeslu, lai apstiprinātu."
+            :fields="[
+                { name: 'subject', label: 'Tēma', type: 'select', required: true,
+                      options: [
+                          { value: 'Krāpnieciska vai maldinoša darbība', label: 'Krāpnieciska vai maldinoša darbība' },
+                          { value: 'Noteikumu pārkāpums', label: 'Noteikumu pārkāpums' },
+                          { value: 'Naida runa vai diskriminējoša uzvedība', label: 'Naida runa vai diskriminējoša uzvedība' },
+                          { value: 'Citu lietotāju aizskaršana', label: 'Citu lietotāju aizskaršana' },
+                      ]
+                },
+                { name: 'problem', label: 'Pamatojums', type: 'textarea', required: true, rows: 4 }
+            ]"
+            :errors="form.errors"
+            submit-text="Ziņot"
+            @submit="submitReport"
+            @close="showUserModal = false"
+        />
 
         <div class="content">
             <!-- Lietotāja profila sadaļa -->
@@ -149,6 +116,7 @@
                         <img v-else :src="`/storage/${user.avatar}`" alt="avatar" />
                     </div>
                 </div>
+
                 <!-- Biogrāfijas sadaļa -->
                 <div class="bio-section">
                     <!-- Biogrāfijas teksts (ja tukšs - rāda aizvietotājtekstu) -->
@@ -172,15 +140,23 @@
                             <div class="stat-number">{{ readBooksCount }}</div>
                             <div class="stat-label">Izlasītās grāmatas</div>
                         </div>
+
                         <!-- Uzrakstīto darbu skaits -->
                         <div class="stat-item">
                             <div class="stat-number">{{ booksCount || 0 }}</div>
                             <div class="stat-label">Uzrakstītie darbi</div>
                         </div>
+
                         <!-- Novērtēto darbu skaits -->
                         <div class="stat-item">
                             <div class="stat-number">{{ totalRatingsCount || 0 }}</div>
                             <div class="stat-label">Novērtētie darbi</div>
+                        </div>
+
+                        <!-- Komentāru skaits -->
+                        <div class="stat-item">
+                            <div class="stat-number">{{ CommentsCount || 0 }}</div>
+                            <div class="stat-label">Komentāru skaits</div>
                         </div>
                     </div>
                 </div>
@@ -217,7 +193,7 @@
             </div>
         </div>
     </div>
-
+    <!-- Kājene -->
     <Footer/>
 </template>
 
@@ -230,110 +206,6 @@
         padding-bottom: 60px; /* Apakšējais izsistējs */
     }
 
-    /* Modala loga stils */
-    .modal-overlay {
-        position: fixed; /* Fiksēta pozicija */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(19, 8, 0, 0.59);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000; /* Virs visiem elementiem */
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-    }
-
-    .modal {
-        border-radius: 12px;
-        padding: 15px;
-        max-width: 400px;
-        width: 90%;
-        position: relative;
-        background-color: #e4a27c; /* Fona krāsa */
-        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-    }
-
-    .close{
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
-    }
-
-    .close-btn{
-        align-self: flex-start;
-        margin-bottom: 5px;
-    }
-
-    .success-container {
-        text-align: center;
-        padding: 15px;
-    }
-
-    .success-container h2 {
-        margin-bottom: 15px;
-        font-size:  1.3rem;
-        font-weight: bold;
-        color: rgba(26, 16, 8, 0.8);
-    }
-
-    .success-container p {
-        margin-bottom: 15px;
-        color: rgba(26, 16, 8, 0.8);
-
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        margin-bottom: 10px;
-    }
-
-    label {
-        font-weight: bold;
-        text-align: left;
-        color: rgba(26, 16, 8, 0.8); /* Krāsa */
-    }
-
-    textarea::placeholder {
-        color: rgba(26, 16, 8, 0.42);
-        font-size: 1.0rem;
-    }
-
-    /* Kļūdas zem ievades lauka */
-    .error{
-        color: rgb(110, 37, 37);
-        font-size: 1rem;
-        text-align: left;
-        margin-bottom: 5px;
-    }
-
-    .form-group select,
-    .form-group textarea {
-        padding: 10px;
-        border: 1px solid rgba(26, 16, 8, 0.8);
-        border-radius: 4px;
-        font-size: 1rem;
-    }
-
-    option{
-        font-size: 1rem;
-    }
-
-    .form-group textarea {
-        resize: vertical; /* Atļauj tekstlaukam mainīt izmērus vertikāli */
-        min-height: 100px; /* Minimālais augstums */
-    }
-
-    textarea:focus,
-    input:focus {
-        outline: none; /* Noņem apmales fokusa režīmā */
-        box-shadow: none; /* Noņem nokrāsu ap laukiem */
-        background-color: #ffc8a9; /* Fona krāsa, kad lauks ir fokusēts */
-    }
     .content {
         max-width: 1000px; /* Maksimālais platums */
         margin: 0 auto; /* Centrē saturs */
@@ -401,11 +273,6 @@
         font-size: 1rem;
         padding: 3px 20px;
         align-items: center;
-    }
-
-    .close-btn{
-        align-self: flex-start;
-        margin-bottom: 5px;
     }
 
     .report-wrapper {

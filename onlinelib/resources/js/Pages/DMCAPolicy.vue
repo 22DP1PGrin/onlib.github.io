@@ -1,96 +1,81 @@
+<script setup>
+    import Navbar from "@/Components/Navbar.vue";
+    import Footer from "@/Components/Footer.vue";
+</script>
+
 <template>
     <!-- Navigācijas josla -->
     <Navbar />
-
-    <!-- Galvenais saturs -->
+    <!-- Galvenais satura bloks -->
     <div class="main-content">
         <div class="content">
 
-            <!-- DMCA politikas virsraksts -->
-            <h1>DMCA Politika</h1>
+            <!-- DMCA politikas lapas virsraksts -->
+            <h1>DTAL Politika</h1>
 
-            <!-- Sadaļa: Kas ir DMCA Politika? -->
-            <h2>1. Kas ir DMCA Politika?</h2>
+            <!-- Ievada sadaļa - kas ir DTAL politika -->
+            <h2>1. Kas ir DTAL Politika?</h2>
             <p>
-                Šī DMCA (Digital Millennium Copyright Act) Politika nosaka, kā tiek apstrādātas autortiesību pārkāpumu sūdzības mūsu platformā.
-                Tā izskaidro, kā lietotāji var iesniegt sūdzības, kā mēs tās apstrādājam un kādas ir lietotāju atbildības, publicējot saturu.
-                Visa nepieciešamā informācija ir jānosūta mūsu <a href="/technicalsupport"> Tehniskajam atbalstam</a>.
+                Šī DTAL (Digitālo tiesību aizsardzības likuma) politika nosaka, kā platformā tiek apstrādātas autortiesību pārkāpumu sūdzības.
+                Tā izskaidro, kā iespējams ziņot par iespējamiem pārkāpumiem, kā notiek sūdzību izskatīšana un kādi pienākumi ir lietotājiem, publicējot saturu.
             </p>
 
-            <!-- Sadaļa: Lietotāja atbildība -->
+            <!-- Lietotāja atbildības sadaļa -->
             <h2>2. Lietotāja atbildība</h2>
             <p>
                 Lietotājs ir atbildīgs par to, ka viņa publicētais saturs nepārkāpj citu personu autortiesības.
-                Ja lietotājs publicē saturu, kas pieder citai personai, viņam ir jāiegūst atļauja no autortiesību īpašnieka.
+                Publicējot materiālus, jānodrošina, ka tie ir oriģināli vai tiek izmantoti ar atbilstošu atļauju no autortiesību īpašnieka.
             </p>
 
-            <!-- Sadaļa: Autortiesību pārkāpumu sūdzības iesniegšana -->
+            <!-- Sūdzību iesniegšanas sadaļa -->
             <h2>3. Autortiesību pārkāpumu sūdzības iesniegšana</h2>
             <p>
-                Ja lietotājs uzskata, ka viņa autortiesības ir pārkāptas, viņš var iesniegt oficiālu DMCA sūdzību.
-                Sūdzībai jāietver šāda informācija:
+                Ja tiek konstatēts iespējams autortiesību pārkāpums, par to var ziņot, izmantojot īpašu ziņošanas pogu pie attiecīgā darba satura vai sazinoties ar
+                <a href="/technicalsupport">tehnisko atbalstu</a>.
+                <br /><br />
+                Sūdzībā jānorāda skaidra un pamatota informācija, tostarp:
             </p>
             <ul>
-                <!-- Sūdzības iesniegšanas prasības -->
-                <li><strong>3.1</strong> Fizisks vai elektronisks paraksts no autortiesību īpašnieka vai personas, kurai ir tiesības rīkoties viņa vārdā.</li>
-                <li><strong>3.2</strong> Detalizēts apraksts par darbu, kura autortiesības ir pārkāptas.</li>
-                <li><strong>3.3</strong> Precīzs vietrādis (URL), kur pārkāptais materiāls atrodas mūsu platformā.</li>
-                <li><strong>3.4</strong> Sūdzības iesniedzēja vārds un e-pasta adrese.</li>
-                <li><strong>3.5</strong> Paziņojums, ka sūdzības iesniedzējs uzskata, ka materiāla izmantošana nav atļauta.</li>
-                <li><strong>3.6</strong> Paziņojums, ka sniegtā informācija ir patiesa un ka sūdzības iesniedzējs ir autortiesību īpašnieks vai personas, kurai ir tiesības rīkoties viņa vārdā.</li>
+                <li><strong>3.1</strong> Saite uz oriģinālo darbu, uz kuru attiecas autortiesības.</li>
+                <li><strong>3.2</strong> Paskaidrojums, kāpēc attiecīgais darbs tiek uzskatīts par plaģiātu vai autortiesību pārkāpumu.</li>
             </ul>
+            <p>
+                Ja sūdzība tiek iesniegta, izmantojot tehnisko atbalstu, obligāti jānorāda saite uz saturu platformā, kā arī attiecīgā darba nosaukums, kurā konstatēts iespējamais pārkāpums.
+            </p>
 
-            <!-- Sadaļa: Kā tiek apstrādātas sūdzības -->
+            <!-- Sūdzību apstrādes sadaļa -->
             <h2>4. Kā tiek apstrādātas sūdzības</h2>
             <p>
-                Saņemot derīgu DMCA sūdzību, mēs veicam nepieciešamo pārbaudi.
-                Ja sūdzība ir pamatota, mēs noņemam vai bloķējam piekļuvi pārkāptajam saturam.
-                Lietotājs, kurš publicēja materiālu, tiks informēts par noņemšanu un varēs iesniegt pretpaziņojumu.
+                Pēc sūdzības saņemšanas tā tiek izvērtēta. Ja tiek konstatēts pārkāpums, piekļuve darbam var tikt ierobežota vai darbs var tikt noņemts.
+                Par pieņemto lēmumu tiek informēts lietotājs, kurš publicējis attiecīgo darbu.
+                <br /><br />
+                Atkārtotu pārkāpumu gadījumā lietotājs var tikt bloķēts uz noteiktu laiku vai neatgriezeniski. Smagu vai sistemātisku pārkāpumu gadījumā platforma patur tiesības dzēst lietotāja kontu un noņemt visus ar to saistītos darbus.
             </p>
 
-            <!-- Sadaļa: Pretpaziņojumu iesniegšana -->
+            <!-- Pretpaziņojumu iesniegšanas sadaļa -->
             <h2>5. Pretpaziņojumu iesniegšana</h2>
             <p>
-                Ja lietotājs uzskata, ka viņa saturs tika noņemts kļūdas vai pārpratuma dēļ, viņš var iesniegt pretpaziņojumu.
-                Pretpaziņojumā jāietver šāda informācija:
+                Ja lietotājs uzskata, ka darbs ir ierobežots vai noņemts nepamatoti, iespējams iesniegt pretpaziņojumu.
+                Pretpaziņojumā jānorāda:
             </p>
             <ul>
-                <!-- Pretpaziņojuma iesniegšanas prasības -->
-                <li><strong>5.1</strong> Fizisks vai elektronisks paraksts no lietotāja vai personas, kurai ir tiesības rīkoties viņa vārdā.</li>
-                <li><strong>5.2</strong> Detalizēts apraksts par materiālu, kas tika noņemts.</li>
-                <li><strong>5.3</strong> Paziņojums, ka materiāls tika noņemts kļūdas vai pārpratuma dēļ.</li>
-                <li><strong>5.4</strong> Lietotāja vārds un e-pasta adrese.</li>
-                <li><strong>5.5</strong> Paziņojums, ka lietotājs piekrīt jurisdikcijai, kurā atrodas mūsu platforma.</li>
+                <li><strong>5.1</strong> Apraksts par darbu, kas tika noņemts vai ierobežots.</li>
+                <li><strong>5.2</strong> Saite uz attiecīgo darbu platformā.</li>
+                <li><strong>5.3</strong> Paskaidrojums, kāpēc ierobežojums tiek uzskatīts par nepamatotu.</li>
             </ul>
 
-            <!-- Sadaļa: Izmaiņas DMCA politikā -->
-            <h2>6. Izmaiņas DMCA politikā</h2>
+            <!-- Politikas izmaiņu sadaļa -->
+            <h2>6. Izmaiņas politikā</h2>
             <p>
-                Mēs paturam tiesības jebkurā laikā mainīt šo privātuma politiku.
-                Visas izmaiņas tiks publicētas šajā lapā, un tās stāsies spēkā nekavējoties pēc publicēšanas.
+                Platforma patur tiesības jebkurā laikā veikt izmaiņas šajā politikā.
+                Atjauninātā versija tiek publicēta šajā lapā un stājas spēkā nekavējoties pēc publicēšanas.
             </p>
 
         </div>
     </div>
-
     <!-- Kājene -->
     <Footer/>
 </template>
-
-<script>
-/* Komponentu importēšana */
-import Navbar from "@/components/Navbar.vue"; // Importē navigācijas joslu
-import Footer from "@/components/Footer.vue"; // Importē kājeni
-
-/* Komponentu reģistrēšana */
-export default {
-    components: {
-        Navbar, // Reģistrē navigācijas joslu
-        Footer  // Reģistrē kājeni
-    }
-};
-</script>
-
 <style scoped>
 
     /* Galvenā satura konteinera stils */
@@ -147,6 +132,10 @@ export default {
     .main-content ul {
         font-size: 1.0rem; /* Teksta izmērs */
         margin: 10px -10px; /* Ārējā atstarpe */
+    }
+
+    p{
+        line-height: 1.8;
     }
 
     /* Saišu stils */

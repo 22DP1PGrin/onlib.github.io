@@ -74,7 +74,7 @@ class ClassicBookController extends Controller
         $book->genres()->attach($validated['genres']);
 
         // Pāradre uz grāmatu sarakstu
-        return redirect()->route('book.lists');
+        return back()->with('success', true);
     }
 
     // Metode, kas atver grāmatas rediģēšanas formu
@@ -146,7 +146,7 @@ class ClassicBookController extends Controller
         }
 
         // Pāradrese uz grāmatu sarakstu ar ziņojumu par veiksmi
-        return redirect()->route('book.lists')->with('success', 'Stāsts veiksmīgi atjaunināts!');
+        return back()->with('success', true);
     }
 
     // Dzēš konkrētu klasisko grāmatu
@@ -247,9 +247,9 @@ class ClassicBookController extends Controller
     }
 
      // Grāmatas vērtēšanas funkcija
-    public function rateBook(Request $request, $bookId)
+    public function rateBook(Request $request, $book)
     {
-        // Validācija - vērtējumam jābūt no 1 līdz 5
+        // Validācija
         $request->validate([
             'grade' => 'required|integer|min:1|max:5'
         ]);
@@ -258,27 +258,27 @@ class ClassicBookController extends Controller
         $rating = Rating::updateOrCreate(
             [
                 'user_id' => $request->user()->id,
-                'classic_book_id' => $bookId
+                'classic_book_id' => $book
             ],
             [
                 'grade' => $request->grade
             ]
         );
 
-        // Pārrēķina vidējo vērtējumu grāmatai
-        $average = Rating::where('classic_book_id', $bookId)
+        // Pārrēķina vidējo vērtējumu
+        $average = Rating::where('classic_book_id', $book)
             ->avg('grade');
 
-        // Saskaita vērtējumu skaitu grāmatai
-        $count = Rating::where('classic_book_id', $bookId)
+        // Saskaita vērtējumu skaitu
+        $count = Rating::where('classic_book_id', $book)
             ->count();
 
-        // Atgriež veiksmīgu atbildi ar datiem
-        return response()->json([
+        // Atgriež atbildi ar atjaunotajiem datiem
+        return back()->with([
             'success' => true,
-            'averageRating' => (float) $average,  // Vidējais vērtējums
-            'ratingsCount' => $count,             // Vērtējumu skaits
-            'userRating' => $rating->grade       // Lietotāja vērtējums
+            'averageRating' => (float) $average,
+            'ratingsCount' => $count,
+            'userRating' => $rating->grade
         ]);
     }
 

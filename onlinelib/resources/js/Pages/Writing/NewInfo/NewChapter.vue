@@ -1,63 +1,76 @@
 <script setup>
-import Navbar from "@/Components/Navbar.vue";
-import Footer from "@/Components/Footer.vue";
-import { ref } from "vue";
-import axios from "axios";
-import {route} from "ziggy-js";
+    import Navbar from "@/Components/Navbar.vue";
+    import Footer from "@/Components/Footer.vue";
+    import { ref } from "vue";
+    import axios from "axios";
+    import {route} from "ziggy-js";
+    import SuccessModal from "@/Components/Modal/SuccessModal.vue";
+    import {router} from "@inertiajs/vue3";
 
-// Props no Laravel/Inertia
-const props = defineProps({
-    bookId: { type: Number, required: true }, // Grāmatas ID
-    type: { type: String, required: true }    // "user" vai "classic"
-});
+    // Komponenta ievaddati
+    const props = defineProps({
+        bookId: { type: Number, required: true }, // Grāmatas ID
+        type: { type: String, required: true }    // "user" vai "classic"
+    });
 
-// Formas dati
-const title = ref('');
-const content = ref('');
-const validationErrors = ref({});
+    // Modālo logu stāvokļi
+    const showSuccesModal = ref(false);
 
-// Funkcija nodaļas saglabāšanai
-async function saveChapter() {
-    try {
-        // Nosaka URL atkarībā no tipa
+    // Aizvēr modāli
+    const closeSuccesModal = () => {
+        showSuccesModal.value = false;
+
+        const redirectUrl = props.type === 'classic'
+            ? `/Classic/${props.bookId}/edit`
+            : `/writing/${props.bookId}/edit`;
+
+        router.visit(redirectUrl);
+    };
+
+    // Formas dati
+    const title = ref('');
+    const content = ref('');
+    const validationErrors = ref({});
+
+    // Funkcija, kas saglabā jaunu nodaļu
+    const saveChapter = () => {
+        // Nosaka, uz kuru servera maršrutu sūtīt datus
         const url = props.type === 'classic'
             ? route('classic.chapters.store', props.bookId)
             : route('user.chapters.store', props.bookId);
 
-        const data = {
+        // Nosūta datus uz serveri
+        router.post(url, {
+            // Nodaļas dati
             book_id: props.bookId,
             name: title.value,
             content: content.value
-        };
 
-        await axios.post(url, data);
-
-        alert('Nodaļa veiksmīgi saglabāta!');
-
-        // Pāradresācija uz grāmatas rediģēšanas lapu
-        const redirectUrl = props.type === 'classic'
-                ? `/Classic/${props.bookId}/edit`
-                : `/writing/${props.bookId}/edit`;
-
-        window.location.href = redirectUrl;
-
-    } catch (error) {
-        if (error.response && error.response.status === 422) {
-            validationErrors.value = error.response.data.errors;
-        } else {
-            console.error(error);
-        }
-    }
-}
+        }, {
+            onSuccess: () => {
+                showSuccesModal.value = true;
+            }
+        });
+    };
 </script>
 
 <template>
+    <!-- Navigācijas josla -->
     <Navbar />
+
+    <!-- Veiksmīgas izveidošanas modālais logs -->
+    <SuccessModal
+        :is-open="showSuccesModal"
+        title="Nodaļa ir veiksmīgi izveidota!"
+        @close="closeSuccesModal"
+    />
 
     <div class="main-content">
         <div class="story-form">
+            <!-- Nodaļas veidošanas formas konteiners -->
             <h1>Nodaļas izveide</h1>
 
+            <!-- Nosaukuma ievades lauks -->
             <form @submit.prevent="saveChapter">
                 <div class="editor-container">
                     <input
@@ -67,22 +80,28 @@ async function saveChapter() {
                         placeholder="Nodaļas nosaukums"
                         required
                     />
+
+                    <!-- Kļūdas paziņojums, ja nosaukums nav derīgs -->
                     <div v-if="validationErrors.name" class="error-message1">
                         {{ validationErrors.name[0] }}
                     </div>
 
+                    <!-- Satura ievades lauks -->
                     <textarea
                         v-model="content"
                         class="chapter-editor"
                         placeholder="Sāciet rakstīt savu nodaļu šeit..."
                         required
                     ></textarea>
+
+                    <!-- Kļūdas paziņojums, ja saturs nav derīgs -->
                     <div v-if="validationErrors.content" class="error-message">
                         {{ validationErrors.content[0] }}
                     </div>
 
                     <div class="editor-footer">
                         <button type="submit" class="save-btn">Saglabāt</button>
+                        <!-- Kopējas rakstszīmes skaits -->
                         <div class="word-count">
                             Rakstzīmes: {{ content.length }}
                         </div>
@@ -91,7 +110,7 @@ async function saveChapter() {
             </form>
         </div>
     </div>
-
+    <!-- Kājene -->
     <Footer />
 </template>
 
@@ -103,7 +122,7 @@ async function saveChapter() {
     }
 
     .story-form {
-        max-width: 1200px; /* Maksimālais platums formai */
+        max-width: 1000px; /* Maksimālais platums formai */
         margin: 0 auto; /* Centrs horizontāli */
         padding: 20px;
     }

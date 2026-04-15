@@ -14,13 +14,16 @@ class AllBooksController extends Controller
     // Atgriež visu grāmatu sarakstu ar saistītajiem datiem bibliotēkai
     public function showAll()
     {
+        $userId = auth()->id();
 
         // Iegūst visas lietotāju grāmatas ar saistītajiem lietotājiem un žanriem
         $books = UserBook::query()
             ->with([
                 'user',
                 'genres',
-                'bookmark.bookmarkType'
+                'bookmark' => function ($q) use ($userId) {
+                    $q->where('user_id', $userId)->with('bookmarkType');
+                }
             ])
             ->Where('is_blocked', false)
             ->withAvg('ratings', 'grade')
@@ -35,7 +38,9 @@ class AllBooksController extends Controller
         $classicBooks = ClassicBook::query()
             ->with([
                 'genres',
-                'bookmark.bookmarkType'
+                'bookmark' => function ($q) use ($userId) {
+                    $q->where('user_id', $userId)->with('bookmarkType');
+                }
             ])
             ->Where('is_blocked', false)
             ->withAvg('ratings', 'grade')
@@ -70,21 +75,29 @@ class AllBooksController extends Controller
     {
         $sort = $request->sort ?? 'date';
         $direction = $request->direction ?? 'desc';
+        $userId = auth()->id();
 
         // Lietotāju grāmatas ar vidējo vērtējumu un skaitu
         $query = UserBook::query()
             ->where('is_blocked', false)
-            ->with(['user', 'genres'])
+            ->with(['user', 'genres',
+                'bookmark' => function ($q) use ($userId) {
+                    $q->where('user_id', $userId)
+                        ->with('bookmarkType');
+            }])
             ->withAvg('ratings as ratings_avg_grade', 'grade')
             ->withCount('ratings as ratings_count')
             ->withCount('comments as comments_count')
             ->withCount('chapters as chapters_count');
 
-
         // Klasiskās grāmatas ar vidējo vērtējumu un skaitu
         $classicQuery = ClassicBook::query()
             ->where('is_blocked', false)
-            ->with('genres')
+            ->with(['genres',
+                'bookmark' => function ($q) use ($userId) {
+                    $q->where('user_id', $userId)
+                        ->with('bookmarkType');
+            }])
             ->withAvg('ratings as ratings_avg_grade', 'grade')
             ->withCount('ratings as ratings_count')
             ->withCount('comments as comments_count')
@@ -133,8 +146,17 @@ class AllBooksController extends Controller
             $this->applySorting($classicQuery, $sort, $direction);
         }
 
-        $books = $request->bookType === 'classic' ? [] : $query->get();
-        $classicBooks = $request->bookType === 'user' ? [] : $classicQuery->get();
+        $books = $request->bookType === 'classic'
+            ? collect()
+            : $query->get()->each(function ($book) {
+                $book->current_bookmark = $book->bookmark?->first()?->bookmarkType;
+            });
+
+        $classicBooks = $request->bookType === 'user'
+            ? collect()
+            : $classicQuery->get()->each(function ($book) {
+                $book->current_bookmark = $book->bookmark?->bookmarkType;
+            });
 
         // Atgriež Inertia skatu ar filtrētajiem rezultātiem
         return Inertia::render('Reading/Library', [
@@ -209,12 +231,17 @@ class AllBooksController extends Controller
     public function searchBooks(Request $request)
     {
         $query = $request->input('query');
+        $userId = auth()->id();
 
         // Lietotāju grāmatu meklēšanu
         $books = UserBook::query()
             ->where('name', 'LIKE', "%{$query}%")
             ->where('is_blocked', false)
-            ->with(['user', 'genres', 'bookmark.bookmarkType'])
+            ->with(['user', 'genres',
+                'bookmark' => function ($q) use ($userId) {
+                    $q->where('user_id', $userId)
+                        ->with('bookmarkType');
+                }])
             ->withAvg('ratings', 'grade')
             ->withCount('ratings')
             ->get()
@@ -227,7 +254,11 @@ class AllBooksController extends Controller
         $classicBooks = ClassicBook::query()
             ->where('name', 'LIKE', "%{$query}%")
             ->where('is_blocked', false)
-            ->with(['genres', 'bookmark.bookmarkType'])
+            ->with(['genres',
+                'bookmark' => function ($q) use ($userId) {
+                    $q->where('user_id', $userId)
+                        ->with('bookmarkType');
+            }])
             ->withAvg('ratings', 'grade')
             ->withCount('ratings')
             ->get()
@@ -255,12 +286,18 @@ class AllBooksController extends Controller
     // Atgriež 3 jaunākās klasiskās un lietotāju grāmatas mājaslapas skata sākumlapai
     public function getHomePageBooks()
     {
+        $userId = auth()->id();
+
         // Iegūst 3 jaunākās klasiskās grāmatas, sakārtotas pēc izveides datuma (jaunākās pirmās)
         $classicBooks = ClassicBook::query()
             ->Where('is_blocked', false)
             ->orderBy('created_at', 'desc') // Sakārto dilstošā secībā pēc izveides laika
             ->take(3) // Ierobežo rezultātus līdz 3 ierakstiem
-            ->with(['genres']) // Iekļauj saistītos žanrus
+            ->with(['genres',
+                'bookmark' => function ($q) use ($userId) {
+                    $q->where('user_id', $userId)
+                        ->with('bookmarkType');
+                }])
             ->withAvg('ratings', 'grade') // Aprēķina vidējo vērtējumu
             ->withCount('ratings') // Saskaita vērtējumus
             ->get()
@@ -274,7 +311,10 @@ class AllBooksController extends Controller
             ->Where('is_blocked', false)
             ->orderBy('created_at', 'desc') // Sakārto dilstošā secībā
             ->take(3) // Ierobežo līdz 3 ierakstiem
-            ->with(['user', 'genres', 'bookmark.bookmarkType']) // Iekļauj saistītos datus
+            ->with(['user', 'genres', 'bookmark' => function ($q) use ($userId) {
+                $q->where('user_id', $userId)
+                    ->with('bookmarkType');
+            }])
             ->withAvg('ratings', 'grade') // Aprēķina vidējo vērtējumu
             ->withCount('ratings') // Saskaita vērtējumus
             ->get()

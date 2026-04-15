@@ -3,78 +3,136 @@ import { router, useForm } from '@inertiajs/vue3';
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import { route } from "ziggy-js";
+import {nextTick, onMounted, ref} from "vue";
+import ConfirmModal from "@/Components/Modal/ConfirmModal.vue";
+import SuccessModal from "@/Components/Modal/SuccessModal.vue";
 
-// Saņemam datus no servera kā props
-const props = defineProps({
-    classic_book: Object, // Stāsta objekts
-    genres: Array, // Pieejamie žanri
-    ratings: Array, // Vērtējumu opcijas
-    flash: Object // Flash ziņojumi (ja ir)
-});
-
-// Paņemam žanru ID no esošā stāsta (ja tādi ir)
-const initialGenreIds = props.classic_book.genres?.map(g => g.id) || [];
-
-// Izveidojam veidlapas datus, sākotnēji aizpildītus ar esošo stāsta informāciju
-const form = useForm({
-    name: props.classic_book.name,
-    description: props.classic_book.description,
-    age_limit: props.classic_book.age_limit,
-    Year_publication: props.classic_book.Year_publication,
-    genres: [...initialGenreIds],
-    Author_name: props.classic_book.Author_name,
-    Author_surname: props.classic_book.Author_surname
-
-});
-
-// Funkcija žanru pārslēgšanai (pievienošana/noņemšana)
-const toggleGenre = (genreId) => {
-    if (form.genres.includes(genreId)) {
-        form.genres = form.genres.filter(id => id !== genreId); // Noņemt
-    } else {
-        form.genres = [...form.genres, genreId]; // Pievienot
-    }
-};
-
-// Veidlapas iesniegšana – atjaunina stāstu
-const submitForm = () => {
-    form.put(route('classic.books.update', { id: props.classic_book.id }), {
-        preserveScroll: true, // Patur skatu ritināšanas vietā
-        onSuccess: () => {
-            alert('Stāsts veiksmīgi atjaunināts!'); // Panākumu ziņojums
-            router.visit(route('book.lists')); // Pāriet uz stāstu sarakstu
-        },
-        onError: (errors) => {
-            console.log(errors); // Kļūdu izvadīšana konsolē
-        },
+    // Komponenta ievaddati
+    const props = defineProps({
+        classic_book: Object,
+        genres: Array,
+        ratings: Array,
+        flash: Object
     });
-};
 
-// Nodaļas dzēšana pēc apstiprinājuma
-const deleteChapter = (id) => {
-    if (confirm('Vai tiešām vēlaties dzēst šo nodaļu?')) {
-        router.delete(route('classic.chapters.destroy', { id }), {
+    // Inicializē sākotnēji izvēlētos žanrus no esošās grāmatas
+    const initialGenreIds = props.classic_book.genres?.map(g => g.id) || [];
+
+    // Uzglabā izvēlētās nodaļas ID dzēšanai
+    const selectedChapterId = ref(null);
+
+    // Modālo logu stāvokļi
+    const showDeleteModal = ref(false);
+    const showDeleteSuccesModal = ref(false);
+    const showSuccesModal = ref(false);
+
+    // Atver dzēšanas apstiprinājuma modāli
+    const openDeleteModal = (id) => {
+        selectedChapterId.value = id;
+        showDeleteModal.value = true;
+    };
+
+    // Grāmatas rediģēšanas forma
+    const form = useForm({
+        name: props.classic_book.name,
+        description: props.classic_book.description,
+        age_limit: props.classic_book.age_limit,
+        Year_publication: props.classic_book.Year_publication,
+        genres: [...initialGenreIds],
+        Author_name: props.classic_book.Author_name,
+        Author_surname: props.classic_book.Author_surname
+
+    });
+
+    // Funkcija žanru pārslēgšanai (pievienošana/noņemšana)
+    const toggleGenre = (genreId) => {
+        if (form.genres.includes(genreId)) {
+            form.genres = form.genres.filter(id => id !== genreId); // Noņemt
+        } else {
+            form.genres = [...form.genres, genreId]; // Pievienot
+        }
+    };
+
+    // Atjaunina stāstu
+    const submitForm = () => {
+        form.put(route('classic.books.update', { id: props.classic_book.id }), {
             preserveScroll: true,
             onSuccess: () => {
-                alert('Nodaļa dzēsta.'); // Ziņojums pēc dzēšanas
+                showSuccesModal.value = true
             },
         });
+    };
+
+    // Nodaļas dzēšana
+    const confirmDelete = () => {
+        router.delete(route('classic.chapters.destroy', { id: selectedChapterId.value }), {
+            preserveScroll: true,
+            onSuccess: () => {
+                showDeleteModal.value = false;
+                showDeleteSuccesModal.value = true;
+            },
+        });
+    };
+
+    // Pāriet uz nodaļas izveides lapu
+    const GoToCreate = () => {
+        router.get(route('classic.chapters.create', { book: props.classic_book.id }));
+    };
+
+    // Pāriet uz esošās nodaļas rediģēšanu
+    const goToEdit = (chapterId) => {
+        router.get(route('classic.chapters.edit', { chapter: chapterId }));
+    };
+
+    // Funkcija, kas automātiski pielāgo textarea augstumu atkarībā no teksta daudzuma
+    const resizeTextarea = (el) => {
+        el.style.height = "auto"
+        el.style.height = el.scrollHeight + "px"
+
+        // Ja teksts pārsniedz 200px, tiek parādīts vertikālais scroll
+        el.style.overflowY = el.scrollHeight > 200 ? "auto" : "hidden"
     }
-};
 
-// Pāriet uz nodaļas izveides lapu
-const GoToCreate = () => {
-    router.get(route('classic.chapters.create', { book: props.classic_book.id }));
-};
+    // Automātiska textarea izmēra pielāgošana ievades laikā
+    const autoResize = (e) => resizeTextarea(e.target)
 
-// Pāriet uz esošās nodaļas rediģēšanu
-const goToEdit = (chapterId) => {
-    router.get(route('classic.chapters.edit', { chapter: chapterId }));
-};
+    // Kad komponents ir ielādēts, pielāgo apraksta lauka augstumu esošajam tekstam
+    onMounted(() => {
+        nextTick(() => {
+            const descriptionTextarea = document.getElementById('description');
+            if (descriptionTextarea) {
+                resizeTextarea(descriptionTextarea);
+            }
+        });
+    });
 </script>
 
 <template>
+    <!-- Navigācijas josla -->
     <Navbar />
+
+    <!-- Nodaļas dzēšanas apstiprinājuma modālis -->
+    <ConfirmModal
+        :is-open="showDeleteModal"
+        title="Vai tiešām vēlaties dzēst šo nodaļu?"
+        confirm-text="Dzēst"
+        @confirm="confirmDelete"
+        @cancel="showDeleteModal = false"
+    />
+
+    <!-- Veiksmīgas grāmatas atjaunināšanas modālis -->
+    <SuccessModal
+        :is-open="showSuccesModal"
+        title="Grāmata ir veiksmīgi atjaunināta!"
+        @close="showSuccesModal = false"
+    />
+
+    <!-- Veiksmīgas nodaļas dzēšanas modālis -->
+    <SuccessModal
+        :is-open="showDeleteSuccesModal"
+        title="Nodaļa veiksmīgi izdzēsta!"
+        @close="showDeleteSuccesModal = false"
+    />
 
     <!-- Galvenais satura bloks -->
     <div class="main-content">
@@ -83,7 +141,6 @@ const goToEdit = (chapterId) => {
 
             <h1>Grāmatu rediģēšana</h1>
 
-            <!-- Veidlapas sadaļa -->
             <form @submit.prevent="submitForm" class="submit">
                 <!-- Nosaukuma ievades lauks -->
                 <div class="form-group">
@@ -96,7 +153,7 @@ const goToEdit = (chapterId) => {
                         placeholder="Stāsta nosaukums"
                         required
                     >
-                    <!-- Validācijas kļūda nosaukumam -->
+                    <!-- Kļūdas paziņojums, ja nosaukums nav derīgs -->
                     <div v-if="form.errors.name" class="error-message">
                         {{ form.errors.name }}
                     </div>
@@ -109,10 +166,12 @@ const goToEdit = (chapterId) => {
                         id="description"
                         v-model="form.description"
                         class="form-textarea"
-                        placeholder="Īsumā par stāstu"
+                        placeholder="Īsumā par grāmatu"
+                        @input="autoResize"
                         required
                     ></textarea>
-                    <!-- Validācijas kļūda aprakstam -->
+
+                    <!-- Kļūdas paziņojums, ja apraksts nav derīgs -->
                     <div v-if="form.errors.description" class="error-message">
                         {{ form.errors.description }}
                     </div>
@@ -128,7 +187,8 @@ const goToEdit = (chapterId) => {
                         placeholder="Autora vārds"
                         required
                     >
-                    <!-- Validācijas kļūda autora vārdam-->
+
+                    <!-- Kļūdas paziņojums, ja autora vārds nav derīgs -->
                     <div v-if="form.errors.Author_name" class="error-message">
                         {{ form.errors.Author_name }}
                     </div>
@@ -144,7 +204,8 @@ const goToEdit = (chapterId) => {
                         placeholder="Autora uzvārds"
                         required
                     >
-                    <!-- Validācijas kļūda nosaukumam -->
+
+                    <!-- Kļūdas paziņojums, ja autora uzvārds nav derīgs -->
                     <div v-if="form.errors.Author_surname" class="error-message">
                         {{ form.errors.Author_surname }}
                     </div>
@@ -160,7 +221,8 @@ const goToEdit = (chapterId) => {
                         placeholder="Izdošanas gads"
                         required
                     >
-                    <!-- Validācijas kļūda nosaukumam -->
+
+                    <!-- Kļūdas paziņojums, ja gads nav derīgs -->
                     <div v-if="form.errors.Year_publication" class="error-message">
                         {{ form.errors.Year_publication }}
                     </div>
@@ -200,7 +262,8 @@ const goToEdit = (chapterId) => {
                             {{ genre.name }}
                         </div>
                     </div>
-                    <!-- Validācijas kļūda žanriem -->
+
+                    <!-- Kļūdas paziņojums, ja nav izvēlēts žanrs -->
                     <div v-if="form.errors.genres" class="error-message">
                         {{ form.errors.genres }}
                     </div>
@@ -226,7 +289,7 @@ const goToEdit = (chapterId) => {
                         <!-- Nodaļu pārvaldības pogas -->
                         <div class="buttons-container">
                             <button class="edit-btn" @click="goToEdit(chapter.id)">Rediģēt</button>
-                            <button class="delete-btn" @click="deleteChapter(chapter.id)">Dzēst</button>
+                            <button class="delete-btn" @click="openDeleteModal(chapter.id)">Dzēst</button>
                         </div>
                     </div>
                 </div>
@@ -236,268 +299,258 @@ const goToEdit = (chapterId) => {
             </div>
         </div>
     </div>
-
+    <!-- Kājene -->
     <Footer/>
 </template>
 
 <style scoped>
-option::placeholder{
-    color: rgba(26, 16, 8, 0.42); /* Krāsa vietturim */
-    font-size: 1.0rem; /* izmērs */
-}
-.main-content {
-    padding-bottom: 45px; /* Atstarpe apakšā */
-}
-.story-form {
-    max-width: 800px; /* Maksimālais platums formai */
-    margin: 0 auto; /* Centrēšana */
-    padding: 20px; /* Iekšējā atstarpe */
-}
-
-.submit{
-    color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-    font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-    border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-    background-color: #e4a27c; /* Fona krāsa */
-    border-radius: 10px; /* Apmales noapaļojums */
-    padding: 30px; /* Iekšējā atstarpe */
-    box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */
-}
-h1 {
-    font-size: 1.7rem;
-    margin-top: 32px;
-    margin-bottom: 40px;
-    text-align: center; /* Centrēts teksts */
-    color: rgba(26, 16, 8, 0.8);
-    font-family: Tahoma, Helvetica, sans-serif;
-    font-weight: bold; /* Treknraksts */
-}
-
-.form-group {
-    margin-bottom: 20px; /* Atstarpe starp laukiem */
-}
-
-.form-group label {
-    display: block; /* zem viena bloka */
-    font-size: 1.1rem;
-    margin-bottom: 8px; /* Atstarpe no ievadlaukuma */
-    font-weight: bold;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-    width: 100%; /* Aizņem visu pieejamo platumu */
-    padding: 10px; /* Iekšējā atstarpe */
-    border: 1px solid rgba(26, 16, 8, 0.8); /* Apmale */
-    border-radius: 4px; /* Noapaļoti stūri */
-    background-color: white; /* Fona krāsa */
-    font-size: 1rem;
-}
-.form-group input::placeholder,
-.form-group textarea::placeholder,
-.placeholder-option{
-    color: rgba(26, 16, 8, 0.42);
-    font-size: 1.0rem;
-}
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus{
-    outline: none; /* Noņem standarta iezīmēšanu */
-    box-shadow: none;
-    background-color: #ffc8a9; /* Fona krāsa fokusa laikā */
-}
-.genre-options {
-    display: flex;
-    flex-wrap: wrap; /* Pārnešana jaunā rindā */
-    gap: 10px; /* Atstatums starp elementiem */
-}
-
-.genre-checkbox {
-    background-color: #ffd9c6;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer; /* Pelītes rādītājs */
-    transition: 0.3s; /* Pārejas efekts */
-    font-size: 1rem;
-}
-.genre-checkbox.selected {
-    background-color: #ffc8a9;
-}
-
-.status-options {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 10px;
-}
-
-.status-checkbox {
-    background-color: #ffd9c6;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: 0.3s;
-    font-size: 1rem;
-}
-
-.status-checkbox.selected {
-    background-color: #ffc8a9;
-}
-
-button {
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-size: 1.0rem;
-}
-.form-actions {
-    display: flex;
-    justify-content: flex-end; /* Pogas labajā pusē */
-    gap: 15px;
-    margin-top: 30px;
-}
-.submit-btn {
-    border: 2px solid rgba(26, 16, 8, 0.8);
-    background-color: #c58667;
-    color: rgba(26, 16, 8, 0.8);
-    padding: 5px 20px;
-}
-.error-message{
-    font-size: 1rem;
-    color:rgb(127,29,29);
-}
-
-.chapters-container {
-    padding: 20px;
-    font-family: Tahoma, Helvetica, sans-serif;
-    border: 1px solid rgba(26, 16, 8, 0.8);
-    background-color: #e4a27c;
-    border-radius: 10px;
-    box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px;
-}
-
-.chapter{
-    margin-top: 70px;
-}
-
-.chapter-list {
-    margin-bottom: 20px;
-}
-
-.chapter-item {
-    background-color: #ffd9c6;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 10px;
-    font-family: Tahoma, Helvetica, sans-serif;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-}
-
-.chapter-title {
-    color: rgba(26, 16, 8, 0.8);
-    font-family: Tahoma, Helvetica, sans-serif;
-    font-size: 1.1rem;
-    font-weight: bold;
-}
-
-.delete-btn {
-    padding: 3px 15px;
-    border: 2px solid rgba(35, 11, 11, 0.8);
-    background-color: #714e3e;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.edit-btn{
-    background-color: #c58667;
-    border: 2px solid rgba(26, 16, 8, 0.8);
-    padding: 3px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #ffc8a9;
-    border-color: #ffc8a9;
-}
-
-.chapter-item button {
-    margin-left: 10px;
-}
-
-.chapter-item .buttons-container {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-}
-
-.add-chapter-btn {
-    background-color: #c58667;
-    border: 2px solid rgba(26, 16, 8, 0.8);
-    display: block;
-    width: 100%;
-    padding: 12px;
-}
-
-@media (max-width: 500px) {
-    h1 {
-        font-size: 1.5rem;
+    option::placeholder{
+        color: rgba(26, 16, 8, 0.42); /* Krāsa vietturim */
+        font-size: 1.0rem; /* izmērs */
     }
+
+    .main-content {
+        padding-bottom: 45px; /* Atstarpe apakšā */
+    }
+
+    .story-form {
+        max-width: 800px; /* Maksimālais platums formai */
+        margin: 0 auto; /* Centrēšana */
+        padding: 20px; /* Iekšējā atstarpe */
+    }
+
+    .submit{
+        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
+        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+        background-color: #e4a27c; /* Fona krāsa */
+        border-radius: 10px; /* Apmales noapaļojums */
+        padding: 30px; /* Iekšējā atstarpe */
+        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */
+    }
+    h1 {
+        font-size: 1.7rem;
+        margin-top: 32px;
+        margin-bottom: 40px;
+        text-align: center; /* Centrēts teksts */
+        color: rgba(26, 16, 8, 0.8);
+        font-family: Tahoma, Helvetica, sans-serif;
+        font-weight: bold; /* Treknraksts */
+    }
+
+    .form-group {
+        margin-bottom: 20px; /* Atstarpe starp laukiem */
+    }
+
     .form-group label {
-        font-size: 1rem;
+        display: block; /* zem viena bloka */
+        font-size: 1.1rem;
+        margin-bottom: 8px; /* Atstarpe no ievadlaukuma */
+        font-weight: bold;
     }
 
     .form-group input,
     .form-group textarea,
     .form-group select {
-        font-size: 0.9rem;
+        width: 100%; /* Aizņem visu pieejamo platumu */
+        padding: 10px; /* Iekšējā atstarpe */
+        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmale */
+        border-radius: 4px; /* Noapaļoti stūri */
+        background-color: white; /* Fona krāsa */
+        font-size: 1rem;
     }
     .form-group input::placeholder,
     .form-group textarea::placeholder,
     .placeholder-option{
-        font-size: 0.9rem;
+        color: rgba(26, 16, 8, 0.42);
+        font-size: 1.0rem;
     }
-    .status-checkbox
+
+    textarea {
+        resize: none;
+        overflow: hidden;
+        min-height: 40px;
+        max-height: 250px;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus{
+        outline: none; /* Noņem standarta iezīmēšanu */
+        box-shadow: none;
+        background-color: #ffc8a9; /* Fona krāsa fokusa laikā */
+    }
+
+    .genre-options {
+        display: flex;
+        flex-wrap: wrap; /* Pārnešana jaunā rindā */
+        gap: 10px; /* Atstatums starp elementiem */
+    }
+
     .genre-checkbox {
-        font-size: 0.9rem;
-        padding: 7px 8px;
-    }
-    .chapter-title{
+        background-color: #ffd9c6;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer; /* Pelītes rādītājs */
+        transition: 0.3s; /* Pārejas efekts */
         font-size: 1rem;
     }
-    .chapter-item .buttons-container {
-        gap: 3px;
+    .genre-checkbox.selected {
+        background-color: #ffb18e;
     }
-    .chapter-item button {
-        margin-left: 3px; /* Отступ между кнопками */
+
+    button {
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 1.0rem;
+    }
+    .form-actions {
+        display: flex;
+        justify-content: flex-end; /* Pogas labajā pusē */
+        gap: 15px;
+        margin-top: 30px;
+    }
+    .submit-btn {
+        border: 2px solid rgba(26, 16, 8, 0.8);
+        background-color: #c58667;
+        color: rgba(26, 16, 8, 0.8);
+        padding: 5px 20px;
+    }
+    .error-message{
+        font-size: 1rem;
+        color:rgb(127,29,29);
+    }
+
+    .chapters-container {
+        padding: 20px;
+        font-family: Tahoma, Helvetica, sans-serif;
+        border: 1px solid rgba(26, 16, 8, 0.8);
+        background-color: #e4a27c;
+        border-radius: 10px;
+        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px;
+    }
+
+    .chapter{
+        margin-top: 70px;
+    }
+
+    .chapter-list {
+        margin-bottom: 20px;
+    }
+
+    .chapter-item {
+        background-color: #ffd9c6;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 10px;
+        font-family: Tahoma, Helvetica, sans-serif;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        margin-bottom: 10px;
+    }
+
+    .chapter-title {
+        color: rgba(26, 16, 8, 0.8);
+        font-family: Tahoma, Helvetica, sans-serif;
+        font-size: 1.1rem;
+        font-weight: bold;
     }
 
     .delete-btn {
-        padding: 3px 12px;
-        font-size: 0.9rem;
+        padding: 3px 15px;
+        border: 2px solid rgba(35, 11, 11, 0.8);
+        background-color: #714e3e;
+        border-radius: 4px;
+        cursor: pointer;
     }
 
     .edit-btn{
-        padding: 3px 9px;
-        font-size: 0.9rem;
+        background-color: #c58667;
+        border: 2px solid rgba(26, 16, 8, 0.8);
+        padding: 3px 12px;
+        border-radius: 4px;
+        cursor: pointer;
     }
+
+    button:hover {
+        background-color: #ffc8a9;
+        border-color: #ffc8a9;
+    }
+
+    .chapter-item button {
+        margin-left: 10px;
+    }
+
+    .chapter-item .buttons-container {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
     .add-chapter-btn {
-        font-size: 0.9rem;
+        background-color: #c58667;
+        border: 2px solid rgba(26, 16, 8, 0.8);
+        display: block;
+        width: 100%;
+        padding: 12px;
     }
-    .submit-btn{
-        font-size: 0.9rem;
-        padding: 5px 15px;
+
+    @media (max-width: 500px) {
+        h1 {
+            font-size: 1.5rem;
+        }
+        .form-group label {
+            font-size: 1rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            font-size: 0.9rem;
+        }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder,
+        .placeholder-option{
+            font-size: 0.9rem;
+        }
+        .status-checkbox
+        .genre-checkbox {
+            font-size: 0.9rem;
+            padding: 7px 8px;
+        }
+        .chapter-title{
+            font-size: 1rem;
+        }
+        .chapter-item .buttons-container {
+            gap: 3px;
+        }
+        .chapter-item button {
+            margin-left: 3px; /* Отступ между кнопками */
+        }
+
+        .delete-btn {
+            padding: 3px 12px;
+            font-size: 0.9rem;
+        }
+
+        .edit-btn{
+            padding: 3px 9px;
+            font-size: 0.9rem;
+        }
+        .add-chapter-btn {
+            font-size: 0.9rem;
+        }
+        .submit-btn{
+            font-size: 0.9rem;
+            padding: 5px 15px;
+        }
+        .error-message{
+            font-size: 0.9rem;
+        }
     }
-    .error-message{
-        font-size: 0.9rem;
-    }
-}
 </style>
 

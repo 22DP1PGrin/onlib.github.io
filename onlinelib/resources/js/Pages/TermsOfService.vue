@@ -1,3 +1,7 @@
+<script setup>
+    import Navbar from "@/Components/Navbar.vue";
+    import Footer from "@/Components/Footer.vue";
+</script>
 <template>
     <!-- Navigācijas josla -->
     <Navbar />
@@ -8,84 +12,77 @@
             <!-- Virsraksts -->
             <h1>Pakalpojuma noteikumi</h1>
 
-            <!-- Sadaļa: Ievads -->
+            <!-- Ievads -->
             <h2>1. Ievads</h2>
-            <p>Šie pakalpojumu noteikumi regulē lietotāju tiesības un pienākumus, izmantojot tiešsaistes bibliotēkas pakalpojumu. <br> Lietojot Onlib, Jūs piekrītat šiem noteikumiem.</p>
+            <p>
+                Šie pakalpojuma noteikumi regulē lietotāju tiesības un pienākumus, izmantojot tiešsaistes bibliotēkas pakalpojumu.
+                Izmantojot Onlib platformu, tiek uzskatīts, ka lietotājs piekrīt šiem noteikumiem.
+            </p>
 
-
-            <!-- Sadaļa: Vispārējie noteikumi -->
+            <!-- Vispārējie noteikumi -->
             <h2>2. Vispārējie noteikumi</h2>
-            <p>Lai nodrošinātu drošu un kvalitatīvu bibliotēkas izmantošanu, lūdzu, iepazīstieties ar šādiem noteikumiem:</p>
+            <p>Platformas izmantošanai tiek piemēroti šādi vispārējie noteikumi:</p>
             <ul>
-                <li><strong>2.1.</strong> Pakalpojums ir pieejams visiem lietotājiem, kuri ir reģistrējušies un piekrituši šiem noteikumiem.</li>
-                <li><strong>2.2.</strong> Lietotāji var lasīt un publicēt savus darbus, ievērojot šos noteikumus un piemērojamās tiesību aktus.</li>
-                <li><strong>2.3.</strong> Administrācijai ir tiesības jebkurā laikā mainīt šos noteikumus.</li>
+                <li><strong>2.1.</strong> Pakalpojums ir pieejams reģistrētiem lietotājiem, kuri ir piekrituši noteikumiem.</li>
+                <li><strong>2.2.</strong> Lietotājiem ir iespēja lasīt un publicēt darbus, ievērojot noteikumus un normatīvos aktus.</li>
+                <li><strong>2.3.</strong> Administrācijai ir tiesības jebkurā laikā veikt izmaiņas noteikumos.</li>
             </ul>
 
-            <!-- Sadaļa: Lietotāju konti -->
+            <!-- Lietotāju konti -->
             <h2>3. Lietotāju konti</h2>
-            <p>Lai izmantotu visus pakalpojumus, ņemiet vērā šādus punktus:</p>
+            <p>Kontu izmantošana tiek regulēta ar šādiem nosacījumiem:</p>
             <ul>
-                <li><strong>3.1.</strong> Lai izmantotu papildus funkcijas, lietotājam ir jāizveido konts, norādot patiesu un precīzu informāciju.</li>
-                <li><strong>3.2.</strong> Lietotājs ir atbildīgs par sava konta drošību un par informācijas konfidencialitāti.</li>
-                <li><strong>3.3.</strong> Administrācijai ir tiesības bloķēt vai dzēst lietotāja kontu, ja tiek konstatēts noteikumu pārkāpums.</li>
+                <li><strong>3.1.</strong> Konta izveidei nepieciešama precīza un patiesa informācija.</li>
+                <li><strong>3.2.</strong> Lietotājs ir atbildīgs par konta drošību un piekļuves datu konfidencialitāti.</li>
+                <li><strong>3.3.</strong> Administrācijai ir tiesības bloķēt vai dzēst kontu noteikumu pārkāpumu gadījumā.</li>
             </ul>
 
-            <!-- Sadaļa: Autortiesības un satura izmantošana -->
+            <!-- Autortiesības un satura izmantošana -->
             <h2>4. Autortiesības un satura izmantošana</h2>
+            <p>Noteikumi attiecībā uz saturu:</p>
             <ul>
-                <p>Lai nodrošinātu godīgu satura izmantošanu, lūdzu, ievērojiet šādus noteikumus:</p>
-                <li><strong>4.1.</strong> Lietotājs saglabā visas autortiesības uz saviem publicētajiem darbiem.</li>
-                <li><strong>4.2.</strong> Lietotājam ir aizliegts publicēt saturu, kas aizskar trešo personu tiesības vai ir nelikumīgs.</li>
-                <li><strong>4.3.</strong> Administrācijai ir tiesības noņemt jebkuru saturu, kas pārkāpj šos Noteikumus vai piemērojamās tiesības.</li>
-                <p>Papildu nosacījumus var izlasīt sadaļā <a href="/contentpolicy">Satura politikā</a>.</p>
+                <li><strong>4.1.</strong> Lietotāji saglabā autortiesības uz saviem publicētajiem darbiem.</li>
+                <li><strong>4.2.</strong> Aizliegts publicēt saturu, kas pārkāpj trešo personu tiesības vai normatīvos aktus.</li>
+                <li><strong>4.3.</strong> Administrācijai ir tiesības noņemt saturu, kas pārkāpj noteikumus.</li>
             </ul>
 
-            <!-- Sadaļa: Atbildība -->
+            <p>
+                Papildu informācija pieejama sadaļā <a href="/contentpolicy">Satura politikā</a>.
+            </p>
+
+            <!-- Atbildība -->
             <h2>5. Atbildība</h2>
-            <p>Lietotāji ir atbildīgi par savu saturu un pakalpojumu izmantošanu. Lūdzu, ņemiet vērā:</p>
+            <p>Lietotāju atbildība tiek noteikta šādi:</p>
             <ul>
-                <li><strong>5.1.</strong> Lietotājs ir atbildīgs par savu saturu un tā ietekmi uz citiem lietotājiem.</li>
-                <li><strong>5.2.</strong> Administrācija neuzņemas atbildību par lietotāju radīto saturu vai tā precizitāti.</li>
+                <li><strong>5.1.</strong> Lietotājs ir atbildīgs par publicētā satura kvalitāti un tā ietekmi uz citiem lietotājiem.</li>
+                <li><strong>5.2.</strong> Administrācija neuzņemas atbildību par lietotāju publicēto saturu vai tā precizitāti.</li>
             </ul>
 
-            <!-- Sadaļa: Konfidencialitāte -->
+            <!-- Konfidencialitāte -->
             <h2>6. Konfidencialitāte</h2>
-            <p>Lai nodrošinātu konfidencialitāti, lūdzu, izlasiet:</p>
+            <p>Datu apstrāde un privātums tiek nodrošināts šādi:</p>
             <ul>
-                <li><strong>6.1.</strong> Administrācija apņemas ievērot lietotāju privātumu un neizpaust viņu personisko informāciju trešām personām bez lietotāja piekrišanas.</li>
-                <li><strong>6.2.</strong> Lietotāji piekrīt, ka viņu dati var tikt apstrādāti anonimizētā veidā statistikas vai analītiskiem mērķiem.</li>
+                <li><strong>6.1.</strong> Lietotāju personiskā informācija netiek izpausta trešajām personām bez tiesiska pamata.</li>
+                <li><strong>6.2.</strong> Lietotāju dati var tikt apstrādāti anonimizētā veidā statistikas un analītikas nolūkos.</li>
             </ul>
-            <p>Papildu nosacījumus var izlasīt sadaļā <a href="/privacypolicy">Privātuma politikā</a>.</p>
 
-            <!-- Sadaļa: Pārskatīšana un izmaiņas -->
+            <p>
+                Papildu informācija pieejama sadaļā <a href="/privacypolicy">Privātuma politikā</a>.
+            </p>
+
+            <!-- Pārskatīšana un izmaiņas -->
             <h2>7. Pārskatīšana un izmaiņas</h2>
-            <p>Mēs paturam tiesības mainīt šo satura politiku jebkurā laikā.
-                Visi izmaiņojumi tiks publicēti šajā lapā, un tie stāsies spēkā nekavējoties pēc publicēšanas.</p>
+            <p>
+                Noteikumi var tikt jebkurā laikā atjaunināti vai mainīti.
+                Visas izmaiņas tiek publicētas šajā lapā un stājas spēkā pēc publicēšanas.
+            </p>
         </div>
     </div>
-
     <!-- Kājene -->
     <Footer/>
 </template>
-
-<script>
-/* Komponentu importēšana */
-import Navbar from "@/components/Navbar.vue"; // Importē navigācijas joslu
-import Footer from "@/components/Footer.vue"; // Importē kājeni
-
-/* Komponentu reģistrēšana */
-export default {
-    components: {
-        Navbar, // Reģistrē navigācijas joslu
-        Footer  // Reģistrē kājeni
-    }
-};
-</script>
-
 <style scoped>
-
-/* Galvenā satura konteinera stils */
+    /* Galvenā satura konteinera stils */
     .main-content {
         align-items: center;/* Centrē saturu vertikāli */
         text-align: center;
@@ -128,6 +125,10 @@ export default {
         margin: 10px 20px; /* Ārējā atstarpe */
     }
 
+    p{
+        line-height: 1.8;
+    }
+
     /* Saraksta elementu stils */
     li {
         display: block; /* Parāda kā bloku elementu */
@@ -153,6 +154,7 @@ export default {
     a:hover{
         color: rgba(26, 16, 8, 0.8);
     }
+
     /* Responsivitāte */
     @media (max-width: 768px) {
         .main-content{

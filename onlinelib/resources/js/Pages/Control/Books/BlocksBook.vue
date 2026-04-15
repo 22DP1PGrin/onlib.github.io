@@ -4,6 +4,9 @@
     import Navbar from "@/Components/Navbar.vue";
     import {route} from "ziggy-js";
     import {computed, ref} from "vue";
+    import ConfirmModal from "@/Components/Modal/ConfirmModal.vue";
+    import SuccessModal from "@/Components/Modal/SuccessModal.vue";
+    import SearchComponent from "@/Components/SearchComponent.vue";
 
     // Saņem stāstu sarakstu no servera
     const books = computed(() => usePage().props.book);
@@ -34,15 +37,17 @@
     // Modālo logu stāvokļi
     const showModal = ref(false);
     const showSuccesModal = ref(false);
-
     const showDeleteModal = ref(false);
     const showDeleteSuccessModal = ref(false);
 
-    // Atlasītie grāmatu dati
+    // Izvēlētā grāmata atbloķēšanai
     const selectedBook = ref(null);
+    // Grāmatas tips ('classic' vai 'user')
     const selectedType = ref('');
+    // Izvēlētā grāmata dzēšanai
     const selectedBookForDelete = ref(null);
 
+    // Kļūdu uzglabāšanai
     const errors = ref({});
 
     // Atver dzēšanas modālo logu
@@ -54,9 +59,9 @@
     };
 
     // Meklēt grāmatu pēc nosaukuma
-    const searchUsers = () => {
+    const searchBooks = () => {
         router.get(route('block.book.lists'),
-            { search: search.value },
+            { search: search.value }, // Meklēšanas parametrs
             {
                 preserveState: true,
                 replace: true,
@@ -66,6 +71,7 @@
 
     // Apstiprina dzēšanu
     const confirmDelete = () => {
+        // Pārbauda, vai grāmata un tips ir izvēlēti
         if (!selectedBookForDelete.value || !selectedType.value) return;
 
         // Nosaka dzēšanas maršrutu atkarībā no tipa
@@ -89,20 +95,6 @@
         });
     };
 
-    // Aizver dzēšanas apstiprinājuma modāli
-    const closeDeleteModal = () => {
-        showDeleteModal.value = false;
-        document.body.style.overflow = "";
-    };
-
-    // Aizver veiksmīgas dzēšanas modāli un atsvaidzina lapu
-    const closeDeleteSuccessModal = () => {
-        showDeleteSuccessModal.value = false;
-        router.visit(window.location.href);
-        document.body.style.overflow = "";
-    };
-
-
     // Atver atbloķēšanas modāli
     const openUnblockModal = (book, type) => {
         selectedBook.value = book;  // Izvēlētais darbs
@@ -113,6 +105,7 @@
 
     // Universāla atbloķēšanas funkcija
     const confirmUnlock = () => {
+        // Pārbauda, vai grāmata un tips ir izvēlēti
         if (!selectedBook.value || !selectedType.value) return;
 
         // Nosūta bloķēšanas pieprasījumu
@@ -144,13 +137,6 @@
         document.body.style.overflow = "";
     };
 
-    // Aizver modāli
-    const closeSuccesModal = () => {
-        showSuccesModal.value = false;
-        router.visit(window.location.href);
-        document.body.style.overflow = "";
-    };
-
     // Pāriet uz stāsta lasīšanas lapu
     const GoToReadStory = (UserbookId) => {
         router.get(route('UserRead', { id: UserbookId }));
@@ -162,69 +148,48 @@
     };
 </script>
 <template>
+    <!-- Navigācijas josla -->
     <Navbar />
 
     <div class="main-content">
-
         <!-- Atbloķēšanas apstiprinājuma modālais logs -->
-        <div v-if="showModal" class="modal-overlay">
-            <div class="modal">
-                <div class="success-container">
-                    <h2>Vai tiešām vēlaties atbloķēt šo darbu?</h2>
-
-                    <div class="close">
-                        <button @click="closeModal" class="close-btn">Atcelt</button>
-                        <button @click="confirmUnlock" class="block">Atbloķēt</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <ConfirmModal
+            :is-open="showModal"
+            title="Vai tiešām vēlaties atbloķēt šo darbu?"
+            confirm-text="Atbloķēt"
+            @confirm="confirmUnlock"
+            @cancel="showModal = false"
+        />
 
         <!-- Veiksmīgas atbloķēšanas modālais logs -->
-        <div v-if="showSuccesModal" class="modal-overlay">
-            <div class="modal">
-                <div class="success-container">
-                    <h2>Darbs veiksmīgi atbloķēts!</h2>
-                    <button @click="closeSuccesModal" class="close-btn">Aizvērt</button>
-                </div>
-            </div>
-        </div>
+        <SuccessModal
+            :is-open="showSuccesModal"
+            title="Darbs veiksmīgi atbloķēts!"
+            @close="showSuccesModal = false"
+        />
 
         <!-- Dzēšanas apstiprinājuma modālais logs -->
-        <div v-if="showDeleteModal" class="modal-overlay">
-            <div class="modal">
-                <div class="success-container">
-                    <h2>Vai tiešām vēlaties dzēst šo darbu?</h2>
-                    <div class="close">
-                        <button @click="closeDeleteModal" class="close-btn">Atcelt</button>
-                        <button @click="confirmDelete" class="block">Dzēst</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <ConfirmModal
+            :is-open="showDeleteModal"
+            title="Vai tiešām vēlaties dzēst šo darbu?"
+            confirm-text="Dzēst"
+            @confirm="confirmDelete"
+            @cancel="showDeleteModal = false"
+        />
 
         <!-- Veiksmīgas dzēšanas modālais logs -->
-        <div v-if="showDeleteSuccessModal" class="modal-overlay">
-            <div class="modal">
-                <div class="success-container">
-                    <h2>Darbs veiksmīgi dzēsts!</h2>
-                    <button @click="closeDeleteSuccessModal" class="close-btn">Aizvērt</button>
-                </div>
-            </div>
-        </div>
+        <SuccessModal
+            :is-open="showDeleteSuccessModal"
+            title="Darbs veiksmīgi dzēsts!"
+            @close="showDeleteSuccessModal = false"
+        />
 
         <!-- Meklēšanas josla -->
-        <div class="search">
-            <input
-                v-model="search"
-                type="text"
-                class="input"
-                placeholder="Meklēt darbu..."
-            >
-            <button class="btn" @click="searchUsers">
-                <i class="fa bar">&#xf002;</i>
-            </button>
-        </div>
+        <SearchComponent
+            v-model="search"
+            placeholder="Meklēt darbu..."
+            @search="searchBooks"
+        />
 
         <!-- Darbu pārvaldības sadaļa -->
         <div class="story-form">
@@ -267,6 +232,7 @@
                         </div>
                     </div>
 
+                    <!-- Skatīt vairāk -->
                     <button
                         v-if="books.length > limit"
                         class="toggle-btn"
@@ -277,6 +243,7 @@
 
                     <h2>Grāmatu saraksts</h2>
 
+                    <!-- Paziņojums, ja nav pieejamu darbu -->
                     <div v-if="classicBooks.length === 0" class="item">
                         <span class="title">Šeit vēl nav pievienotu darbu.</span>
                     </div>
@@ -308,6 +275,8 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Skatīt vairāk -->
                     <div class="toggle-container">
                         <button
                             v-if="classicBooks.length > limit"
@@ -321,136 +290,12 @@
             </div>
         </div>
     </div>
+    <!-- Kājene -->
     <Footer />
 </template>
-
-
 <style scoped>
-
     .main-content {
         padding-bottom: 45px; /* Apakšējais atstatums */
-    }
-
-    /* Modala loga stils */
-    .modal-overlay {
-        position: fixed; /* Fiksēta pozicija */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(19, 8, 0, 0.59);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000; /* Virs visiem elementiem */
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-    }
-
-    .modal {
-        border-radius: 12px;
-        padding: 15px;
-        max-width: 400px;
-        width: 90%;
-        position: relative;
-        background-color: #e4a27c; /* Fona krāsa */
-        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-    }
-
-    .close{
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
-    }
-
-    .close-btn{
-        align-self: flex-start;
-        margin-bottom: 5px;
-    }
-
-    .success-container {
-        text-align: center;
-        padding: 15px;
-    }
-
-    .success-container h2 {
-        margin-bottom: 15px;
-        font-size:  1.3rem;
-        font-weight: bold;
-        color: rgba(26, 16, 8, 0.8);
-    }
-
-    .success-container p {
-        margin-bottom: 15px;
-        color: rgba(26, 16, 8, 0.8);
-
-    }
-
-    /* Meklēšanas josla */
-    .search {
-        display: flex;  /* Flexbox izkārtojums konta sadaļai */
-        justify-content: center;
-        align-items: center;  /* Elementu vertikāla izlīdzināšana */
-        margin: 80px auto;
-        max-width: 800px;
-        margin-bottom: 30px;
-    }
-
-    .search:hover {
-        transform: none; /*noņemam transformāciju, kad pele tiek pārvilkta */
-    }
-
-    .search .input {
-        background-color: #ffffff; /*Krasa fona */
-        border: 0; /* Noņemam apmales */
-        border-radius: 20px; /* Noapaļo apmalas*/
-        border-color: rgba(26, 16, 8, 0.8); /* Mainam apmales krāsu */
-        font-size: 1rem; /* Fonta izmērs */
-        padding: 10px; /* Iekšējās atstarpes */
-        height: 15%;
-        width: 90%; /* Sakam ar nulles platumu */
-    }
-
-    /* Poga meklēšanai */
-    .search .btn {
-        background-color: #c58667;
-        border: 2px solid rgba(26, 16, 8, 0.8); /*apmales vērtības */
-        border-radius: 20px;
-        cursor: pointer; /* Peles formāts */
-        outline: none; /* Noņemam noklusēto apmales stāvokli */
-        margin-left: 7px; /* Atstarpe no labās puses */
-        width: 41px;
-        height: 40px;
-        transition: border-color 0.3s;
-    }
-
-    .btn .fa{
-        font-size: 20px;
-        text-align: center;
-        transition: color 0.3s !important;
-    }
-
-    .input{
-        color: rgba(26, 16, 8, 0.8);
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
-    }
-    .search input::placeholder {
-        color: rgba(26, 16, 8, 0.42); /* Krāsa */
-    }
-
-    .input:focus {
-        outline: none !important; /* Noņemam noklusēto apmales stāvokli */
-        box-shadow: none !important;
-        background-color: #ffd9c6; /* Fona krāsa */
-    }
-    .btn:hover {
-        border-color: rgba(255, 187, 142, 0.8); /* Mainam apmales krāsu, kad pele tiek pārvilkta */
-    }
-    .btn:hover .fa {
-        color: rgba(255, 187, 142, 0.8); /* Mainam ikonas krāsu, kad pele tiek pārvilkta */
-    }
-    .fa{
-        color: rgba(26, 16, 8, 0.8);  /* Fonta krāsa */
     }
 
     .story-form {
@@ -522,15 +367,6 @@
         font-size: 1.1rem;
     }
 
-    .new .fa {
-        text-align: center;
-        align-items: center;
-        justify-content: center;
-        margin-top: 0;
-        font-size: 3rem;
-        color: rgba(106, 51, 0, 0.8);
-    }
-
     .description {
         font-family: Tahoma, Helvetica, sans-serif;
         font-size: 1rem;
@@ -564,13 +400,6 @@
         transition: background-color 0.3s, border-color 0.3s; /* Pārejas efekts, lai uzlabotu interaktivitāti */
         cursor: pointer; /* Kursora izmaiņas pie pogas */
         padding: 5px 10px;
-    }
-
-    .block {
-        align-self: flex-start;
-        margin-bottom: 5px;
-        border: 2px solid rgba(35, 11, 11, 0.8);
-        background-color: #714e3e;
     }
 
     .delete-btn {
@@ -647,23 +476,6 @@
     }
 
     @media (max-width: 500px) {
-        .search .input {
-            font-size: 0.9rem; /* Fonta izmērs */
-            height: 30px;
-            width: 75%;
-        }
-
-        /* Poga meklēšanai */
-        .search .btn {
-            padding: 0;
-            width: 34px;
-            height: 34px;
-        }
-
-        .btn .fa{
-            font-size: 18px;
-        }
-
         h1 {
             font-size: 1.5rem;
         }
@@ -677,10 +489,6 @@
         .work-item h2,
         .new h2{
             font-size: 1rem;
-        }
-
-        .new .fa{
-            font-size: 2.8rem;
         }
 
         .description {
@@ -703,10 +511,6 @@
         input::placeholder,
         textarea::placeholder{
             font-size: 0.9rem;
-        }
-
-        .modal{
-            max-width: 300px;
         }
 
         .success-container h2{

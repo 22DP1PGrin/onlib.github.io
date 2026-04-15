@@ -76,7 +76,7 @@ class UserBookController extends Controller
         $book->genres()->attach($validated['genres']);
 
         // Pāradrese uz grāmatu sarakstu
-        return redirect()->route('StoryList');
+        return back()->with('success', true);
     }
 
     // Metode, kas parāda grāmatas rediģēšanas formu
@@ -154,7 +154,7 @@ class UserBookController extends Controller
         }
 
         // Pāradreseuz grāmatu sarakstu ar ziņojumu par veiksmi
-        return redirect()->route('StoryList')->with('success', 'Stāsts veiksmīgi atjaunināts!');
+        return back()->with('success', true);
     }
 
     // Metode, kas dzēš grāmatu
@@ -260,7 +260,7 @@ class UserBookController extends Controller
     }
 
     // Grāmatas vērtēšanas funkcija
-    public function rateBook(Request $request, $bookId)
+    public function rateBook(Request $request, $book)
     {
         // Validācija - vērtējumam jābūt no 1 līdz 5
         $request->validate([
@@ -271,7 +271,7 @@ class UserBookController extends Controller
         $rating = Rating::updateOrCreate(
             [
                 'user_id' => $request->user()->id,
-                'user_book_id' => $bookId
+                'user_book_id' => $book
             ],
             [
                 'grade' => $request->grade
@@ -279,15 +279,15 @@ class UserBookController extends Controller
         );
 
         // Pārrēķina vidējo vērtējumu grāmatai
-        $average = Rating::where('user_book_id', $bookId)
+        $average = Rating::where('user_book_id', $book)
             ->avg('grade');
 
         // Saskaita vērtējumu skaitu grāmatai
-        $count = Rating::where('user_book_id', $bookId)
+        $count = Rating::where('user_book_id', $book)
             ->count();
 
         // Atgriež veiksmīgu atbildi ar datiem
-        return response()->json([
+        return redirect()->back()->with([
             'success' => true,
             'averageRating' => (float) $average,  // Vidējais vērtējums
             'ratingsCount' => $count,             // Vērtējumu skaits

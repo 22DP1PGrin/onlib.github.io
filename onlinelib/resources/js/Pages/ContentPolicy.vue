@@ -1,84 +1,94 @@
+<script setup>
+    import Navbar from "@/Components/Navbar.vue";
+    import Footer from "@/Components/Footer.vue";
+</script>
+
 <template>
     <!-- Navigācijas josla -->
     <Navbar />
 
-    <!-- Galvenais saturs -->
+    <!-- Galvenais satura bloks -->
     <div class="main-content">
         <div class="content">
 
             <!-- Satura politikas virsraksts -->
             <h1>Satura politika</h1>
 
-            <!-- Sadaļa: Ievads -->
+            <!-- Ievada sadaļa -->
             <h2>1. Ievads</h2>
             <p>
-                Šī satura politika nosaka vadlīnijas un nosacījumus attiecībā uz materiāliem, kas tiek ievietoti mūsu tiešsaistes bibliotēkā. Onlib ir vieta, kur lietotāji var gan lasīt, gan rakstīt dažādus žanru darbus, kā arī piekļūt klasiskajai literatūrai. Mēs atbalstām radošumu, izglītību un intelektuālo attīstību, vienlaikus ievērojot ētikas normas un likumus.
+                Šī satura politika nosaka vadlīnijas un nosacījumus attiecībā uz materiāliem, kas tiek ievietoti tiešsaistes bibliotēkā. Platforma nodrošina iespēju lietotājiem lasīt un publicēt dažādu žanru darbus, kā arī piekļūt klasiskajai literatūrai. Tiek atbalstīta radošuma attīstība, izglītība un intelektuālā izaugsme, vienlaikus ievērojot spēkā esošos normatīvos aktus un ētikas principus.
             </p>
 
-            <!-- Sadaļa: Satura pieņemšanas kritēriji -->
+            <!-- Satura pieņemšanas kritēriju sadaļa -->
             <h2>2. Satura pieņemšanas kritēriji</h2>
-            <p>Mēs piedāvājam daudzveidīgu saturu, kas ietver gan literāros darbus, gan radošus rakstus. Visām publikācijām jāatbilst šādiem kritērijiem:</p>
+            <p>
+                Platformā pieejams daudzveidīgs saturs, kas ietver literāros darbus un radošus rakstus. Visām publikācijām jāatbilst šādiem kritērijiem:
+            </p>
             <ul>
-                <!-- Oriģināli darbi -->
-                <li><strong>2.1.</strong> Mēs aicinām lietotājus dalīties ar oriģināliem darbiem, kas ietver dažādus žanrus, tostarp dzeju, prozu, esejas, stāstus un citus radošus rakstus.</li>
-                <!-- Klasiskā literatūra -->
-                <li><strong>2.2.</strong> Mēs piedāvājam piekļuvi klasiskajiem literatūras darbiem, kas ir sabiedrības īpašums vai ir pieejami ar licencēm, kas ļauj tos brīvi izmantot.</li>
-                <!-- Resursi rakstīšanas prasmēm -->
-                <li><strong>2.3.</strong> Papildus radošajiem darbiem mūsu bibliotēka piedāvā arī resursus, kas palīdz uzlabot rakstīšanas prasmes un izpratni par literatūru.</li>
+                <li><strong>2.1.</strong> Lietotāji tiek aicināti publicēt oriģinālus darbus, tostarp dzeju, prozu, esejas, stāstus un citus radošus materiālus.</li>
+                <li><strong>2.2.</strong> Pieejami arī klasiskās literatūras darbi, kas ir sabiedrības īpašums vai tiek izmantoti saskaņā ar atbilstošām licencēm.</li>
+                <li><strong>2.3.</strong> Platformā var tikt publicēti arī materiāli, kas veicina rakstīšanas prasmju attīstību un literatūras izpratni.</li>
             </ul>
 
-            <!-- Sadaļa: Aizliegti materiāli -->
+            <!-- Aizliegto materiālu sadaļa -->
             <h2>3. Aizliegti materiāli</h2>
-            <p>Mēs nepieņemsim materiālus, kas ietver:</p>
+            <p>
+                Platformā netiek pieļauts šāds saturs:
+            </p>
             <ul>
-                <!-- Autortiesību pārkāpumi -->
-                <li><strong>3.1.</strong> Saturs, kas pārkāpj autortiesības, tiek aizliegts. Mēs nepieņemam nelegāli iegūtus darbus.</li>
-                <!-- Naida runa un diskriminācija -->
-                <li><strong>3.2.</strong> Saturs, kas veicina naida runu, diskrimināciju, vardarbību, vai kas ir aizskarošs, pazemojošs vai apmelojošs.</li>
-                <!-- Maldināšana un nepatiesas ziņas -->
-                <li><strong>3.3.</strong> Mēs nepieņemam materiālus, kas izplata nepatiesas vai maldinošas ziņas vai idejas.</li>
+                <li><strong>3.1.</strong> Materiāli, kas pārkāpj autortiesības vai ir iegūti nelegālā veidā.</li>
+                <li><strong>3.2.</strong> Saturs, kas veicina naida runu, diskrimināciju, vardarbību vai satur aizskarošu, pazemojošu vai apmelojošu informāciju.</li>
+                <li><strong>3.3.</strong> Materiāli, kas izplata nepatiesu vai maldinošu informāciju.</li>
             </ul>
 
-            <!-- Sadaļa: Lietotāju atbildība -->
+            <!-- Lietotāju atbildības sadaļa -->
             <h2>4. Lietotāju atbildība</h2>
-            <p>Lietotājiem ir jāievēro šādi noteikumi, izmantojot mūsu bibliotēku:</p>
+            <p>
+                Izmantojot platformu, lietotājiem jāievēro šādi nosacījumi:
+            </p>
             <ul>
-                <!-- Autortiesību ievērošana -->
-                <li><strong>4.1.</strong> Lietotājiem jācieņā autortiesības, ievērojot noteikumus par materiālu kopēšanu, izplatīšanu un citēšanu.</li>
-                <!-- Ētikas standarti -->
-                <li><strong>4.2.</strong> Lietotājiem jābūt atbildīgiem, publicējot savu darbu, lai tas atbilstu ētikas standartiem un cienītu citu cilvēku tiesības un viedokļus.</li>
-                <!-- Cieņa pret citiem darbiem -->
-                <li><strong>4.3.</strong> Rakstot, lietotājiem ir jāievēro cieņa pret citu darbu un viedokļiem, lai veidotu atbalstošu un pozitīvu kopienu.</li>
+                <li><strong>4.1.</strong> Jāievēro autortiesību normas attiecībā uz materiālu publicēšanu, kopēšanu un izplatīšanu.</li>
+                <li><strong>4.2.</strong> Publicētais saturs nedrīkst pārkāpt ētikas standartus un citu personu tiesības.</li>
+                <li><strong>4.3.</strong> Jāievēro cieņpilna attieksme pret citu lietotāju darbiem un viedokļiem.</li>
             </ul>
 
-            <!-- Sadaļa: Satura atjauninājumi un dzēšana -->
+            <!-- Satura atjauninājumu un dzēšanas sadaļa -->
             <h2>5. Satura atjauninājumi un dzēšana</h2>
             <p>
-                Mēs regulāri atjauninām mūsu bibliotēkas saturu, lai nodrošinātu, ka tas ir aktuāls un atbilst mūsu kvalitātes standartiem.<br />
-                Ja tiek konstatēts, ka kāds materiāls pārkāpj šo politiku, mēs paturam tiesības dzēst vai ierobežot piekļuvi šim materiālam.
+                Platformā publicētais saturs var tikt pārskatīts un atjaunināts, lai nodrošinātu atbilstību kvalitātes prasībām. Ja tiek konstatēts, ka materiāls pārkāpj šo politiku, platforma patur tiesības ierobežot piekļuvi vai dzēst attiecīgo saturu.
+                <br /><br />
+                Saturs, kuram ir piemērots ierobežojums, var nebūt redzams citiem lietotājiem. Šādos gadījumos darba autors saglabā tiesības veikt nepieciešamās izmaiņas, lai novērstu pārkāpumus.
+                <br /><br />
+                Autors ir tiesīgs iesniegt apelāciju, sazinoties ar platformas administrāciju, izmantojot <a href="/technicalsupport">tehnisko atbalstu</a>, ja tiek uzskatīts, ka ierobežojums ir piemērots nepamatoti.
             </p>
 
-            <!-- Sadaļa: Lietošanas nosacījumi un piekļuve -->
+            <!-- Lietošanas nosacījumu un piekļuves sadaļa -->
             <h2>6. Lietošanas nosacījumi un piekļuve</h2>
             <p>
-                Mūsu bibliotēka ir pieejama visiem, kas piekrīt mūsu lietošanas nosacījumiem un privātuma politikai. Piekļuve materiāliem var tikt ierobežota vai atņemta, ja tiek pārkāpti noteikumi, un lietotājiem ir jāievēro mūsu ētikas standarti.
+                Piekļuve platformai ir pieejama lietotājiem, kuri ievēro lietošanas nosacījumus un privātuma politiku. Noteikumu pārkāpumu gadījumā lietotāja konts var tikt bloķēts uz noteiktu laiku vai neatgriezeniski.
+                <br /><br />
+                Smagu pārkāpumu gadījumā platforma patur tiesības dzēst lietotāja kontu un visus ar to saistītos materiālus, tostarp publicētos darbus.
             </p>
 
-            <!-- Sadaļa: Autortiesības un intelektuālā īpašuma tiesības -->
+            <!-- Autortiesību un intelektuālā īpašuma sadaļa -->
             <h2>7. Autortiesības un intelektuālā īpašuma tiesības</h2>
             <p>
-                Visi darbi, kas tiek publicēti mūsu bibliotēkā, ir aizsargāti ar autortiesībām. Lietotājiem ir jāievēro autortiesību likumi un jābūt piesardzīgiem, kopējot vai izplatot saturu ārpus platformas.<br />
-                Mēs mudinām lietotājus publicēt tikai savus oriģinālos darbus vai darbus, kas ir atļauti saskaņā ar licencēm vai autoru piekrišanu.
+                Visi platformā publicētie darbi ir aizsargāti ar autortiesībām. Lietotājiem jāievēro attiecīgie normatīvie akti un jānodrošina, ka publicētais saturs ir oriģināls vai tiek izmantots ar atbilstošu atļauju.
             </p>
 
-            <!-- Sadaļa: Sūdzības un ierosinājumi -->
+            <!-- Sūdzību un ierosinājumu sadaļa -->
             <h2>8. Sūdzības un ierosinājumi</h2>
-            <p> Ja uzskatāt, ka kāds materiāls mūsu bibliotēkā pārkāpj šo satura politiku, vai ja vēlaties ieteikt jauna materiāla pievienošanu, lūdzu, sazinieties ar mums, izmantojot <a href="/technicalsupport">tehnisko atbalstu</a>.</p>
+            <p>
+                Ja tiek konstatēts, ka kāds materiāls pārkāpj šo satura politiku, par to iespējams ziņot tieši attiecīgās grāmatas lapā, izmantojot īpašu ziņošanas funkciju. Lai izmantotu šo iespēju, lietotājam jābūt reģistrētam un autentificētam.
+                <br /><br />
+                Papildus iespējams sazināties ar platformas administrāciju, izmantojot <a href="/technicalsupport">tehnisko atbalstu</a>, īpaši gadījumos, kas saistīti ar nopietniem pārkāpumiem, piemēram, plaģiātismu vai autortiesību pārkāpumiem.
+            </p>
 
-            <!-- Sadaļa: Politikas izmaiņas -->
+            <!-- Politikas izmaiņu sadaļa -->
             <h2>9. Politikas izmaiņas</h2>
             <p class="end">
-                Mēs paturam tiesības mainīt šo satura politiku jebkurā laikā. Visi izmaiņojumi tiks publicēti šajā lapā, un tie stāsies spēkā nekavējoties pēc publicēšanas.
+                Platforma patur tiesības jebkurā laikā veikt izmaiņas šajā satura politikā. Atjauninātā versija tiek publicēta šajā lapā un stājas spēkā nekavējoties pēc publicēšanas.
             </p>
         </div>
     </div>
@@ -86,19 +96,6 @@
     <!-- Kājene -->
     <Footer />
 </template>
-
-  <script>
-  import Navbar from "@/components/Navbar.vue";
-  import Footer from "@/components/Footer.vue";
-
-  export default {
-    components: {
-      Navbar,
-      Footer
-    }
-  };
-  </script>
-
   <style scoped>
 
   /* Galvenā satura konteinera stils */
@@ -120,6 +117,10 @@
       max-width: 800px; /* Maksimālais satura platums */
       margin: 0 auto; /* Centrēt saturu */
       padding: 0 20px; /*Atstarpes sānos*/
+  }
+
+  p{
+      line-height: 1.8;
   }
 
   /* Galvenā virsraksta stils */

@@ -6,10 +6,11 @@
     import { route } from "ziggy-js";
 
     // Iegūt datus par lietotāju un grāmatu skaitu no servera
-    const user = computed(() => usePage().props.auth.user); // Iegūst pašreizējo lietotāju
-    const booksCount = computed(() => usePage().props.booksCount); // Iegūst grāmatu skaitu
+    const user = computed(() => usePage().props.auth.user);
+    const booksCount = computed(() => usePage().props.booksCount);
     const totalRatingsCount = computed(() => usePage().props.totalRatingsCount);
     const readBooksCount = computed(() => usePage().props.readBooksCount || 0);
+    const CommentsCount = computed(() => usePage().props.commentsCount || 0);
 
     // Funkcijas, lai pārietu uz dažādiem maršrutiem
     const goToEdit = () => {
@@ -45,23 +46,27 @@
         router.get(route('block.book.lists')); // Pāriet uz grāmatu sarakstu
     };
 
+    // Pāriet uz grāmatzīmem
     const goToRead = () => {
-        router.get(route('bookmarks.read'));
+        router.get(route('bookmarks.read'));  // Pāriet uz izlasīto grāmatu sarakstu
     };
+
     const goToPlanned = () => {
-        router.get(route('bookmarks.planned'));
+        router.get(route('bookmarks.planned'));  // Pāriet uz plānoto grāmatu sarakstu
     };
+
     const goToReading = () => {
-        router.get(route('bookmarks.reading'));
+        router.get(route('bookmarks.reading'));  // Pāriet uz pašlaik lasāmo grāmatu sarakstu
     };
+
     const goToDropped = () => {
-        router.get(route('bookmarks.dropped'));
+        router.get(route('bookmarks.dropped')); // Pāriet uz pamesto grāmatu sarakstu
     };
 </script>
 
 
 <template>
-
+    <!-- Navigācijas josla -->
     <Navbar />
 
     <div class="main-content">
@@ -97,15 +102,23 @@
                             <div class="stat-number">{{ readBooksCount }}</div>
                             <div class="stat-label">Izlasītās grāmatas</div>
                         </div>
+
                         <!-- Uzrakstīto darbu skaits -->
                         <div class="stat-item">
                             <div class="stat-number">{{ booksCount || 0 }}</div>
                             <div class="stat-label">Uzrakstītie darbi</div>
                         </div>
+
                         <!-- Novērtēto darbu skaits -->
                         <div class="stat-item">
                             <div class="stat-number">{{ totalRatingsCount || 0 }}</div>
                             <div class="stat-label">Novērtētie darbi</div>
+                        </div>
+
+                        <!-- Komentāru skaits -->
+                        <div class="stat-item">
+                            <div class="stat-number">{{ CommentsCount || 0 }}</div>
+                            <div class="stat-label">Komentāru skaits</div>
                         </div>
                     </div>
                 </div>
@@ -116,25 +129,25 @@
                     <div class="links-grid">
                         <!-- Izlasīto grāmatu saite -->
                         <div class="bookmark-link read" @click="goToRead">
-                            <span class="fa">&#xf02d;</span> <!-- Grāmatas ikona -->
+                            <span class="fa">&#xf02d;</span>
                             <span class="link-text">Izlasītās grāmatas</span>
                         </div>
 
                         <!-- Plānoto grāmatu saite -->
                         <div class="bookmark-link" @click="goToPlanned">
-                            <span class="fa">&#xf046;</span> <!-- Atzīmēšanas ikona -->
+                            <span class="fa">&#xf046;</span>
                             <span class="link-text">Plānotās grāmatas</span>
                         </div>
 
                         <!-- Pašlaik lasāmo grāmatu saite -->
                         <div class="bookmark-link" @click="goToReading">
-                            <span class="fa">&#xf02e;</span> <!-- Atvērtas grāmatas ikona -->
+                            <span class="fa">&#xf02e;</span>
                             <span class="link-text">Lasu tagad</span>
                         </div>
 
                         <!-- Pamesto grāmatu saite -->
                         <div class="bookmark-link" @click="goToDropped">
-                            <span class="fa">&#xf1f8;</span> <!-- Dzēšanas ikona -->
+                            <span class="fa">&#xf1f8;</span>
                             <span class="link-text">Pamestās grāmatas</span>
                         </div>
                     </div>
@@ -200,7 +213,7 @@
             </div>
         </div>
     </div>
-
+    <!-- Kājene -->
     <Footer/>
 </template>
 

@@ -1,5 +1,4 @@
 <script setup>
-    // Importē nepieciešamās funkcijas un komponentes
     import {useForm } from '@inertiajs/vue3';
     import { route } from "ziggy-js";
 
@@ -8,7 +7,7 @@
         window.history.back();
     };
 
-    // Izveido Inertia formu ar sākotnējām vērtībām
+    // Izveido formu pieteikšanai
     const form = useForm({
         email: '',// Lietotāja e-pasta adrese
         password: '', // Lietotāja parole

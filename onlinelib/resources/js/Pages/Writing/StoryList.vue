@@ -1,77 +1,97 @@
-<script>
-import Navbar from "@/Components/Navbar.vue";
-import Footer from "@/Components/Footer.vue";
-import { ref } from "vue";
-import {router} from '@inertiajs/vue3';
-import {route} from "ziggy-js";
-import { usePage } from '@inertiajs/vue3';
+<script setup>
+    import Navbar from "@/Components/Navbar.vue";
+    import Footer from "@/Components/Footer.vue";
+    import ConfirmModal from "@/Components/Modal/ConfirmModal.vue";
+    import SuccessModal from "@/Components/Modal/SuccessModal.vue";
+    import { computed, ref } from "vue";
+    import { router } from "@inertiajs/vue3";
+    import { route } from "ziggy-js";
 
-export default {
-    components: {
-        Navbar,
-        Footer,
-    },
-    props: {
+    // Komponenta ievaddati
+    const props = defineProps({
         works: Array,
-    },
-    setup() {
-        // Iegūt lapas datus un sagatavot darbu sarakstu
-        const page = usePage();
-        const works = ref(page.props.works);
+    });
 
-        // Navigācijas funkcija uz stāsta izveides lapu
-        const GoToCreate = () => {
-            router.get(route('NewStory'));
-        };
+    // Cik grāmatas rādīt sākumā
+    const limit = 3;
 
-        // Navigācijas funkcija uz stāsta rediģēšanas lapu
-        const GoToEdit = (bookId) => {
-            router.get(route('EditStory', { id: bookId }));
-        };
+    // Kontrolē, vai rādīt visas grāmatas vai tikai limit skaitu
+    const showAllBooks = ref(false);
 
-        // Datuma formāta funkcija (latviešu valodā)
-        const formatDate = (timestamp) => {
-            return new Date(timestamp).toLocaleDateString("lv-LV", {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            });
-        };
+    // Saglabā izvēlētās grāmatas ID dzēšanai
+    const selectedBookId = ref(null);
 
-        // Stāsta dzēšanas funkcija
-        const deleteStory = (bookId) => {
-            if (confirm('Vai tiešām vēlaties dzēst šo stāstu un visas tā nodaļas?')) {
-                axios.delete(route('deleteStory', { id: bookId }))
-                    .then(response => {
-                        alert('Stāsts un visas nodaļas tika veiksmīgi dzēstas!');
-                        window.location.reload(); // Pārlādēt lapu, lai atspoguļotu izmaiņas
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        alert('Radās kļūda, mēģiniet vēlreiz.');
-                    });
-            }
-        };
+    // Modālo logu stāvokļi
+    const showDeleteModal = ref(false);
+    const showSuccesModal = ref(false);
 
-        return {
-            works,
-            GoToCreate,
-            formatDate,
-            GoToEdit,
-            deleteStory
-        };
-    }
-};
+    // Atver dzēšanas apstiprinājuma modāli
+    const openDeleteModal = (id) => {
+        selectedBookId.value = id;
+        showDeleteModal.value = true;
+    };
+
+    // Aprēķina redzamās grāmatas atkarībā no showAllBooks stāvokļa
+    const visibleBooks = computed(() =>
+        showAllBooks.value
+            ? props.works ?? []
+            : (props.works ?? []).slice(0, limit)
+    );
+
+    // Pāriet uz jaunas grāmatas izveides lapu
+    const GoToCreate = () => {
+        router.get(route('NewStory'));
+    };
+
+    // Pāriet uz esošās grāmatas rediģēšanas lapu
+    const GoToEdit = (bookId) => {
+        router.get(route('EditStory', { id: bookId }));
+    };
+
+    // Datuma formatēšana latviešu valodas formātā
+    const formatDate = (timestamp) => {
+        return new Date(timestamp).toLocaleDateString("lv-LV", {
+            year: 'numeric',    // Gads kā skaitlis (piem., 2024)
+            month: '2-digit',   // Mēnesis ar 2 cipariem (01-12)
+            day: '2-digit'      // Diena ar 2 cipariem (01-31)
+        });
+    };
+
+    // Apstiprina un dzēš izvēlēto grāmatu
+    const confirmDelete = () => {
+        router.delete(route('deleteStory', { id: selectedBookId.value }), {
+            preserveScroll: true,
+            onSuccess: () => {
+                showDeleteModal.value = false;
+                showSuccesModal.value = true;
+            },
+        });
+    };
 </script>
 
 <template>
-    <!-- Galvenā lapas struktūra -->
+    <!-- Navigācijas josla -->
     <Navbar />
+
+    <!-- Grāmatas dzēšanas apstiprinājuma modālis -->
+    <ConfirmModal
+        :is-open="showDeleteModal"
+        title="Vai tiešām vēlaties dzēst šo grāmatu?"
+        confirm-text="Dzēst"
+        @confirm="confirmDelete"
+        @cancel="showDeleteModal = false"
+    />
+
+    <!-- Veiksmīgas grāmatas dzēšanas modālis -->
+    <SuccessModal
+        :is-open="showSuccesModal"
+        title="Grāmata veiksmīgi dzēsta!"
+        @close="showSuccesModal = false"
+    />
 
     <div class="main-content">
         <div class="content">
             <div class="content-panel">
-                <!-- Virsraksta sadaļa -->
                 <div class="profile-header">
                     <h1>Mani darbi</h1>
                 </div>
@@ -84,12 +104,11 @@ export default {
                     </div>
                 </div>
 
-                <!-- Galvenā darbu saraksta sadaļa -->
                 <div class="my-works-section">
                     <!-- Darbu saraksts -->
                     <div class="works-list">
-                        <!-- Atkārtojas katram darbam no works masīva -->
-                        <div v-for="work in works" :key="work.id" class="work-item" :class="{ 'blocked': work.is_blocked }">
+                        <!-- Atkārtojas katram darbam-->
+                        <div v-for="work in visibleBooks" :key="work.id" class="work-item" :class="{ 'blocked': work.is_blocked }">
 
                             <div v-if="work.is_blocked" class="warning">
                                 <p><i style="font-size:24px" class="fa">&#xf023;</i> Stāsts ir bloķēts!</p>
@@ -106,15 +125,26 @@ export default {
                                 <!-- Rediģēšanas un dzēššanas pogas -->
                                 <div class="work-actions">
                                     <button class="edit-btn" :class="{ 'blocked': work.is_blocked }" @click="GoToEdit(work.id)">Rediģēt</button>
-                                    <button class="delete-btn" @click="deleteStory(work.id)">Dzēst</button>
+                                    <button class="delete-btn" @click="openDeleteModal(work.id)">Dzēst</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!-- Skatīt vairāk -->
+                <div class="toggle-container">
+                    <button
+                        v-if="props.works && props.works.length > limit"
+                        class="toggle-btn"
+                        @click="showAllBooks = !showAllBooks"
+                    >
+                        {{ showAllBooks ? 'Paslēpt' : 'Skatīt vairāk' }}
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+    <!-- Kājene -->
     <Footer/>
 </template>
 
@@ -247,6 +277,24 @@ export default {
         gap: 10px;
     }
 
+    .toggle-container {
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+    }
+
+
+    button {
+        border: 2px solid rgba(26, 16, 8, 0.8);
+        background-color: #c58667; /* Fona krāsa */
+        color: rgba(26, 16, 8, 0.8);
+        border-radius: 4px;
+        font-size: 1.0rem;
+        transition: background-color 0.3s, border-color 0.3s; /* Pārejas efekts, lai uzlabotu interaktivitāti */
+        cursor: pointer; /* Kursora izmaiņas pie pogas */
+        padding: 5px 10px;
+    }
+
     .delete-btn {
         padding: 5px 18px;
         border: 2px solid rgba(35, 11, 11, 0.8);
@@ -255,16 +303,6 @@ export default {
         cursor: pointer;
         transition: all 0.3s;
         font-size: 1rem;
-    }
-
-    .edit-btn {
-        background-color: #c58667; /* Fona krāsa */
-        border: 2px solid rgba(26, 16, 8, 0.8); /* Apmale */
-        padding: 5px 15px; /* Atstarpes iekšpusē */
-        border-radius: 4px; /* Noapaļoti stūri */
-        cursor: pointer; /* Peles kursors */
-        transition: all 0.3s; /* Pāreju efekts */
-        font-size: 1rem; /* Teksta izmērs */
     }
 
     .edit-btn.blocked {

@@ -253,6 +253,7 @@ class ProfileController extends Controller
         $user = auth()->user(); // Iegūst autentificēto lietotāju
         $booksCount = $user->books()->count(); // Saskaita lietotāja grāmatas
         $RatingsCount = $user->BookRatings()->count(); // Kopējais vērtējumu skaits
+        $commentsCount = $user->comments()->count();
 
         // Grāmatzīmju skaits grupēts pēc tipa
         $bookmarkCounts = Bookmark::where('user_id', $user->id)
@@ -270,6 +271,7 @@ class ProfileController extends Controller
             'booksCount' => $booksCount, // Grāmatu skaits
             'totalRatingsCount' => $RatingsCount, // Kopējais vērtējumu skaits
             'readBooksCount' => $readBooksCount, // Izlasīto grāmatu skaits
+            'commentsCount' => $commentsCount,
         ]);
     }
 
@@ -279,6 +281,7 @@ class ProfileController extends Controller
         $user = User::findOrFail($id);
         $booksCount = $user->books()->count();
         $ratingsCount = $user->BookRatings()->count();
+        $commentsCount = $user->comments()->count();
 
         // Grāmatzīmju skaits grupēts pēc tipa
         $bookmarkCounts = Bookmark::where('user_id', $user->id)
@@ -295,6 +298,7 @@ class ProfileController extends Controller
             'booksCount' => $booksCount, // Grāmatu skaits
             'totalRatingsCount' => $ratingsCount, // Kopējais vērtējumu skaits
             'readBooksCount' => $readBooksCount, // Izlasīto grāmatu skaits
+            'commentsCount' => $commentsCount,
         ]);
     }
 

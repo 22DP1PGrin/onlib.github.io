@@ -1,23 +1,23 @@
 <script setup>
-    // Importē nepieciešamās funkcijas un komponentes
     import {useForm } from '@inertiajs/vue3';
     import Navbar from '@/Components/Navbar.vue';
     import Footer from '@/Components/Footer.vue';
     import { route } from "ziggy-js";
     import {ref} from "vue";
 
-    // Saņem props, kas tiek padoti no servera puses
+    // Komponenta ievaddati
     defineProps({
         status: {
             type: String,
         },
     });
 
-    // Izveido Inertia formu ar sākotnējām vērtībām
+    // Izveido  formu paroles atiestatīšanas e-pasta nosūtīšanai
     const form = useForm({
         email: '', // Lietotāja e-pasta adrese
     });
 
+    // Reaktīvs mainīgais veiksmīgas nosūtīšanas modāļa kontrolei
     const success = ref(false);
 
     // Funkcija, kas tiek izsaukta, kad forma tiek iesniegta
@@ -36,6 +36,7 @@
 </script>
 
 <template>
+    <!-- Navigācijas josla -->
     <Navbar />
     <div class="center-container">
         <div class="container">
@@ -44,6 +45,7 @@
                 <a @click="goBack">Iziet</a>
             </div>
 
+            <!-- Informācijas teksts lietotājam -->
             <div class="info">
                 <h2>
                     Aizmirsāt savu paroli?
@@ -53,7 +55,7 @@
                 </h2>
             </div>
 
-            <!-- Forma datu ievadei -->
+            <!-- Paroles atiestatīšanas forma -->
             <form @submit.prevent="submit">
                 <div class="form-group">
                     <label for="email" class="label">E-pasta adrese</label>
@@ -66,11 +68,11 @@
                         autofocus
                         autocomplete="username"
                     />
-                    <!-- Parāda kļūdu, ja e-pasts nav derīgs -->
+                    <!-- Kļūdas ziņojums, ja e-pasts nav derīgs vai lietotājs neeksistē -->
                     <div v-if="form.errors.email" class="input-error">{{ form.errors.email }}</div>
                 </div>
 
-                <!-- Poga-->
+                <!-- Apstiprināšanas pogas konteiners -->
                 <div class="butt">
                     <button
                         type="submit"
@@ -84,6 +86,7 @@
             </form>
         </div>
     </div>
+    <!-- Kājene -->
     <Footer />
 </template>
 

@@ -1,133 +1,143 @@
+<script setup lang="ts">
+    import Navbar from "@/Components/Navbar.vue";
+    import Footer from "@/Components/Footer.vue";
+</script>
+
 <template>
     <!-- Navigācijas josla -->
     <Navbar />
-
-    <!-- Galvenais saturs -->
+    <!-- Galvenais satura bloks -->
     <div class="main-content">
         <div class="content">
-            <h1>Bieži uzdotie jautājumi </h1>
 
-            <!-- Jautājums 1: Kā reģistrēties? -->
-                <h2>1. Kā reģistrēties platformā?</h2>
-                <p>
-                    Lai reģistrētos datorā, noklikšķiniet uz pogas <a href="/register">"Reģistrācija"</a> lapas augšējā labajā stūrī. Jums būs jāievada savs vārds, uzvārds, segvārds, e-pasta adrese un jāizveido drošs parole.
-                    Lai reģistrētos telefonā, augšējā labajā stūrī ir jānoklikšķina uz iemiesojuma, kas atrodas blakus meklēšanas pogai.
-                </p>
+            <!-- Bieži uzdoto jautājumu lapas virsraksts -->
+            <h1>Bieži uzdotie jautājumi</h1>
 
-            <!-- Jautājums 2: Kā publicēt savu darbu? -->
-                <h2>2. Kā publicēt savu darbu?</h2>
-                <p>
-                    Lai publicētu savu darbu, pieteicieties savā kontā un noklikšķiniet uz pogas <a href="/StoryList">"Rakstīšana"</a>, kas atrodas augšējā kreisajā stūrī.
-                    Tiks atvērts visu jūsu stāstu saraksts.
-                    Noklikšķiniet uz stāsta, kas jūs interesē.
-                    Atvērsies visa informācija par stāstu un varēsi atrast pogu "Pievienot nodaļu".
-                    Ja vēlaties sākt jaunu stāstu, noklikšķiniet uz pogas "Izveidot stāstu" un aizpildiet visus nepieciešamos laukus.
-                </p>
-                <p>
-                    Turklāt jūs varat mijiedarboties ar saviem stāstiem, izmantojot savu profilu.
-                    Noklikšķiniet uz profila ikonas augšējā labajā stūrī un atlasiet "Mani darbi", lai atrastu stāstus.
-                </p>
+            <!-- Reģistrēšanās jautājums -->
+            <h2>1. Kā reģistrēties platformā?</h2>
+            <p>
+                Lai reģistrētos datorā, jāizvēlas poga <a href="/register">Reģistrācija</a> lapas augšējā labajā stūrī.
+                Lietotājam jāievada vārds, uzvārds, lietotājvārds, e-pasta adrese un jāizveido droša parole.
+                Mobilajā ierīcē reģistrācijas opcija ir pieejama, atverot izvēlni augšējā labajā stūrī.
+            </p>
 
-            <!-- Jautājums 3: Kā atsaukt publicētu darbu? -->
-                <h2>3. Kā atsaukt publicētu darbu?</h2>
-                <p>
-                    Lai atsauktu publicētu darbu, noklikšķiniet uz profila ikonas augšējā labajā stūrī un atlasiet "Mani literārie darbi", pēc tam nospiediet pogu <a href="/StoryList">"Rediģēt esošos darbus"</a>, lai atrastu stāstus un atrodiet darbu, kuru vēlaties noņemt.
-                    Noklikšķiniet uz opcijas "Dzēst".
-                </p>
+            <!-- Darba publicēšanas jautājums -->
+            <h2>2. Kā publicēt savu darbu?</h2>
+            <p>
+                Darba publicēšana ir pieejama tikai autorizētiem lietotājiem.
+                Lai publicētu darbu, jāieiet savā kontā un jāizvēlas sadaļa <a href="/StoryList">Rakstīšana</a>.
+                Tiek atvērts lietotāja stāstu saraksts, kur iespējams izvēlēties esošu darbu vai izveidot jaunu.
+            </p>
+            <p>
+                Lai izveidotu jaunu darbu, jāizvēlas Izveidot stāstu un jāaizpilda nepieciešamie lauki.
+                Darbus iespējams pārvaldīt arī caur <a href="/profile">profila sadaļu </a> Mani literārie darbi.
+            </p>
+
+            <!-- Darba dzēšanas jautājums -->
+            <h2>3. Kā dzēst publicētu darbu?</h2>
+            <p>
+                Lai dzēstu darbu, jāatver profils un sadaļa Mani literārie darbi, pēc tam jāizvēlas
+                <a href="/StoryList">Rediģēt esošos darbus</a> un atlasiet darbu, kuru vēlaties dzēst, noklikšķinot uz atbilstošās pogas.
+            </p>
             <p>Lūdzu, ņemiet vērā, ka šī darbība ir neatgriezeniska.</p>
 
-            <!-- Jautājums 4: Kā atrast grāmatu vai darbu? -->
-                <h2>4. Kā atrast grāmatu vai darbu?</h2>
-                <p>
-                    Noklikšķiniet uz pogas <a href="/Library">"Bibliotēka"</a> augšējā kreisajā stūrī.
-                    Jūs redzēsit visu bibliotēkā esošo grāmatu sarakstu.
-                    Varat izmantot filtru, lai atvieglotu meklēšanu.
-                </p>
-                <p>
-                    Varat arī izmantot meklēšanu.
-                    Noklikšķiniet uz meklēšanas pogas augšējā labajā stūrī.
-                    Tiks atvērta meklēšanas josla, kurā varēsiet ievadīt grāmatas nosaukumu.
-                </p>
+            <!-- Grāmatu meklēšanas jautājums -->
+            <h2>4. Kā atrast grāmatu vai stāstu?</h2>
+            <p>
+                Lai atrastu darbu, jāatver sadaļa <a href="/Library">Bibliotēka</a>.
+                Lietotājam tiek parādīts visu pieejamo darbu saraksts ar filtrēšanas un kartošanas iespējām.
+            </p>
+            <p>
+                Meklēšana ir pieejama, izmantojot meklēšanas joslu augšējā daļā, kur iespējams ievadīt grāmatas nosaukumu.
+            </p>
 
-            <!-- Jautājums 5: Kā vērtēt grāmatu? -->
+            <!-- Grāmatu vērtēšanas jautājums -->
             <h2>5. Kā vērtēt grāmatu?</h2>
             <p>
-                Lai novērtētu darbu, jāpāriet uz <a href="/Library">"Bibliotēka"</a> un jāizvēlas vajadzīgā grāmata.
-                Grāmatas aprakstā sadaļā "Vērtejums" būs iespēja izvērtēt.
-
+                Grāmatas vērtēšana ir pieejama tikai autorizētiem lietotājiem.
+                Lai novērtētu darbu, jāatver <a href="/Library">Bibliotēka</a> un jāizvēlas konkrētā grāmata.
+                Vērtējumu iespējams pievienot sadaļā Vērtējums.
             </p>
             <p>
-                Vienai grāmatai var pievienot tikai vienu vērtējumu un, ja vēlaties, to mainīt jebkurā laikā.
+                Katram lietotājam ir iespēja pievienot vienu vērtējumu vienai grāmatai un to vēlāk mainīt.
             </p>
 
-            <!-- Jautājums 6: Kā grāmatzīmēm pievienot grāmatu? -->
-            <h2>6. Kā grāmatzīmēm pievienot grāmatu?</h2>
+            <!-- Komentēšanas jautājums -->
+            <h2>6. Kā komentēt grāmatas?</h2>
             <p>
-                Vispirms ir jāpāriet uz <a href="/Library">"Bibliotēka"</a> un jāizvēlas vajadzīgā grāmata.
-                Tur varēsiet atrast pogu “Pievienot grāmatzīmēm”.
-                Varat mainīt grāmatzīmi jebkurā laikā, vēlreiz noklikšķinot uz pogas.
-
+                Komentēšanas funkcija ir pieejama tikai autorizētiem lietotājiem. Grāmatas sadaļā zem nodaļām lietotājs var pievienot komentārus, lai dalītos ar savu viedokli vai atsauksmēm par saturu.
             </p>
             <p>
-                Lai apskatītu visas grāmatzīmes, augšējā stūrī kreisajā pusē dodieties uz sadaļu "Grāmatzīmes".
-                Vai arī doties uz profilu un izvēlēties intresēs grāmatzīmi.
+                Katram komentāram ir pieejama izvēlne ar trim punktiem augšējā stūrī, kur lietotājs var veikt darbības ar savu komentāru — rediģēt vai dzēst to. Tajā pašā izvēlnē ir iespējams arī iesniegt sūdzību par citu lietotāju komentāriem.
             </p>
 
-            <!-- Jautājums 7: Kā dzēst savu kontu? -->
-            <h2>7. Kā iziet no konta?</h2>
+            <!-- Grāmatzīmju jautājums -->
+            <h2>7. Kā pievienot grāmatu grāmatzīmēm?</h2>
             <p>
-                Noklikšķiniet uz profila ikonas un noklikšķiniet uz pogas "Rediģēt profilu". Tur jūs atradīsit opciju "Iziet".
+                Grāmatzīmju funkcija ir pieejama tikai autorizētiem lietotājiem.
+                Lai pievienotu grāmatu, jāatver <a href="/Library">Bibliotēka</a> un jāizvēlas konkrētā grāmata.
+                Tur pieejama opcija Pievienot grāmatzīmēm.
             </p>
-            <p>Lūdzu, ņemiet vērā, ka jūsu konts un visi saistītie dati tiks neatgriezeniski dzēsti.</p>
-
-            <!-- Jautājums 8: Kā dzēst savu kontu? -->
-            <h2>8. Kā dzēst savu kontu?</h2>
             <p>
-                Lai izdzēstu savu kontu, noklikšķiniet uz profila ikonas un noklikšķiniet uz pogas "Rediģēt profilu".
-                Tur jūs atradīsit opciju "Dzēst kontu".
+                Grāmatzīmes iespējams apskatīt sadaļā <a href="/bookmarks/read">Grāmatzīmes</a> vai <a href="/profile">profila lapā</a>.
             </p>
-            <p>Lūdzu, ņemiet vērā, ka jūsu konts un visi saistītie dati tiks neatgriezeniski dzēsti.</p>
 
-        <!-- Jautājums 9: Kā mainīt paroli? -->
-            <h2>9. Kā mainīt paroli?</h2>
+            <!-- Iziešanas no konta jautājums -->
+            <h2>8. Kā iziet no konta?</h2>
             <p>
-                Lai mainītu paroli, noklikšķiniet uz profila ikonas un noklikšķiniet uz pogas "Rediģēt profilu".
-                Tur atradīsiet opciju "Mainīt paroli".
-                Ievadiet savu pašreizējo paroli un izvēlieties jaunu drošu paroli.
+                Lai izietu no konta, jāatver <a href="/profile">profila sadaļa</a> Rediģēt profilu un jāizvēlas opcija Iziet.
             </p>
 
-        <!-- Jautājums 10: Kā iesniegt sūdzību par saturu? -->
-            <h2>10. Kā iesniegt sūdzību par saturu?</h2>
+            <!-- Konta dzēšanas jautājums -->
+            <h2>9. Kā dzēst kontu?</h2>
             <p>
-                Ja uzskatāt, ka kāds saturs pārkāpj mūsu noteikumus, lūdzu, sazinieties ar mums, izmantojot <a href="/technicalsupport">Tehnisko atbalstu</a>.
+                Lai dzēstu kontu, jāatver <a href="/profile">profila sadaļa</a> Rediģēt profilu un jāizvēlas opcija Dzēst kontu.
             </p>
-            <p>Visu nepieciešamo informāciju var atrast sadaļā <a href="/dmcapolicy">"DMCA politika"</a></p>
+            <p>Lūdzu, ņemiet vērā, ka konts un visi saistītie dati tiek neatgriezeniski dzēsti.</p>
 
-            <!-- Jautājums 11: Citi jautājumi -->
-                <h2>11. Citi jautājumi</h2>
-                <p>
-                    Ja jums ir jautājumi vai problēmas, lūdzu, sazinieties ar mums, izmantojot mūsu <a href="/technicalsupport">Tehnisko atbalstu</a>.
-                    Mēs centīsimies atbildēt 24 stundu laikā.
-                </p>
+            <!-- Paroles maiņas jautājums -->
+            <h2>10. Kā mainīt paroli?</h2>
+            <p>
+                Paroles maiņa ir pieejama <a href="/profile">profila sadaļā</a> Rediģēt profilu.
+                Lietotājam jāievada pašreizējā parole un jāizvēlas jauna parole.
+            </p>
+
+            <!-- Sūdzību iesniegšanas jautājums -->
+            <h2>11. Kā iesniegt sūdzību?</h2>
+            <p>
+                Sūdzības iesniegšana ir pieejama tikai autorizētiem lietotājiem. Sūdzību iespējams iesniegt par lietotāju, stāstu, grāmatu vai komentāru, izmantojot īpašu ziņošanas pogu, kas pieejama attiecīgajā vietā platformā.
+            </p>
+            <p>
+                Iesniedzot sūdzību, nepieciešams norādīt atbilstošu paskaidrojumu, kurā tiek skaidrots sūdzības iemesls.
+            </p>
+
+            <!-- Darba atbloķēšanas jautājums -->
+            <h2>12. Kā atbloķēt darbu?</h2>
+            <p>
+                Ja darbs tiek bloķēts noteikumu pārkāpuma dēļ, tas var kļūt nepieejams citiem lietotājiem un nebūs redzams publiskajā platformā.
+                Darba autors šādā gadījumā saglabā tiesības veikt nepieciešamās izmaiņas saturā, lai tas atbilstu platformas noteikumiem.
+            </p>
+            <p>
+                Pēc izmaiņu veikšanas autors var vērsties pie <a href="/technicalsupport">tehniskā atbalsta</a>, iesniedzot pieprasījumu par atkārtotu darba izskatīšanu un iespējamu atbloķēšanu.
+            </p>
+
+            <!-- Konta atbloķēšanas jautājums -->
+            <h2>13. Kā atbloķēt savu kontu?</h2>
+            <p>
+                Ja tiek konstatēti noteikumu pārkāpumi, lietotāja konts var tikt bloķēts uz noteiktu vai nenoteiktu laiku. Šādā gadījumā lietotājam jebkurā laikā ir tiesības apstrīdēt bloķēšanu, sazinoties ar <a href="/technicalsupport">tehnisko atbalstu</a> un iesniedzot skaidrojumu par situāciju.
+            </p>
+
+            <!-- Citu jautājumu sadaļa -->
+            <h2>14. Citi jautājumi</h2>
+            <p>
+                Jautājumu vai problēmu gadījumā iespējams sazināties ar <a href="/technicalsupport">tehnisko atbalstu</a>.
+                Atbildes parasti tiek sniegtas 24 stundu laikā.
+            </p>
         </div>
     </div>
-
     <!-- Kājene -->
     <Footer />
 </template>
-
-<script>
-import Navbar from "@/components/Navbar.vue";
-import Footer from "@/components/Footer.vue";
-
-export default {
-    components: {
-        Navbar,
-        Footer
-    }
-};
-</script>
-
 <style scoped>
 
     /* Galvenā satura konteinera stils */
@@ -171,6 +181,10 @@ export default {
     .main-content p {
         font-size: 1.0rem; /* Teksta izmērs */
         margin: 10px 20px; /* Ārējā atstarpe */
+    }
+
+    p{
+        line-height: 1.8;
     }
 
     /* Saraksta elementu stils */

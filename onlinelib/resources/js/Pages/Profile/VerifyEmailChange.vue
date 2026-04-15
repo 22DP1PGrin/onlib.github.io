@@ -17,13 +17,6 @@
     // Pārbauda, vai lietotājs ir apstiprinājis e-pastu (pārbauda URL parametru 'verified=1')
     const verified = computed(() => page.url.includes('verified=1'));
 
-    // Nosaka, vai jāparāda paziņojums par nosūtīto verifikācijas saiti
-    const showLinkSent = computed(() =>
-        page.props.flash?.status === 'verification-link-sent' ||
-        page.props.flash?.status === 'email-verified' ||
-        linkSent.value
-    );
-
     // Funkcija e-pasta verifikācijas saites atkārtotai nosūtīšanai
     const submit = () => {
         form.post(route('email.change.resend'), {
@@ -39,6 +32,7 @@
 };
 </script>
 <template>
+    <!-- Navigācijas josla -->
     <Navbar />
     <div class="center-container">
 
@@ -69,6 +63,7 @@
             </div>
         </div>
     </div>
+    <!-- Kājene -->
     <Footer />
 </template>
 

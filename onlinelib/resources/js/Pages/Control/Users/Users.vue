@@ -4,35 +4,42 @@
     import Navbar from "@/Components/Navbar.vue";
     import Footer from "@/Components/Footer.vue";
     import {route} from "ziggy-js";
+    import FormModal from "@/Components/Modal/FormModal.vue";
+    import SuccessModal from "@/Components/Modal/SuccessModal.vue";
+    import SearchComponent from "@/Components/SearchComponent.vue";
 
     // Saņem lietotāju sarakstu no servera
     const users = computed(() => usePage().props.users);
     const admins = computed(() => usePage().props.admins);
     const currentUser = computed(() => usePage().props.currentUser);
+
+    // Meklēšanas vaicājums - inicilizē ar esošo filtru vai tukšu virkni
     const search = ref(usePage().props.filters?.search || '');
 
+    // Uzglabā izvēlēto lietotāju bloķēšanai
     const selectedUser = ref(null);
 
     const limit = 3; // Cik lietotāju rādīt sākumā
 
+    // Kontrolē, vai rādīt visus lietotājus vai tikai limit skaitu
     const showAllUsers = ref(false);
     const showAllAdmins = ref(false);
 
-    // Aprēķina redzamu parastu lietotāju atkarībā no showAllBooks
+    // Aprēķina redzamu parastu lietotāju atkarībā no showAllUsers
     const visibleUsers = computed(() =>
         showAllUsers.value ? users.value : users.value.slice(0, limit)
     );
 
-    // Aprēķina redzamu administratoru atkarībā no showAllBooks
+    // Aprēķina redzamu administratoru atkarībā no showAllAdmins
     const visibleAdmins = computed(() =>
         showAllAdmins.value ? admins.value : admins.value.slice(0, limit)
     );
 
-    // Veidlapa dati bloķēšanai
+    // Veidlapa lietotāja bloķēšanas datiem
     const form = useForm({
-        subject: '',
-        problem: '',
-        duration: '',
+        subject: '',      // Bloķēšanas iemesla tēma
+        problem: '',      // Detalizēts pamatojums
+        duration: '',     // Bloķēšanas ilgums
     });
 
     // Modālo logu stāvokļi
@@ -42,7 +49,7 @@
     // Meklēt lietotāju pēc lietotājvārda
     const searchUsers = () => {
         router.get(route('users'),
-            { search: search.value },
+            { search: search.value }, // Meklēšanas parametrs
             {
                 preserveState: true,
                 replace: true,
@@ -58,7 +65,13 @@
     };
 
     // Apstiprina lietotāja konta bloķēšanu
-    const confirmUserBlock = () => {
+    const confirmUserBlock = (formData) => {
+        // Aizpilda formas laukus ar datiem no modāļa
+        form.subject = formData.subject;
+        form.problem = formData.problem;
+        form.duration = formData.duration;
+
+        // Nosūta POST pieprasījumu uz serveri lietotāja bloķēšanai/atbloķēšanai
         if (!selectedUser.value) return;
         form.post(
             route('user.toggleBlock', { user: selectedUser.value.id }),
@@ -86,13 +99,6 @@
         document.body.style.overflow = "";
     };
 
-    // Aizver veiksmīgas darbības modāli
-    const closeSuccessModal = () => {
-        showSuccessModal.value = false;
-        router.visit(window.location.href);
-        document.body.style.overflow = "";
-    };
-
     // Lietotāju apskatīšana
     const GoToWatch = (userId) => {
         router.get(route('users.watch', { id: userId }));
@@ -100,80 +106,48 @@
 </script>
 
 <template>
-
+    <!-- Navigācijas josla -->
     <Navbar/>
 
     <div class="main-content">
         <!-- Bloķēšanas apstiprinājuma modālais logs stāstam -->
-        <div v-if="showUserModal" class="modal-overlay">
-            <div class="modal">
-                <div class="success-container">
-                    <p class="h2">Vai tiešām vēlaties bloķēt šo lietotāju kontu?</p>
-                    <p>Lūdzu, norādiet bloķēšanas iemeslu, lai apstiprinātu.</p>
-
-                    <div class="form-group">
-                        <!-- Tēmas izvēle -->
-                        <label for="subject">Tēma:</label>
-                        <select v-model="form.subject" required>
-                            <option value="" disabled>Izvēlieties tēmu</option>
-                            <option value="Krāpnieciska vai maldinoša darbība">Krāpnieciska vai maldinoša darbība</option>
-                            <option value="Noteikumu pārkāpums">Noteikumu pārkāpums</option>
-                            <option value="Naida runa vai diskriminējoša uzvedība"> Naida runa vai diskriminējoša uzvedība</option>
-                            <option value="Citu lietotāju aizskaršana">Citu lietotāju aizskaršana</option>
-                            <option value="Sūdzības no lietotājiem">Sūdzības no lietotājiem</option>
-                        </select>
-
-                        <div v-if="form.errors.subject" class="error">
-                            {{ form.errors.subject }}
-                        </div>
-                    </div>
-
-                    <!-- Pamatojuma ievades lauks -->
-                    <div class="form-group">
-                        <label for="problem">Pamatojums:</label>
-                        <textarea v-model="form.problem" required></textarea>
-
-                        <!-- Validācijas kļūdas paziņojums pamatojumam -->
-                        <div v-if="form.errors.problem" class="error">
-                            {{ form.errors.problem }}
-                        </div>
-                    </div>
-
-                    <!-- Ilgums izvēle -->
-                    <div class="form-group">
-                        <label>Bloķēšanas ilgums:</label>
-
-                        <select v-model="form.duration" required>
-                            <option value="" disabled selected>Izvēlieties periodu</option>
-                            <option :value="1">1 nedēļa</option>
-                            <option :value="2">2 nedēļas</option>
-                            <option :value="3">3 nedēļas</option>
-                            <option :value="4">4 nedēļas</option>
-                            <option :value="null" selected>Neierobežots</option>
-                        </select>
-
-                        <div v-if="form.errors.duration" class="error">
-                            {{ form.errors.duration }}
-                        </div>
-                    </div>
-
-                    <div class="close">
-                        <button @click="closeUserModals" class="close-btn">Atcelt</button>
-                        <button @click="confirmUserBlock" class="block">Bloķēt</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <FormModal
+            :is-open="showUserModal"
+            title="Vai tiešām vēlaties bloķēt šo lietotāju kontu?"
+            message="Lūdzu, norādiet bloķēšanas iemeslu, lai apstiprinātu."
+            :fields="[
+                { name: 'subject', label: 'Tēma', type: 'select', required: true,
+                      options: [
+                          { value: 'Krāpnieciska vai maldinoša darbība', label: 'Krāpnieciska vai maldinoša darbība' },
+                          { value: 'Noteikumu pārkāpums', label: 'Noteikumu pārkāpums' },
+                          { value: 'Naida runa vai diskriminējoša uzvedība', label: 'Naida runa vai diskriminējoša uzvedība' },
+                          { value: 'Citu lietotāju aizskaršana', label: 'Citu lietotāju aizskaršana' },
+                          { value: 'Sūdzības no lietotājiem', label: 'Sūdzības no lietotājiem' }
+                      ]
+                },
+                { name: 'problem', label: 'Pamatojums', type: 'textarea', required: true, rows: 4 },
+                { name: 'duration', label: 'Bloķēšanas ilgums:', type: 'select', required: true,
+                      options: [
+                          { value: 1, label: '1 nedēļa' },
+                          { value: 2, label: '2 nedēļas' },
+                          { value: 3, label: '3 nedēļas' },
+                          { value: 4, label: '4 nedēļas' },
+                          { value: null, label: 'Neierobežots' }
+                      ]
+                },
+            ]"
+            :errors="form.errors"
+            submit-text="Bloķēt"
+            @submit="confirmUserBlock"
+            @close="closeUserModals"
+        />
 
         <!-- Veiksmīgas bloķēšanas modālais logs -->
-        <div v-if="showSuccessModal" class="modal-overlay">
-            <div class="modal">
-                <div class="success-container">
-                    <h2>Konts veiksmīgi bloķēts!</h2>
-                    <button @click="closeSuccessModal" class="close-btn">Aizvērt</button>
-                </div>
-            </div>
-        </div>
+        <SuccessModal
+            :is-open="showSuccessModal"
+            title="Konts veiksmīgi bloķēts!"
+            @close="showSuccessModal = false"
+        />
 
         <!-- PDF lejupielādes poga -->
         <div class="pdf-wrapper">
@@ -183,17 +157,11 @@
         </div>
 
         <!-- Meklēšanas josla -->
-        <div class="search">
-            <input
-                v-model="search"
-                type="text"
-                class="input"
-                placeholder="Meklēt lietotāju..."
-            >
-            <button class="btn" @click="searchUsers">
-                <i class="fa bar">&#xf002;</i>
-            </button>
-        </div>
+        <SearchComponent
+            v-model="search"
+            placeholder="Meklēt lietotāju..."
+            @search="searchUsers"
+        />
 
         <!-- Administartoru pārvaldības forma (tikai superadminiem) -->
         <div v-if="currentUser.role === 'superadmin'">
@@ -210,7 +178,6 @@
                         <div v-for="admin in visibleAdmins" :key="admin.id" class="item">
                             <!-- Lietotājvārda attēlošana -->
                             <span class="title">{{ admin.nickname }}</span>
-
 
                             <div class="buttons-container">
                                 <!-- Apskatīšana, bloķēšana -->
@@ -253,7 +220,6 @@
                         <!-- Lietotājvārda attēlošana -->
                         <span class="title">{{ user.nickname }}</span>
 
-
                         <div class="buttons-container">
                             <!-- Apskatīšana, bloķēšana -->
                             <button class="delete-btn" @click="openUserBlockModal(user)">
@@ -277,7 +243,7 @@
             </div>
         </div>
     </div>
-
+    <!-- Kājene -->
     <Footer/>
 </template>
 
@@ -285,131 +251,6 @@
 
     .main-content {
         padding-bottom: 45px; /* Apakšējais atstatums */
-    }
-
-    /* Modala loga stils */
-    .modal-overlay {
-        position: fixed; /* Fiksēta pozicija */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(19, 8, 0, 0.59);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000; /* Virs visiem elementiem */
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-    }
-
-    .modal {
-        border-radius: 12px;
-        padding: 15px;
-        max-width: 400px;
-        width: 90%;
-        position: relative;
-        background-color: #e4a27c; /* Fona krāsa */
-        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-        max-height: 75vh;
-        overflow-y: auto;
-        scrollbar-width: thin; /* Plāna ritjosla */
-    }
-
-    .close{
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
-    }
-
-    .close-btn{
-        align-self: flex-start;
-        margin-bottom: 5px;
-    }
-
-    .success-container {
-        text-align: center;
-        padding: 15px;
-    }
-
-    .success-container h2 {
-        margin-bottom: 15px;
-        font-size:  1.3rem;
-        font-weight: bold;
-        color: rgba(26, 16, 8, 0.8);
-    }
-
-    .success-container p {
-        margin-bottom: 15px;
-        color: rgba(26, 16, 8, 0.8);
-
-    }
-
-    /* Meklēšanas josla */
-    .search {
-        display: flex;  /* Flexbox izkārtojums konta sadaļai */
-        justify-content: center;
-        align-items: center;  /* Elementu vertikāla izlīdzināšana */
-        margin: 60px auto;
-        max-width: 800px;
-        margin-bottom: 30px;
-    }
-
-    .search:hover {
-        transform: none; /*noņemam transformāciju, kad pele tiek pārvilkta */
-    }
-
-    .search .input {
-        background-color: #ffffff; /*Krasa fona */
-        border: 0; /* Noņemam apmales */
-        border-radius: 20px; /* Noapaļo apmalas*/
-        border-color: rgba(26, 16, 8, 0.8); /* Mainam apmales krāsu */
-        font-size: 1rem; /* Fonta izmērs */
-        padding: 10px; /* Iekšējās atstarpes */
-        height: 15%;
-        width: 90%; /* Sakam ar nulles platumu */
-    }
-
-    /* Poga meklēšanai */
-    .search .btn {
-        background-color: #c58667;
-        border: 2px solid rgba(26, 16, 8, 0.8); /*apmales vērtības */
-        border-radius: 20px;
-        cursor: pointer; /* Peles formāts */
-        outline: none; /* Noņemam noklusēto apmales stāvokli */
-        margin-left: 7px; /* Atstarpe no labās puses */
-        width: 41px;
-        height: 40px;
-        transition: border-color 0.3s;
-    }
-
-    .btn .fa{
-        font-size: 20px;
-        text-align: center;
-        transition: color 0.3s !important;
-    }
-
-    .input{
-        color: rgba(26, 16, 8, 0.8);
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
-    }
-    .search input::placeholder {
-        color: rgba(26, 16, 8, 0.42); /* Krāsa */
-    }
-
-    .input:focus {
-        outline: none !important; /* Noņemam noklusēto apmales stāvokli */
-        box-shadow: none !important;
-        background-color: #ffd9c6; /* Fona krāsa */
-    }
-    .btn:hover {
-        border-color: rgba(255, 187, 142, 0.8); /* Mainam apmales krāsu, kad pele tiek pārvilkta */
-    }
-    .btn:hover .fa {
-        color: rgba(255, 187, 142, 0.8); /* Mainam ikonas krāsu, kad pele tiek pārvilkta */
-    }
-    .fa{
-        color: rgba(26, 16, 8, 0.8);  /* Fonta krāsa */
     }
 
     .story-form {
@@ -421,14 +262,6 @@
     h1 {
         font-size: 1.7rem; /* Fonta lielums */
         margin-bottom: 40px;
-        text-align: center; /* Centrēts teksts */
-        color: rgba(26, 16, 8, 0.8); /* Krāsa */
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-        font-weight: bold; /* Trekns fonts */
-    }
-
-    .h2{
-        font-size: 1.1rem; /* Fonta lielums */
         text-align: center; /* Centrēts teksts */
         color: rgba(26, 16, 8, 0.8); /* Krāsa */
         font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
@@ -499,13 +332,6 @@
         padding: 5px 10px;
     }
 
-    .block {
-        align-self: flex-start;
-        margin-bottom: 5px;
-        border: 2px solid rgba(35, 11, 11, 0.8);
-        background-color: #714e3e;
-    }
-
     .delete-btn {
         padding: 3px 15px;
         border: 2px solid rgba(35, 11, 11, 0.8);
@@ -538,13 +364,6 @@
         border-color: #ffc8a9;
     }
 
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        margin-bottom: 10px;
-    }
-
     label {
         font-weight: bold;
         text-align: left;
@@ -554,14 +373,6 @@
     textarea::placeholder {
         color: rgba(26, 16, 8, 0.42);
         font-size: 1.0rem;
-    }
-
-    /* Kļūdas zem ievades lauka */
-    .error{
-        color: rgb(110, 37, 37);
-        font-size: 1rem;
-        text-align: left;
-        margin-bottom: 5px;
     }
 
     .form-group select,
@@ -589,23 +400,6 @@
     }
 
     @media (max-width: 500px) {
-        .search .input {
-            font-size: 0.9rem; /* Fonta izmērs */
-            height: 30px;
-            width: 75%;
-        }
-
-        /* Poga meklēšanai */
-        .search .btn {
-            padding: 0;
-            width: 34px;
-            height: 34px;
-        }
-
-        .btn .fa{
-            font-size: 18px;
-        }
-
         h1 {
             font-size: 1.5rem;
         }
@@ -615,7 +409,6 @@
 
         p,
         label,
-        .error,
         select,
         option,
         option::placeholder,
@@ -624,10 +417,6 @@
         button
         {
             font-size: 0.9rem;
-        }
-
-        .h2{
-            font-size: 1.1rem;
         }
 
         .buttons-container {
@@ -645,10 +434,6 @@
         .watch-btn{
             padding: 2px 8px;
             font-size: 0.9rem;
-        }
-
-        .modal{
-            max-width: 300px;
         }
     }
 </style>

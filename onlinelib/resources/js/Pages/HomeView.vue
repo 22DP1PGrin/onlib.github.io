@@ -4,54 +4,29 @@
     import {router} from "@inertiajs/vue3";
     import {route} from "ziggy-js";
     import {ref} from "vue";
+    import UserBooksSection from "@/Components/Books/UserBookSection.vue";
+    import ClassicBooksSection from "@/Components/Books/ClassicBookSection.vue";
+    import SearchComponent from "@/Components/SearchComponent.vue";
 
-    // Definē komponenta datus, kas tiek padoti no servera
+    // Komponenta ievaddati
     const props = defineProps({
         classicBooks: Array, // Klasisko grāmatu masīvs
         userBooks: Array    // Lietotāju stāstu masīvs
     });
 
-    const searchQuery = ref('');
+    // Meklēšanas vaicājums
+    const search = ref('');
 
+    // Meklēšanas funkcija
     const performSearch = () => {
-        if (searchQuery.value.trim()) {
+        if (search.value.trim()) { // Pārbauda, vai meklēšanas lauks nav tukšs
             router.get(route('search.books'), {
-                query: searchQuery.value
+                query: search.value // Meklēšanas vaicājums
             }, {
                 preserveState: true,
                 replace: true
             })
         }
-    };
-
-     //Aprēķina grāmatas vērtējumu
-    const getBookRating = (book) => {
-        const average = parseFloat(book.ratings_avg_grade) || 0; // Iegūst vidējo vērtējumu
-        const count = book.ratings_count || 0; // Iegūst vērtējumu skaitu
-        return {
-            average: average.toFixed(1), // Noapaļo līdz 1 ciparam aiz komata
-            count: count
-        }
-    };
-
-    //Formatē vērtējumu skaitu atbilstoši latviešu valodas likumiem
-    const formattedRatingsCount = (count) => {
-        if (count === 1) return `${count} atsauksme`;
-        if (count > 1 && count < 10) return `${count} atsauksmes`;
-        return `${count} atsauksmju`;
-    };
-
-
-     //Pārvirza uz klasiskās grāmatas lasīšanas lapu
-
-    const GoToReadClassic = (bookId) => {
-        router.get(route('ClassicRead', { id: bookId }));
-    };
-
-
-    //Pārvirza uz lietotāja stāsta lasīšanas lapu
-    const GoToReadStory = (UserbookId) => {
-        router.get(route('UserRead', { id: UserbookId }));
     };
 
     //Pārvirza uz jauna stāsta izveides lapu
@@ -61,7 +36,7 @@
 </script>
 
 <template>
-
+    <!-- Navigācijas josla -->
     <Navbar />
 
     <div class="page-wrapper">
@@ -69,23 +44,19 @@
             <!-- Platformas apraksta sadaļa -->
             <div class="about-platform">
                 <h1 class="platform-title">Onlib</h1> <!-- Platformas nosaukums -->
+                <!-- Platformas apraksts -->
                 <p class="platform-description">
                     Šī nav tikai bibliotēka, bet gan vesela pasaule, kur satiekas pagātne un tagadne:
                     lasiet nemirstīgo klasiku un radiet savus stāstus.
                     Jūsu radošums šeit atradīs savus lasītājus, un Jūsu dvēsele atradīs savas dzimtos vārdus.
-                </p> <!-- Platformas apraksts -->
+                </p>
 
-                <div class="search">
-                    <input
-                        v-model="searchQuery"
-                        type="text"
-                        class="input"
-                        placeholder="Meklēt grāmatu..."
-                    >
-                    <button class="btn" @click="performSearch">
-                        <i class="fa bar">&#xf002;</i>
-                    </button>
-                </div>
+                <!-- Meklēšanas josla -->
+                <SearchComponent
+                    v-model="search"
+                    placeholder="Meklēt darbu..."
+                    @search="performSearch"
+                />
             </div>
 
             <!-- Klasiskās literatūras sadaļa -->
@@ -98,50 +69,10 @@
             </section>
 
             <!-- Klasisko grāmatu saraksts -->
-            <section class="book-section" v-if="classicBooks.length">
-                <div class="books-grid">
-                    <!-- Klasiskās grāmatas kartes -->
-                    <div v-for="book in classicBooks" :key="book.id" class="book-card">
-                        <div class="book-content">
-                            <h3 class="book-title">{{ book.name }}</h3> <!-- Grāmatas nosaukums -->
-                            <p class="book-description">{{ book.description }}</p> <!-- Apraksts -->
-
-                            <!-- Vērtējuma informācija -->
-                            <div class="book-info">
-                                <span class="book">
-                                    <strong>Vērtējums: </strong>
-                                    {{ getBookRating(book).average }}<span class="fastar">★</span>
-                                    ({{ formattedRatingsCount(getBookRating(book).count) }})
-                                </span>
-                            </div>
-
-                            <!-- Vecuma ierobežojums -->
-                            <div class="book-info">
-                                <span class="info-label">Vecuma ierobežojums: </span>
-                                <span class="rating-badge">{{ book.age_limit }}</span>
-                            </div>
-
-                            <!-- Autora informācija -->
-                            <div class="book-info">
-                                <span class="book"><strong>Autors: </strong> {{ book.Author_name }} {{ book.Author_surname }}</span>
-                            </div>
-
-                            <!-- Žanri -->
-                            <div class="book-genres">
-                                <span class="info-label">Žanri:</span>
-                                <div class="genres-list">
-                                    <span v-for="genre in book.genres" :key="genre.id" class="genre-badge">
-                                        {{ genre.name }}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Lasīšanas poga -->
-                            <button class="read-btn" @click="GoToReadClassic(book.id)">Lasīt</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <ClassicBooksSection
+                v-if="classicBooks.length"
+                :classicBooks="classicBooks"
+            />
 
             <!-- Lietotāju stāstu sadaļa -->
             <section class="section-intro">
@@ -152,67 +83,19 @@
                 </p>
             </section>
 
-            <!-- Lietotāju stāstu saraksts -->
-            <section class="book-section" v-if="userBooks.length">
-                <div class="books-grid">
-                    <!-- Lietotāju stāstu kartes -->
-                    <div v-for="book in userBooks" :key="book.id" class="book-card">
-                        <div class="book-content">
-                            <div class="bookmark-badge">
-                                Jaunums
-                            </div>
-
-                            <h2 class="book-title">{{ book.name }}</h2> <!-- Stāsta nosaukums -->
-                            <p class="book-description">{{ book.description }}</p> <!-- Apraksts -->
-
-                            <!-- Vērtējuma informācija -->
-                            <div class="book-info">
-                                <span class="book">
-                                    <strong>Vērtējums: </strong>
-                                    {{ getBookRating(book).average }}<span class="fastar">★</span>
-                                    ({{ formattedRatingsCount(getBookRating(book).count) }})
-                                </span>
-                            </div>
-
-                            <!-- Vecuma ierobežojums -->
-                            <div class="book-info">
-                                <span class="info-label">Vecuma ierobežojums: </span>
-                                <span class="rating-badge">{{ book.age_limit }}</span>
-                            </div>
-
-                            <!-- Autora informācija -->
-                            <div class="book-info">
-                                <span class="book"><strong>Autors: </strong>{{ book.user.nickname }}</span>
-                            </div>
-
-                            <!-- Statusa informācija -->
-                            <div class="book-info">
-                                <span class="book"><strong>Status: </strong>{{ book.status }}</span>
-                            </div>
-
-                            <!-- Žanri -->
-                            <div class="book-genres">
-                                <span class="info-label">Žanri:</span>
-                                <div class="genres-list">
-                                    <span v-for="genre in book.genres" :key="genre.id" class="genre-badge">
-                                        {{ genre.name }}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Lasīšanas poga -->
-                            <button class="read-btn" @click="GoToReadStory(book.id)">Lasīt</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <!-- Lietotāju grāmatu sadaļa -->
+            <UserBooksSection
+                v-if="userBooks.length"
+                :books="userBooks"
+            />
 
             <!-- Vērtējumu sadaļa -->
             <section class="section-intro">
                 <div class="line">
                     <h2 class="intro-title">Vērtējumi</h2>
                     <p class="intro-text">
-                        Dalieties savā viedoklī ar citiem lietotājiem, novērtējot literārā darba kvalitāti no 1 līdz 5.
+                        Šeit lietotāji var dalīties ar savu vērtējumu par grāmatām, novērtējot tās skalā no 1 līdz 5.
+                        Tas palīdz citiem vieglāk izvēlēties sev interesantus darbus.
                     </p>
                 </div>
             </section>
@@ -225,17 +108,29 @@
                 </div>
             </section>
 
+            <!-- Komentāru sadaļas apraksts -->
+            <section class="section-intro">
+                <div class="line">
+                    <h2 class="intro-title">Komentāri</h2>
+                    <p class="intro-text">
+                        Šeit var dalīties ar savu viedokli par lasītajiem darbiem, apspriest sižetu un idejas,
+                        kā arī iepazīties ar citu lasītāju domām.
+                    </p>
+                </div>
+            </section>
+
             <!-- Jauna stāsta izveides sadaļa -->
             <section class="section-intro">
                 <div class="line">
                     <h2 class="intro-title">Kļūsti par daļu</h2>
                     <p class="intro-text">
-                        Vai jums ir stāsts, kas gaida savu lasītāju? Mūsu platforma dod iespēju jaunajiem
-                        autoriem rasties un attīstīties kopā ar vērtīgu atsauksmju.
+                        Ja tev ir savs stāsts, šī ir vieta, kur to var publicēt un dalīties ar citiem lasītājiem.
+                        Autori šeit var augt, saņemt atsauksmes un iedvesmot citus.
                     </p>
                 </div>
             </section>
 
+            <!-- Jauna stāsta izveides poga -->
             <div class="new_section">
                 <div class="new" @click="GoToCreate">
                     <h2>Izveidot jaunu stāstu</h2>
@@ -244,12 +139,11 @@
             </div>
         </div>
     </div>
-
+    <!-- Kājene -->
     <Footer />
 </template>
 
 <style scoped>
-
     .page-wrapper {
         font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
         color: rgba(26, 16, 8, 0.8); /* Teksta krāsa  */
@@ -258,67 +152,16 @@
         flex-direction: column; /* Elementus novieto vertikāli */
     }
 
-    /* Meklēšanas josla */
-    .search {
-        display: flex;  /* Flexbox izkārtojums konta sadaļai */
-        justify-content: center;
-        align-items: center;  /* Elementu vertikāla izlīdzināšana */
-        margin: 40px auto;
-        max-width: 800px;
-        margin-bottom: 30px;
-    }
-
-    .search:hover {
-        transform: none; /*noņemam transformāciju, kad pele tiek pārvilkta */
-    }
-
-    .search .input {
-        background-color: #ffffff; /*Krasa fona */
-        border: 0; /* Noņemam apmales */
-        border-radius: 20px; /* Noapaļo apmalas*/
-        border-color: rgba(26, 16, 8, 0.8); /* Mainam apmales krāsu */
-        font-size: 1rem; /* Fonta izmērs */
-        padding: 10px; /* Iekšējās atstarpes */
-        height: 15%;
-        width: 90%; /* Sakam ar nulles platumu */
-    }
-
-    /* Poga meklēšanai */
-    .search .btn {
-        background-color: #c58667;
-        border: 2px solid rgba(26, 16, 8, 0.8); /*apmales vērtības */
-        padding: 0;
-        border-radius: 20px;
-        cursor: pointer; /* Peles formāts */
-        outline: none; /* Noņemam noklusēto apmales stāvokli */
-        margin-left: 7px; /* Atstarpe no labās puses */
-        width: 41px;
-        height: 40px;
-        transition: border-color 0.3s;
-    }
-
     .btn .fa{
         font-size: 20px;
         text-align: center;
         transition: color 0.3s !important;
     }
 
-    .input{
-        color: rgba(26, 16, 8, 0.8);
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
-    }
     .search input::placeholder {
         color: rgba(26, 16, 8, 0.42); /* Krāsa */
     }
 
-    .input:focus {
-        outline: none !important; /* Noņemam noklusēto apmales stāvokli */
-        box-shadow: none !important;
-        background-color: #ffd9c6; /* Fona krāsa */
-    }
-    .btn:hover {
-        border-color: rgba(255, 187, 142, 0.8); /* Mainam apmales krāsu, kad pele tiek pārvilkta */
-    }
     .btn:hover .fa {
         color: rgba(255, 187, 142, 0.8); /* Mainam ikonas krāsu, kad pele tiek pārvilkta */
     }
@@ -380,149 +223,15 @@
         margin: 0 auto;
     }
 
-
     .line {
         border-top: 1px solid rgba(26, 16, 8, 0.8);
         margin-top: 50px;
         padding-top: 50px;
     }
 
-
-    .books-grid {
-        display: grid; /* Grid izkārtojums */
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adaptīvas kolonnas */
-        gap: 30px; /* Atstarpes starp elementiem */
-        margin-bottom: 50px;
-    }
-
-    .bookmark-badge {
-        position: absolute; /* Absolūtā pozicionēšana */
-        top: 10px;
-        right: 10px;
-        color: rgba(26, 16, 8, 0.8);
-        padding: 3px 10px;
-        background-color: #ffd9c6; /* Fona krāsa */
-        box-shadow: 0 2px 4px rgba(63, 31, 4, 0.8); /* Ēna */
-        border-radius: 15px; /* Noapaļoti stūri */
-        font-size: 0.85rem;
-        transition: all 0.3s; /* Pārejas efekts */
-    }
-
-    .book-card {
-        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmale */
-        background-color: #e4a27c;
-        border-radius: 8px;
-        box-shadow: 0 6px 15px rgba(63, 31, 4, 0.8);
-        overflow: hidden; /* Pārplūdes slēpšana */
-        transition: all 0.3s ease;
-        position: relative; /* Relatīvā pozīcija */
-    }
-
-    .book-card:hover {
-        transform: translateY(-5px); /* Nedaudz paceļas */
-        box-shadow: 0 8px 20px rgba(63, 31, 4, 0.8);
-    }
-
-    .book-content {
-        flex: 1; /* Aizpilda visu pieejamo vietu */
-        padding: 25px;
-        display: flex;
-        flex-direction: column; /* Elementus novieto vertikāli */
-        height: 100%;
-    }
-
-    .book-title {
-        font-size: 1.1rem;
-        font-weight: bold;
-        margin-bottom: 15px;
-        text-align: center;
-        color: rgba(106, 51, 0, 0.8);
-        font-family: Tahoma, Helvetica, sans-serif;
-        line-height: 1.3;
-    }
-
-    .book-description {
-        color: rgba(26, 16, 8, 0.62);
-        margin-bottom: 20px;
-        font-size: 1rem;
-        word-wrap: break-word; /* Vārdu pārnešana */
-    }
-
-    .book {
-        font-size: 1rem;
-        color: rgba(26, 16, 8, 0.8);
-    }
-
-
-    .book-info {
-        margin-bottom: 12px;
-        display: flex; /* Flexbox izkārtojums */
-        text-align: left; /* Kreisais līdzinājums */
-    }
-
-    .info-label {
-        font-weight: bold;
-        margin-right: 8px;
-        color: rgba(26, 16, 8, 0.8);
-        min-width: 100px;
-        flex-shrink: 0; /* Neļauj sašaurināties */
-    }
-
-    .rating-badge {
-        display: inline-block; /* Bloks, kas neaizpilda visu rindu */
-        padding: 3px 10px; /* Iekšējās atstarpes */
-        background-color: #ffd9c6;
-        color: rgba(26, 16, 8, 0.8);
-        box-shadow: 0 2px 4px rgba(63, 31, 4, 0.8);
-        border-radius: 15px;
-        font-size: 0.85rem;
-    }
-
-    .book-genres {
-        margin-top: 0; /* Noņem augšējo atstarpes */
-    }
-
-
-    .genres-list {
-        display: flex;
-        flex-wrap: wrap; /* Atļauj ielauzties jaunā rindā */
-        gap: 8px;
-        margin-top: 8px;
-        margin-bottom: 20px;
-    }
-
-    .genre-badge {
-        display: inline-block;
-        padding: 5px 12px;
-        background-color: #ffd9c6;
-        border-radius: 15px;
-        font-size: 0.85rem;
-        color: rgba(26, 16, 8, 0.8);
-        box-shadow: 0 2px 4px rgba(63, 31, 4, 0.8);
-    }
-
-    .read-btn {
-        margin-top: auto;
-        display: block;
-        width: 100%;
-        padding: 12px;
-        background-color: #c58667;
-        border: 2px solid rgba(26, 16, 8, 0.8);
-        border-radius: 4px;
-        cursor: pointer;
-        transition: all 0.3s ease; /* Pārejas animācija */
-        text-align: center;
-        font-family: Tahoma, Helvetica, sans-serif;
-        font-size: 1rem;
-    }
-
     button:hover {
         background-color: #ffc8a9;
         border-color: #ffc8a9;
-    }
-
-    .fastar {
-        font-size: 1.2rem;
     }
 
     .stars-container {
@@ -541,7 +250,6 @@
         font-size: 4rem;
     }
 
-
     .new_section {
         display: flex;
         flex-direction: column;
@@ -550,7 +258,6 @@
         align-items: center;
         margin-bottom: 70px;
     }
-
 
     .new {
         border: 2px dashed rgba(26, 16, 8, 0.8);
@@ -586,19 +293,6 @@
 
     @media (max-width: 500px) {
 
-        .search .input {
-            font-size: 0.9rem; /* Fonta izmērs */
-            height: 30px;
-            width: 75%;
-        }
-
-        /* Poga meklēšanai */
-        .search .btn {
-            padding: 0;
-            width: 34px;
-            height: 34px;
-        }
-
         .btn .fa{
             font-size: 18px;
         }
@@ -621,48 +315,6 @@
             font-size: 1rem;
             line-height: 1.8;
         }
-
-        .bookmark-badge {
-            font-size: 0.75rem;
-
-
-        }
-
-        .book-title {
-            font-size: 1rem;
-        }
-
-        .book-description {
-            font-size: 0.9rem;
-        }
-
-        .book {
-            font-size: 0.9rem;
-        }
-
-        .rating-badge {
-            display: inline-block; /* Blakus elementi */
-            padding: 3px 10px; /* Iekšējā atstarpe */
-            background-color: #ffd9c6;
-            color: rgba(26, 16, 8, 0.8);
-            box-shadow: 0 2px 4px rgba(63, 31, 4, 0.8);
-            border-radius: 15px;
-            font-size: 0.75rem;
-        }
-
-        .genre-badge {
-            font-size: 0.75rem;
-        }
-
-        .read-btn {
-            padding: 8px;
-            font-size: 0.9rem;
-        }
-
-        .fastar{
-            font-size: 1.1rem;
-        }
-
 
         .star1{
             font-size: 3.8rem;

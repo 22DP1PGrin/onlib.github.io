@@ -32,10 +32,7 @@ class ChapterController extends Controller
         ]);
 
         // Atgriež JSON atbildi ar veiksmīgu izveidi
-        return response()->json([
-            'success' => true,
-            'chapter' => $chapter,
-        ]);
+        return back();
     }
 
     // Saglabā jaunu lietotāja nodaļu
@@ -59,10 +56,7 @@ class ChapterController extends Controller
         ]);
 
         // Atgriež JSON atbildi ar veiksmīgu izveidi
-        return response()->json([
-            'success' => true,
-            'chapter' => $chapter,
-        ]);
+        return back();
     }
 
     // Atver jaunas klasiskās nodaļas izveides formu
@@ -116,10 +110,7 @@ class ChapterController extends Controller
         $chapter->update($validated);
 
         // Atgriež JSON ar veiksmīgu atjaunināšanu
-        return response()->json([
-            'success' => true,
-            'bookId' => $chapter->classic_book_id,
-        ]);
+        return back();
     }
 
     // Atjaunina lietotāja nodaļu datubāzē
@@ -135,10 +126,7 @@ class ChapterController extends Controller
         $chapter->update($validated);
 
         // Atgriež JSON ar veiksmīgu atjaunināšanu
-        return response()->json([
-            'success' => true,
-            'bookId' => $chapter->user_book_id,
-        ]);
+        return back();
     }
 
     // Dzēš klasisko nodaļu

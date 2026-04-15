@@ -3,15 +3,16 @@
     import Footer from "@/Components/Footer.vue";
     import { ref } from "vue";
     import {router, useForm} from "@inertiajs/vue3";
+    import SuccessModal from "@/Components/Modal/SuccessModal.vue";
 
-
-
+    // Komponenta ievaddati
     const props = defineProps({
-        genres: Array, // Saņem žanru sarakstu kā ievadi
-        ratings: Array, // Saņem reitingu sarakstu kā ievadi
-        flash: Object // Saņem paziņojuma objektu
+        genres: Array,
+        ratings: Array,
+        flash: Object
     });
 
+    // Izveido formu grāmatu izveidošanai
     const form = useForm({
         title: '',
         description: '',
@@ -19,6 +20,15 @@
         genres: [],
     });
 
+    // Modālo logu stāvokļi
+    const showSuccesModal = ref(false);
+
+    // Aizvēr modāli
+    const closeSuccesModal = () => {
+        showSuccesModal.value = false;
+        document.body.style.overflow = "hidden";
+        router.visit('/StoryList');
+    }
 
     // Funkcija, kas pārslēdz žanru izvēli
     const toggleGenre = (genreId) => {
@@ -30,6 +40,7 @@
         }
     };
 
+    // Kļūdu paziņojumi žanru laukam
     const errors = ref({
         genres: ''
     });
@@ -38,24 +49,36 @@
     const submit = () => {
         form.post('/CreateStory', { // Iesniedz datus uz serveri
             onSuccess: () => {
-                alert('Stāsts veiksmīgi izveidots!'); // Ja veiksmīgi, parāda paziņojumu
-                router.visit('/StoryList'); // Pāriet uz stāstu sarakstu
+                showSuccesModal.value = true
             },
         });
     };
+
+    // Funkcija, kas automātiski pielāgo textarea augstumu atkarībā no teksta daudzuma
+    const resizeTextarea = (el) => {
+        el.style.height = "auto"
+        el.style.height = el.scrollHeight + "px"
+
+        // Ja teksts pārsniedz 200px, tiek parādīts vertikālais scroll
+        el.style.overflowY = el.scrollHeight > 200 ? "auto" : "hidden"
+    }
 </script>
 
 <template>
+    <!-- Navigācijas josla -->
     <Navbar />
 
-    <!-- Galvenais satura bloks -->
+    <!-- Veiksmīgas izveidošanas modālais logs -->
+    <SuccessModal
+        :is-open="showSuccesModal"
+        title="Stāsts ir veiksmīgi izveidots!"
+        @close="closeSuccesModal"
+    />
+
     <div class="main-content">
-        <!-- Stāstu veidošanas formas konteiners -->
         <div class="story-form">
-            <!-- Formas virsraksts -->
             <h1>Stāstu veidošana</h1>
 
-            <!-- Veidlapas sadaļa -->
             <form class="submit" @submit.prevent="submit">
                 <!-- Nosaukuma ievades lauks -->
                 <div class="form-group">
@@ -67,7 +90,8 @@
                         placeholder="Stāsta nosaukums"
                         required
                     />
-                    <!-- Kļūdas paziņojums, ja nosaukums nav derīgs -->
+
+                    <!-- Kļūdas paziņojums, ja apraksts nav derīgs -->
                     <div v-if="form.errors.title" class="error-message">
                         {{ form.errors.title }}
                     </div>
@@ -81,8 +105,10 @@
                         v-model="form.description"
                         rows="4"
                         placeholder="Īsumā par stāstu"
+                        @input="resizeTextarea($event.target)"
                         required
                     ></textarea>
+
                     <!-- Kļūdas paziņojums, ja apraksts nav derīgs -->
                     <div v-if="form.errors.description" class="error-message">
                         {{ form.errors.description }}
@@ -123,6 +149,7 @@
                             {{ genre.name }}
                         </div>
                     </div>
+
                     <!-- Kļūdas paziņojums, ja nav izvēlēts žanrs -->
                     <div v-if="form.errors.genres" class="error-message">
                         {{ form.errors.genres }}
@@ -136,8 +163,7 @@
             </form>
         </div>
     </div>
-
-    <!-- Lapas kājene -->
+    <!-- Kājene -->
     <Footer />
 </template>
 
@@ -183,6 +209,13 @@
         font-weight: bold;
     }
 
+    textarea {
+        resize: none;
+        overflow: hidden;
+        min-height: 40px;
+        max-height: 250px;
+    }
+
     .form-group input,
     .form-group textarea,
     .form-group select {
@@ -225,7 +258,7 @@
     }
 
     .genre-checkbox.selected {
-        background-color: #ffc8a9;
+        background-color: #ffb18e;
     }
 
     .error-message {

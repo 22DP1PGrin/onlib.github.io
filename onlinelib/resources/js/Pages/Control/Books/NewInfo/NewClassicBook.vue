@@ -1,64 +1,89 @@
 <script setup>
-import Navbar from "@/Components/Navbar.vue";
+    import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import { ref } from "vue";
 import {router, useForm} from "@inertiajs/vue3";
+    import SuccessModal from "@/Components/Modal/SuccessModal.vue";
 
-
-
-const props = defineProps({
-    genres: Array, // Saņem žanru sarakstu kā ievadi
-    ratings: Array, // Saņem reitingu sarakstu kā ievadi
-    flash: Object // Saņem paziņojuma objektu
-});
-
-const form = useForm({
-    title: '',
-    description: '',
-    Author_name: '',
-    Author_surname: '',
-    Year_publication: '',
-    rating_id: '',
-    genres: [],
-});
-
-
-// Funkcija, kas pārslēdz žanru izvēli
-const toggleGenre = (genreId) => {
-    const index = form.genres.indexOf(genreId); // Meklē žanra ID formā
-    if (index === -1) { // Ja žanrs vēl nav izvēlēts
-        form.genres.push(genreId); // Pievieno žanru
-    } else { // Ja žanrs jau ir izvēlēts
-        form.genres.splice(index, 1); // Noņem žanru
-    }
-};
-
-const errors = ref({
-    genres: ''
-});
-
-// Funkcija stāsta pievienošanai
-const submit = () => {
-    form.post('/CreateBook', { // Iesniedz datus uz serveri
-        onSuccess: () => {
-            alert('Grāmata veiksmīgi pievienota!'); // Ja veiksmīgi, parāda paziņojumu
-            router.visit('/BookList'); // Pāriet uz stāstu sarakstu
-        },
+    // Komponenta ievaddati
+    const props = defineProps({
+        genres: Array,
+        ratings: Array,
+        flash: Object
     });
-};
+
+    // Modālo logu stāvokļi
+    const showSuccesModal = ref(false);
+
+    // Aizver modāli
+    const closeSuccesModal = () => {
+        showSuccesModal.value = false;
+        document.body.style.overflow = "hidden";
+        router.visit('/BookList');
+    }
+
+    // Izveido formu grāmatu izveidošanai
+    const form = useForm({
+        title: '',
+        description: '',
+        Author_name: '',
+        Author_surname: '',
+        Year_publication: '',
+        rating_id: '',
+        genres: [],
+    });
+
+    // Funkcija, kas pārslēdz žanru izvēli
+    const toggleGenre = (genreId) => {
+        const index = form.genres.indexOf(genreId); // Meklē žanra ID formā
+        if (index === -1) { // Ja žanrs vēl nav izvēlēts
+            form.genres.push(genreId); // Pievieno žanru
+        } else { // Ja žanrs jau ir izvēlēts
+            form.genres.splice(index, 1); // Noņem žanru
+        }
+    };
+
+    // Kļūdu paziņojumi žanru laukam
+    const errors = ref({
+        genres: ''
+    });
+
+    // Funkcija stāsta pievienošanai
+    const submit = () => {
+        form.post('/CreateBook', {
+            onSuccess: () => {
+                showSuccesModal.value = true
+            },
+        });
+    };
+
+    // Funkcija, kas automātiski pielāgo textarea augstumu atkarībā no teksta daudzuma
+    const resizeTextarea = (el) => {
+        el.style.height = "auto"
+        el.style.height = el.scrollHeight + "px"
+
+        // Ja teksts pārsniedz 200px, tiek parādīts vertikālais scroll
+        el.style.overflowY = el.scrollHeight > 200 ? "auto" : "hidden"
+    }
 </script>
 
 <template>
+    <!-- Navigācijas josla -->
     <Navbar />
+
+    <!-- Veiksmīgas izveidošanas modālais logs -->
+    <SuccessModal
+        :is-open="showSuccesModal"
+        title="Grāmata ir veiksmīgi izveidota!"
+        @close="closeSuccesModal"
+    />
 
     <!-- Galvenais satura bloks -->
     <div class="main-content">
         <!-- Stāstu veidošanas formas konteiners -->
         <div class="story-form">
-            <!-- Formas virsraksts -->
             <h1>Grāmatu veidošana</h1>
 
-            <!-- Veidlapas sadaļa -->
             <form class="submit" @submit.prevent="submit">
                 <!-- Nosaukuma ievades lauks -->
                 <div class="form-group">
@@ -70,6 +95,7 @@ const submit = () => {
                         placeholder="Stāsta nosaukums"
                         required
                     />
+
                     <!-- Kļūdas paziņojums, ja nosaukums nav derīgs -->
                     <div v-if="form.errors.title" class="error-message">
                         {{ form.errors.title }}
@@ -83,9 +109,11 @@ const submit = () => {
                         id="description"
                         v-model="form.description"
                         rows="4"
-                        placeholder="Īsumā par stāstu"
+                        placeholder="Īsumā par grāmatu"
+                        @input="resizeTextarea($event.target)"
                         required
                     ></textarea>
+
                     <!-- Kļūdas paziņojums, ja apraksts nav derīgs -->
                     <div v-if="form.errors.description" class="error-message">
                         {{ form.errors.description }}
@@ -102,6 +130,7 @@ const submit = () => {
                         placeholder="Autora vārds"
                         required
                     />
+
                     <!-- Kļūdas paziņojums, ja autora vārds nav derīgs -->
                     <div v-if="form.errors.Author_name" class="error-message">
                         {{ form.errors.Author_name }}
@@ -118,6 +147,7 @@ const submit = () => {
                         placeholder="Autora uzvārds"
                         required
                     />
+
                     <!-- Kļūdas paziņojums, ja autora uzvārds nav derīgs -->
                     <div v-if="form.errors.Author_surname" class="error-message">
                         {{ form.errors.Author_surname }}
@@ -134,6 +164,7 @@ const submit = () => {
                         placeholder="Izdošanas gads"
                         required
                     />
+
                     <!-- Kļūdas paziņojums, ja gads nav derīgs -->
                     <div v-if="form.errors.Year_publication" class="error-message">
                         {{ form.errors.Year_publication }}
@@ -174,6 +205,7 @@ const submit = () => {
                             {{ genre.name }}
                         </div>
                     </div>
+
                     <!-- Kļūdas paziņojums, ja nav izvēlēts žanrs -->
                     <div v-if="form.errors.genres" class="error-message">
                         {{ form.errors.genres }}
@@ -188,154 +220,161 @@ const submit = () => {
         </div>
     </div>
 
-    <!-- Lapas kājene -->
+    <!-- Kājene -->
     <Footer />
 </template>
 
 <style scoped>
-.main-content {
-    padding-bottom: 45px; /* Papildus attālums apakšā */
-}
+    .main-content {
+        padding-bottom: 45px; /* Papildus attālums apakšā */
+    }
 
-.story-form {
-    max-width: 800px; /* Maksimālais platums */
-    margin: 0 auto; /* Centrs horizontāli */
-    padding: 20px; /* Iekšējais piepildījums */
-}
+    .story-form {
+        max-width: 800px; /* Maksimālais platums */
+        margin: 0 auto; /* Centrs horizontāli */
+        padding: 20px; /* Iekšējais piepildījums */
+    }
 
-.submit {
-    color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
-    font-family: Tahoma, Helvetica, sans-serif; /* Fonta stils */
-    border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-    background-color: #e4a27c; /* Fona krāsa */
-    border-radius: 10px; /* Noapaļoti stūri */
-    padding: 30px; /* Iekšējais piepildījums */
-    box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */
-}
+    .submit {
+        color: rgba(26, 16, 8, 0.8); /* Teksta krāsa */
+        font-family: Tahoma, Helvetica, sans-serif; /* Fonta stils */
+        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
+        background-color: #e4a27c; /* Fona krāsa */
+        border-radius: 10px; /* Noapaļoti stūri */
+        padding: 30px; /* Iekšējais piepildījums */
+        box-shadow: rgba(63, 31, 4, 0.8) 0px 0px 15px; /* Ēna */
+    }
 
-h1 {
-    font-size: 1.7rem; /* Virsraksta izmērs */
-    margin-top: 32px; /* Attālums no augšas */
-    margin-bottom: 40px; /* Attālums apakšā */
-    text-align: center; /* Centrs */
-    color: rgba(26, 16, 8, 0.8);
-    font-family: Tahoma, Helvetica, sans-serif;
-    font-weight: bold;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block; /* Bloķēts elements */
-    font-size: 1.1rem;
-    margin-bottom: 8px;
-    font-weight: bold;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-    width: 100%; /* Pilna platuma ievades lauks */
-    padding: 10px; /* Iekšējais piepildījums */
-    border: 1px solid rgba(26, 16, 8, 0.8);
-    border-radius: 4px;
-    background-color: white;
-    font-size: 1rem;
-}
-
-.form-group input::placeholder,
-.form-group textarea::placeholder,
-.placeholder-option {
-    color: rgba(26, 16, 8, 0.42);
-    font-size: 1.0rem;
-}
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-    outline: none; /* Nav kontūras */
-    box-shadow: none; /* Nav ēnas */
-    background-color: #ffc8a9; /* Fona krāsa uz fokusa */
-}
-
-.genre-options {
-    display: flex; /* Flexbox izvietojums */
-    flex-wrap: wrap; /* Ļauj elementiem iet uz jauniem rindiem */
-    gap: 10px; /* Attālums starp elementiem */
-}
-
-.genre-checkbox {
-    background-color: #ffd9c6;
-    padding: 8px 12px; /* Iekšējais piepildījums */
-    border-radius: 4px;
-    cursor: pointer; /* Kursors, kas norāda uz klikšķināmu objektu */
-    transition: 0.3s; /* Pārejas efekts */
-    font-size: 1rem;
-}
-
-.genre-checkbox.selected {
-    background-color: #ffc8a9;
-}
-
-.error-message {
-    font-size: 1rem;
-    color: rgb(127,29,29);
-}
-
-.form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 15px;
-    margin-top: 30px;
-}
-
-.submit-btn {
-    border: 2px solid rgba(26, 16, 8, 0.8);
-    background-color: #c58667;
-    color: rgba(26, 16, 8, 0.8);
-    border-radius: 4px;
-    font-size: 1.0rem;
-    cursor: pointer;
-    padding: 5px 20px;
-    transition: all 0.3s;
-}
-
-button:hover {
-    background-color: #ffc8a9;
-    border-color: #ffc8a9;
-}
-
-@media (max-width: 500px) {
     h1 {
-        font-size: 1.5rem;
-    }
-    .form-group label {
-        font-size: 1rem;
+        font-size: 1.7rem; /* Virsraksta izmērs */
+        margin-top: 32px; /* Attālums no augšas */
+        margin-bottom: 40px; /* Attālums apakšā */
+        text-align: center; /* Centrs */
+        color: rgba(26, 16, 8, 0.8);
+        font-family: Tahoma, Helvetica, sans-serif;
+        font-weight: bold;
     }
 
-    button{
-        font-size: 0.9rem;
-        padding: 5px 15px;
+    .form-group {
+        margin-bottom: 20px;
     }
+
+    .form-group label {
+        display: block; /* Bloķēts elements */
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+
     .form-group input,
     .form-group textarea,
     .form-group select {
-        font-size: 0.9rem;
+        width: 100%; /* Pilna platuma ievades lauks */
+        padding: 10px; /* Iekšējais piepildījums */
+        border: 1px solid rgba(26, 16, 8, 0.8);
+        border-radius: 4px;
+        background-color: white;
+        font-size: 1rem;
     }
+
     .form-group input::placeholder,
     .form-group textarea::placeholder,
-    .placeholder-option{
-        font-size: 0.9rem;
+    .placeholder-option {
+        color: rgba(26, 16, 8, 0.42);
+        font-size: 1.0rem;
     }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none; /* Nav kontūras */
+        box-shadow: none; /* Nav ēnas */
+        background-color: #ffc8a9; /* Fona krāsa uz fokusa */
+    }
+
+    textarea {
+        resize: none;
+        overflow: hidden;
+        min-height: 40px;
+        max-height: 250px;
+    }
+
+    .genre-options {
+        display: flex; /* Flexbox izvietojums */
+        flex-wrap: wrap; /* Ļauj elementiem iet uz jauniem rindiem */
+        gap: 10px; /* Attālums starp elementiem */
+    }
+
     .genre-checkbox {
-        font-size: 0.9rem;
-        padding: 7px 8px;
+        background-color: #ffd9c6;
+        padding: 8px 12px; /* Iekšējais piepildījums */
+        border-radius: 4px;
+        cursor: pointer; /* Kursors, kas norāda uz klikšķināmu objektu */
+        transition: 0.3s; /* Pārejas efekts */
+        font-size: 1rem;
     }
-    .error-message{
-        font-size: 0.9rem;
-        color:rgb(127,29,29);
+
+    .genre-checkbox.selected {
+        background-color: #ffb18e;
     }
-}
+
+    .error-message {
+        font-size: 1rem;
+        color: rgb(127,29,29);
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .submit-btn {
+        border: 2px solid rgba(26, 16, 8, 0.8);
+        background-color: #c58667;
+        color: rgba(26, 16, 8, 0.8);
+        border-radius: 4px;
+        font-size: 1.0rem;
+        cursor: pointer;
+        padding: 5px 20px;
+        transition: all 0.3s;
+    }
+
+    button:hover {
+        background-color: #ffc8a9;
+        border-color: #ffc8a9;
+    }
+
+    @media (max-width: 500px) {
+        h1 {
+            font-size: 1.5rem;
+        }
+        .form-group label {
+            font-size: 1rem;
+        }
+
+        button{
+            font-size: 0.9rem;
+            padding: 5px 15px;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            font-size: 0.9rem;
+        }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder,
+        .placeholder-option{
+            font-size: 0.9rem;
+        }
+        .genre-checkbox {
+            font-size: 0.9rem;
+            padding: 7px 8px;
+        }
+        .error-message{
+            font-size: 0.9rem;
+            color:rgb(127,29,29);
+        }
+    }
 </style>

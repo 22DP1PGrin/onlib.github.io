@@ -4,52 +4,25 @@
     import Navbar from "@/Components/Navbar.vue";
     import Footer from "@/Components/Footer.vue";
     import { route } from "ziggy-js";
+    import FormModal from "@/Components/Modal/FormModal.vue";
+    import SuccessModal from "@/Components/Modal/SuccessModal.vue";
 
     // Iegūst pašreizējo lietotāju
     const user = computed(() => usePage().props.auth.user);
 
-    // Modālo logu kontrole
+    // Modālo logu stāvokļi
     const showModal = ref(false);
     const showPasswordModal = ref(false);
     const showDeleteModal = ref(false);
     const showAvatarModal = ref(false);
 
+    // Atsauce uz failu izvēles lauku
     const avatarInput = ref(null);
 
+    // Avatar attēla forma
     const avatarForm = useForm({
         avatar: null
     });
-
-
-    // Aizver profila modāli
-    const closeModal = () => {
-        showModal.value = false;
-        document.body.style.overflow = "";
-    };
-
-    // Aizver paroles maiņas modāli
-    const closePasswordModal = () => {
-        showPasswordModal.value = false;
-        document.body.style.overflow = "";
-    };
-
-    // Aizver attēla modāli
-    const closeAvatarModal = () => {
-        showAvatarModal.value = false;
-        document.body.style.overflow = "";
-    };
-
-    // Atver konta dzēšanas apstiprinājuma modāli
-    const openDeleteModal = () => {
-        showDeleteModal.value = true;
-        document.body.style.overflow = "hidden";
-    };
-
-    // Aizver konta dzēšanas modāli
-    const closeDeleteModal = () => {
-        showDeleteModal.value = false;
-        document.body.style.overflow = "";
-    };
 
     // Profila rediģēšanas forma
     const profileForm = useForm({
@@ -70,12 +43,25 @@
         password: ""
     });
 
+    // Atver konta dzēšanas apstiprinājuma modāli
+    const openDeleteModal = () => {
+        showDeleteModal.value = true;
+        document.body.style.overflow = "hidden";
+    };
+
+    // Aizver konta dzēšanas modāli
+    const closeDeleteModal = () => {
+        showDeleteModal.value = false;
+        document.body.style.overflow = "";
+        deleteForm.reset();
+    };
+
     // Nosūta profila saglabāšanas formu
     const handleProfileSubmit = () => {
         profileForm.put(route("profile.update"), {
             preserveScroll: true,
 
-            onSuccess: (page) => {
+            onSuccess: () => {
                 // Ja atgriežamies tajā pašā maršrutā, tad email nav mainīts
                 if (route().current("profile.settings")) {
                     showModal.value = true;
@@ -96,12 +82,15 @@
         });
     };
 
-    // Apstiprina konta dzēšanu
-    const confirmDeleteAccount = () => {
+    // Apstiprina konta dzēšanu - saņem datus no modāļa
+    const confirmDeleteAccount = (formData) => {
+        deleteForm.password = formData.password;
+
         deleteForm.delete(route("profile.destroy"), {
             onSuccess: () => {
                 closeDeleteModal();
-            }
+                document.body.style.overflow = "hidden";
+            },
         });
     };
 
@@ -112,8 +101,9 @@
         });
     };
 
+    // Atver faila izvēles dialogu avatar augšupielādei
     const selectAvatar = () => {
-        avatarInput.value.click(); // Atver faila izvēles dialogu
+        avatarInput.value.click();
     };
 
     // Augšpielāde attēli
@@ -132,65 +122,58 @@
             }
         });
     };
+
+    // Funkcija, kas automātiski pielāgo textarea augstumu atkarībā no teksta daudzuma
+    const resizeTextarea = (el) => {
+        el.style.height = "auto"
+        el.style.height = el.scrollHeight + "px"
+
+        // Ja teksts pārsniedz 200px, tiek parādīts vertikālais scroll
+        el.style.overflowY = el.scrollHeight > 200 ? "auto" : "hidden"
+    }
 </script>
 <template>
+    <!-- Navigācijas josla -->
     <Navbar/>
 
     <div class="settings-header">
         <h1><strong>Profila iestatījumi</strong></h1>
     </div>
 
-    <!-- Modālie logi dažādiem notikumiem -->
-    <div v-if="showModal" class="modal-overlay">
-        <div class="modal">
-            <div class="success-container">
-                <h2>Profila dati veiksmīgi saglabāti!</h2>
-                <p>Jūsu lietotājvārds un/vai apraksts ir atjaunināti.</p>
-                <button @click="closeModal" class="close-btn">Aizvērt</button>
-            </div>
-        </div>
-    </div>
+    <!-- Veiksmīgas profila atjaunināšanas modālis -->
+    <SuccessModal
+        :is-open="showModal"
+        title="Jūsu lietotājvārds un/vai apraksts ir atjaunināti!"
+        @close="showModal = false"
+    />
 
-    <div v-if="showPasswordModal" class="modal-overlay">
-        <div class="modal">
-            <div class="success-container">
-                <h2>Profila dati veiksmīgi saglabāti!</h2>
-                <p>Jūsu parole ir atjaunināta.</p>
-                <button @click="closePasswordModal" class="close-btn">Aizvērt</button>
-            </div>
-        </div>
-    </div>
+    <!-- Veiksmīgas paroles maiņas modālis -->
+    <SuccessModal
+        :is-open="showPasswordModal"
+        title="Jūsu parole ir atjaunināta!"
+        @close="showPasswordModal = false"
+    />
 
-    <div v-if="showDeleteModal" class="modal-overlay">
-        <div class="modal">
-            <div class="success-container">
-                <h2>Vai tiešām vēlaties dzēst savu kontu?</h2>
-                <p>Šī darbība ir neatgriezeniska. Ievadiet paroli, lai apstiprinātu.</p>
+    <!-- Veiksmīgas avatara atjaunināšanas modālis -->
+    <SuccessModal
+        :is-open="showAvatarModal"
+        title="Jūsu avatars ir atjaunināts!"
+        @close="showAvatarModal = false"
+    />
 
-                <div class="form-group">
-                    <input type="password" v-model="deleteForm.password">
-                    <div class="error" v-if="deleteForm.errors.password">
-                        {{ deleteForm.errors.password }}
-                    </div>
-                </div>
-
-                <div class="close">
-                    <button @click="closeDeleteModal" class="close-btn">Atcelt</button>
-                    <button @click="confirmDeleteAccount" class="delete-btn">Dzēst</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div v-if="showAvatarModal" class="modal-overlay">
-        <div class="modal">
-            <div class="success-container">
-                <h2>Profila dati veiksmīgi saglabāti!</h2>
-                <p>Jūsu avatars ir atjaunināts.</p>
-                <button @click="closeAvatarModal" class="close-btn">Aizvērt</button>
-            </div>
-        </div>
-    </div>
+    <!-- Konta dzēšanas apstiprinājuma modālis ar paroles ievadi -->
+    <FormModal
+        :is-open="showDeleteModal"
+        title="Vai tiešām vēlaties dzēst savu kontu?"
+        message="Šī darbība ir neatgriezeniska. Ievadiet paroli, lai apstiprinātu."
+        :fields="[
+            {name: 'password', label: 'Parole', type: 'password', required: true},
+        ]"
+        :errors="deleteForm.errors"
+        submit-text="Dzēst"
+        @submit="confirmDeleteAccount"
+        @close="closeDeleteModal"
+    />
 
     <div class="settings-page">
         <!-- Avataru izvēles un attēlošanas bloks -->
@@ -218,7 +201,9 @@
 
             <form @submit.prevent="handleProfileSubmit" class="settings-form">
 
+                <!-- Profila informācija -->
                 <div class="form-group">
+                    <!-- Lietotājvārda ievades lauks -->
                     <label>Lietotājvārds:</label>
                     <input
                         type="text"
@@ -226,9 +211,11 @@
                         placeholder="Jūsu lietotājvārds"
                         required
                     >
+                    <!-- Parāda kļūdu, ja lietotājvārds nav derīgs -->
                     <div class="error" v-if="profileForm.errors.nickname">{{ profileForm.errors.nickname }}</div>
                 </div>
 
+                <!-- E-pasta ievades lauks -->
                 <div class="form-group">
                     <label>E-pasts:</label>
                     <input
@@ -237,6 +224,7 @@
                         placeholder="jūsu@epasts.lv"
                         required
                     >
+                    <!-- Parāda kļūdu, ja e-pasts nav derīgs -->
                     <div class="error" v-if="profileForm.errors.email">{{ profileForm.errors.email }}</div>
                 </div>
 
@@ -244,9 +232,12 @@
                     <label>Apraksts:</label>
                     <textarea
                         v-model="profileForm.bio"
+                        @input="resizeTextarea($event.target)"
                         rows="4"
                         placeholder="Rakstiet kaut ko par sevi..."
                     ></textarea>
+
+                    <!-- Parāda kļūdu, ja apraksts nav derīgs -->
                     <div class="error" v-if="profileForm.errors.bio">{{ profileForm.errors.bio }}</div>
                 </div>
 
@@ -269,12 +260,14 @@
                 <div class="form-group">
                     <label>Jaunā parole:</label>
                     <input type="password" v-model="passwordForm.new">
+                    <!-- Parāda kļūdu, ja parole nav pareiza -->
                     <div class="error" v-if="passwordForm.errors.new">{{ passwordForm.errors.new }}</div>
                 </div>
 
                 <div class="form-group">
                     <label>Atkārtojiet paroli:</label>
                     <input type="password" v-model="passwordForm.new_confirmation">
+                    <!-- Parāda kļūdu, ja parole nav pareiza -->
                     <div class="error" v-if="passwordForm.errors.new_confirmation">{{ passwordForm.errors.new_confirmation }}</div>
                 </div>
 
@@ -298,60 +291,11 @@
         </div>
 
     </div>
-
+    <!-- Kājene -->
     <Footer/>
 </template>
 
 <style scoped>
-    /* Modala loga stils */
-    .modal-overlay {
-        position: fixed; /* Fiksēta pozicija */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(19, 8, 0, 0.59);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000; /* Virs visiem elementiem */
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-    }
-
-    .modal {
-        border-radius: 12px;
-        padding: 15px;
-        max-width: 400px;
-        width: 90%;
-        position: relative;
-        background-color: #e4a27c; /* Fona krāsa */
-        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-    }
-
-    .close{
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
-    }
-
-    .success-container {
-        text-align: center;
-        padding: 15px;
-    }
-
-    .success-container h2 {
-        margin-bottom: 15px;
-        font-size:  1.3rem;
-        font-weight: bold;
-        color: rgba(26, 16, 8, 0.8);
-    }
-
-    .success-container p {
-        margin-bottom: 15px;
-        color: rgba(26, 16, 8, 0.8);
-
-    }
     .settings-page {
         color: rgba(26, 16, 8, 0.8); /* Teksta krāsa - Krāsa, kas izmantota visam tekstam */
         max-width: 800px; /* Maksimālais platums - lapas platums tiks ierobežots līdz 800px */
@@ -494,11 +438,6 @@
         border-color: #ffc8a9;
     }
 
-    .close-btn{
-        align-self: flex-start;
-        margin-bottom: 5px;
-    }
-
     .edit-btn {
         align-self: flex-start; /* Pozicionē pogu pa kreisi */
     }
@@ -527,7 +466,7 @@
         padding: 10px;
         border: 1px solid rgba(26, 16, 8, 0.8);
         border-radius: 4px;
-        font-size: 16px;
+        font-size: 1rem;
     }
 
     .form-group textarea {
@@ -579,13 +518,6 @@
             padding: 5px 32px;
         }
 
-        .modal{
-            max-width: 300px;
-        }
-
-        .success-container h2{
-            font-size: 1.1rem;
-        }
         .avatar {
             width: 100px;
             height: 100px;

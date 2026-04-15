@@ -90,7 +90,7 @@ Route::post('/classic-books/{book}/rate', [ClassicBookController::class, 'rateBo
     ->name('classic-books.rate')
     ->middleware('auth');
 
-// Klasiskas grāmatas novertēšana
+// Lietotājas grāmatas novertēšana
 Route::post('/user-books/{book}/rate', [UserBookController::class, 'rateBook'])
     ->name('user-books.rate')
     ->middleware('auth');
@@ -150,7 +150,7 @@ Route::middleware('auth')->group(function () {
 Route::get('User/Profile/{id}', [ProfileController::class, 'Watch'])->name('other.users.watch');
 
 //Tehniskais atbalsts
-Route::post('/support', [SupportController::class, 'store']);
+Route::post('/support', [SupportController::class, 'store'])->name('support.store');
 
 // LIETOTĀJA GRĀMATAS
 Route::middleware('auth')->group(function () {

@@ -1,113 +1,102 @@
-<script>
-import { usePage, router } from '@inertiajs/vue3'
-import {computed, ref} from 'vue'
-import {route} from "ziggy-js";
+<script setup>
+    import { usePage, router } from '@inertiajs/vue3'
+    import { computed, ref, onMounted } from 'vue'
+    import { route } from "ziggy-js"
 
-export default {
-    setup() {
-        // Aprēķina lietotāja datus no lapas propieniem
-        const user = computed(() => usePage().props.auth.user)
+    // Meklēšanas lauka vērtība
+    const searchQuery = ref('')
 
-        // Pārbauda, vai lietotājs ir pieslēdzies (pārvērš vērtību par boolean)
-        const isLoggedIn = computed(() => !!user.value)
+    // Aprēķina lietotāja datus
+    const user = computed(() => usePage().props.auth.user)
 
-        const searchQuery = ref('')
+    // Pārbauda, vai lietotājs ir pieslēdzies
+    const isLoggedIn = computed(() => !!user.value)
 
-        const handleWritingClick = (e) => {
-            if (!isLoggedIn.value) {
-                router.get('/login');
-            } else {
-                router.get('/StoryList');
-            }
-        };
-
-        // Atgriež reakrīvās vērtības un metodes
-        return {
-            user,
-            isLoggedIn,
-            searchQuery,
-            handleWritingClick,
-        };
-    },
-
-
-    mounted() {
-        // Izsauc funkcijas, lai iestatītu hamburger izvēlni un meklēšanas funkcionalitāti
-        this.setupHamburgerMenu();
-        this.setupSearch();
-    },
-    methods: {
-        // Funkcija, kas iestata hamburger izvēlni
-        setupHamburgerMenu() {
-            // Atrod pogu, kas atver/slēpj izvēlni
-            const toggleButton = this.$el.querySelector('.toggle-button');
-            // Atrod navigācijas sašu konteineru
-            const navbarLinks = this.$el.querySelector('.navbar-links');
-
-            // Pārbauda, vai elementi eksistē
-            if (toggleButton && navbarLinks) {
-                // Pievieno klikšķa notikumu pogai
-                toggleButton.addEventListener('click', () => {
-                    // Pievieno vai noņem klasi "active", lai parādītu vai paslēptu izvēlni
-                    navbarLinks.classList.toggle('active');
-                });
-            }
-
-        },
-
-        performSearch() {
-            if (this.searchQuery.trim()) {
-                router.get(route('search.books'), {
-                    query: this.searchQuery
-                }, {
-                    preserveState: true,
-                    replace: true
-                })
-            }
-        },
-
-        handleKeyPress(e) {
-            if (e.key === 'Enter') this.performSearch()
-        },
-
-        // Funkcija, kas iestata meklēšanas funkcionalitāti
-        setupSearch() {
-            const search = this.$el.querySelector('.search')
-            const btn = this.$el.querySelector('.btn')
-            const input = this.$el.querySelector('.input')
-
-            if (btn) {
-                btn.addEventListener('click', () => {
-                    if (input.value.trim() === '') {
-                        search.classList.toggle('active')
-                        if (search.classList.contains('active')) {
-                            input.focus()
-                        }
-                    } else {
-                        this.performSearch()
-                    }
-                })
-
-                input.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        this.performSearch()
-                    }
-                })
-            }
+    // Meklēšanas funkcija
+    const performSearch = () => {
+        if (searchQuery.value.trim()) { // Pārbauda, vai meklēšanas lauks nav tukšs
+            router.get(route('search.books'), {
+                query: searchQuery.value // Meklēšanas vaicājums
+            }, {
+                preserveState: true,
+                replace: true
+            })
         }
     }
-}
+
+    // Tastatūras notikumu apstrāde
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') performSearch() // Ja nospiests Enter, izpilda meklēšanu
+    }
+
+    // Rakstīšanas pogas klikšķa apstrāde
+    const handleWritingClick = () => {
+        if (!isLoggedIn.value) {
+            router.get('/login')  // Ja nav pieslēdzies, novirza uz pieteikšanās lapu
+        } else {
+            router.get('/StoryList')
+        }
+    }
+
+    // Hamburger izvēlnes iestatīšana
+    const setupHamburgerMenu = () => {
+        const toggleButton = document.querySelector('.toggle-button')
+        const navbarLinks = document.querySelector('.navbar-links')
+
+        // Pievieno/noņem 'active' klasi, lai parādītu/paslēptu izvēlni
+        if (toggleButton && navbarLinks) {
+            toggleButton.addEventListener('click', () => {
+                navbarLinks.classList.toggle('active')
+            })
+        }
+    }
+
+    // Meklēšanas funkcionalitātes iestatīšana
+    const setupSearch = () => {
+        const search = document.querySelector('.search')
+        const btn = document.querySelector('.btn')
+        const input = document.querySelector('.input')
+
+        if (btn) {
+            // Pogas klikšķa notikums
+            btn.addEventListener('click', () => {
+                if (input.value.trim() === '') {
+                    search.classList.toggle('active')
+                    if (search.classList.contains('active')) {
+                        input.focus()
+                    }
+                } else {
+                    performSearch()
+                }
+            })
+
+            input.addEventListener('keypress', handleKeyPress)
+        }
+    }
+
+    // Komponenta ielādes notikums
+    onMounted(() => {
+        setupHamburgerMenu()
+        setupSearch()
+    })
 </script>
 <template>
 
     <nav class="navbar">
 
+        <!-- Lielais logo (pilna izmēra ekrāniem) - saite uz sākumlapu -->
         <a href="/"class="BigLogo"><img src="../../../public/images/Logo.jpg" ></a> <!-- Saite uz sākumlapu un lielo logo -->
+
+        <!-- Mazais logo (mobilajiem ekrāniem) - saite uz sākumlapu -->
         <a href="/" class="SmallLogo"><img src="../../../public/images/Logo2.0.jpg" ></a> <!-- Saite uz sākumlapu un mazo logo -->
 
+        <!-- Galvenās navigācijas saites (pilna izmēra ekrāniem) -->
         <ul class="marks">
+            <!-- Bibliotēkas saite -->
             <li><a class="pressed1nav" href="/Library"><i class="fa">&#xf02d;</i> Bibliotēka</a></li> <!-- Saite uz lapu "Bibliotēka" -->
+            <!-- Grāmatzīmju saite -->
             <li><a class="pressed1nav" href="/bookmarks/read"><i class="fa">&#xf02e;</i> Grāmatzīmes</a></li> <!-- Saite uz lapu "Grāmatzīmes" -->
+            <!-- Rakstīšanas saite -->
             <li>
                 <a
                     class="pressed1nav"
@@ -115,10 +104,12 @@ export default {
                 >
                     <i class="fa">&#xf040;</i> Rakstīšana
                 </a>
-            </li><!-- Saite uz lapu "Rakstīšana" -->
+            </li>
         </ul>
 
-        <div class="account"> <!-- Bloks konta pārvaldīšanai -->
+        <!-- Lietotāja konta bloks (meklēšana un profila saites) -->
+        <div class="account">
+            <!-- Meklēšanas bloks -->
             <div class="search">
                 <input
                     type="text"
@@ -132,14 +123,19 @@ export default {
                 </button>
             </div>
 
-
+            <!-- Saturs, ja lietotājs nav pieslēdzies -->
             <template v-if="!isLoggedIn">
+                <!-- Reģistrācijas saite -->
                 <a class="pressed2" href="/register"><i class="fa">&#xf2bd;</i> Reģistrācija</a>
+                <!-- Pieteikšanās saite -->
                 <a class="pressed2" href="/login"> <i class="fa">&#xf2be;</i> Pieteikšanās</a>
+                <!-- Mobilā pieteikšanās ikona -->
                 <a class="pressed3" href="/login"> <i class="fa">&#xf2be; <br></i></a>
             </template>
 
+            <!-- Saturs, ja lietotājs ir pieslēdzies -->
             <template v-else>
+                <!-- Profila saite ar lietotājvārdu un avataru (pilna izmēra ekrāniem) -->
                 <a class="pressed2" href="/profile">
                     <div class="avatar">
                         <!-- Jā nav konta avatara, tad standarta ikona -->
@@ -149,6 +145,7 @@ export default {
                     {{ user.nickname }}
                 </a>
 
+                <!-- Profila saite tikai ar avataru (mobilajiem ekrāniem) -->
                 <a class="pressed3" href="/profile">
                     <!-- Jā nav konta avatara, tad standarta ikona -->
                     <div class="avatar">
@@ -159,13 +156,14 @@ export default {
             </template>
         </div>
 
-        <a href="#" class="toggle-button"> <!-- Pogas izvēlne -->
+        <!-- Hamburger izvēlnes poga (redzama tikai mobilajā versijā) -->
+        <a href="#" class="toggle-button">
            <span class="bar"></span>
            <span class="bar"></span>
            <span class="bar"></span>
         </a>
 
-        <!-- Hamburger menu -->
+        <!-- Hamburger izvēlnes saturs (parādās, kad noklikšķina uz hamburger pogas) -->
         <div class="navbar-links">
             <ul>
                 <li><a class="pressed1" href="/Library"><i style="font-size:16px" class="fa">&#xf02d;</i> Bibliotēka</a></li> <!-- Saite uz lapu "Bibliotēka" -->
@@ -177,7 +175,7 @@ export default {
                     >
                         <i class="fa">&#xf040;</i> Rakstīšana
                     </a>
-                </li><!-- Saite uz lapu "Rakstīšana" -->
+                </li>
             </ul>
         </div>
     </nav>

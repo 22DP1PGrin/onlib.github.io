@@ -4,6 +4,9 @@
     import Navbar from "@/Components/Navbar.vue";
     import { route } from "ziggy-js";
     import { computed, ref } from "vue";
+    import SearchComponent from "@/Components/SearchComponent.vue";
+    import ConfirmModal from "@/Components/Modal/ConfirmModal.vue";
+    import SuccessModal from "@/Components/Modal/SuccessModal.vue";
 
     // Saņem ziņotu objektu sarakstu no servera
     const storyReports = computed(() => usePage().props.storyReports);
@@ -12,6 +15,7 @@
     const commentReports = computed(() => usePage().props.commentReports);
     const search = ref(usePage().props.filters?.search || '');
 
+    // Uzglabā izvēlēto ziņojumu dzešanai
     const selectedReport = ref(null);
 
     const limit = 3; // Cik sūdzības rādīt sākumā
@@ -52,7 +56,6 @@
 
     // Modālo logu stāvokļi
     const showSuccessModal = ref(false);
-
     const showDeleteModal = ref(false);
 
     // Atver dzēšanas modālo logu
@@ -62,22 +65,8 @@
         document.body.style.overflow = "hidden";
     };
 
-    // Aizver veiksmīgas darbības modāli
-    const closeSuccessModal = () => {
-        showSuccessModal.value = false;
-        router.visit(window.location.href);
-        document.body.style.overflow = "";
-    };
-
-    // Aizver dzēšanas modālo logu
-    const closeDeleteModal = () => {
-        showDeleteModal.value = false;
-        selectedReport.value = null;
-        document.body.style.overflow = "";
-    };
-
-    // Meklēt sudzība pēc  grāmata/stāsta nosaukuma, lietotājvārdu, komentāru saturu
-    const searchUsers = () => {
+    // Meklēt sudzība pēc grāmata/stāsta nosaukuma, lietotājvārdu, komentāras autora lietotājvārda
+    const searchReports = () => {
         router.get(route('admin.reports'),
             { search: search.value },
             {
@@ -139,32 +128,26 @@
 </script>
 
 <template>
+    <!-- Navigācijas josla -->
     <Navbar />
 
     <div class="main-content">
 
         <!-- Dzēšanas apstiprinājuma modālais logs -->
-        <div v-if="showDeleteModal" class="modal-overlay">
-            <div class="modal">
-                <div class="success-container">
-                    <h2>Vai tiešām vēlaties dzēst šo sūdzību?</h2>
-                    <div class="close">
-                        <button @click="closeDeleteModal" class="close-btn">Atcelt</button>
-                        <button @click="confirmDelete" class="block">Dzēst</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <ConfirmModal
+            :is-open="showDeleteModal"
+            title="Vai tiešām vēlaties dzēst šo sūdzību?"
+            confirm-text="Dzēst"
+            @confirm="confirmDelete"
+            @cancel="showDeleteModal = false"
+        />
 
         <!-- Veiksmīgas dzēšanas modālais logs -->
-        <div v-if="showSuccessModal" class="modal-overlay">
-            <div class="modal">
-                <div class="success-container">
-                    <h2>Sūdzība veiksmīgi dzēsta!</h2>
-                    <button @click="closeSuccessModal" class="close-btn">Aizvērt</button>
-                </div>
-            </div>
-        </div>
+        <SuccessModal
+            :is-open="showSuccessModal"
+            title="Sūdzība veiksmīgi dzēsta!"
+            @close="showSuccessModal = false"
+        />
 
         <!-- PDF lejupielādes poga -->
         <div class="pdf-wrapper">
@@ -174,17 +157,11 @@
         </div>
 
         <!-- Meklēšanas josla -->
-        <div class="search">
-            <input
-                v-model="search"
-                type="text"
-                class="input"
-                placeholder="Meklēt sūdzību..."
-            >
-            <button class="btn" @click="searchUsers">
-                <i class="fa bar">&#xf002;</i>
-            </button>
-        </div>
+        <SearchComponent
+            v-model="search"
+            placeholder="Meklēt sūdzību..."
+            @search="searchReports"
+        />
 
         <!-- Lietotāju sūdzību pārvaldības sadaļa -->
         <div class="story-form">
@@ -359,6 +336,7 @@
             </div>
         </div>
     </div>
+    <!-- Kājene -->
     <Footer />
 </template>
 
@@ -366,128 +344,6 @@
 <style scoped>
     .main-content {
         padding-bottom: 45px; /* Apakšējais atstatums */
-    }
-
-    /* Modala loga stils */
-    .modal-overlay {
-        position: fixed; /* Fiksēta pozicija */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(19, 8, 0, 0.59);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000; /* Virs visiem elementiem */
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-    }
-
-    .modal {
-        border-radius: 12px;
-        padding: 15px;
-        max-width: 400px;
-        width: 90%;
-        position: relative;
-        background-color: #e4a27c; /* Fona krāsa */
-        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-    }
-
-    .close{
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
-    }
-
-    .close-btn{
-        align-self: flex-start;
-        margin-bottom: 5px;
-    }
-
-    .success-container {
-        text-align: center;
-        padding: 15px;
-    }
-
-    .success-container h2 {
-        margin-bottom: 15px;
-        font-size:  1.3rem;
-        font-weight: bold;
-        color: rgba(26, 16, 8, 0.8);
-    }
-
-    .success-container p {
-        margin-bottom: 15px;
-        color: rgba(26, 16, 8, 0.8);
-
-    }
-
-    /* Meklēšanas josla */
-    .search {
-        display: flex;  /* Flexbox izkārtojums konta sadaļai */
-        justify-content: center;
-        align-items: center;  /* Elementu vertikāla izlīdzināšana */
-        margin: 80px auto;
-        max-width: 800px;
-        margin-bottom: 30px;
-    }
-
-    .search:hover {
-        transform: none; /*noņemam transformāciju, kad pele tiek pārvilkta */
-    }
-
-    .search .input {
-        background-color: #ffffff; /*Krasa fona */
-        border: 0; /* Noņemam apmales */
-        border-radius: 20px; /* Noapaļo apmalas*/
-        border-color: rgba(26, 16, 8, 0.8); /* Mainam apmales krāsu */
-        font-size: 1rem; /* Fonta izmērs */
-        padding: 10px; /* Iekšējās atstarpes */
-        height: 15%;
-        width: 90%; /* Sakam ar nulles platumu */
-    }
-
-    /* Poga meklēšanai */
-    .search .btn {
-        background-color: #c58667;
-        border: 2px solid rgba(26, 16, 8, 0.8); /*apmales vērtības */
-        border-radius: 20px;
-        cursor: pointer; /* Peles formāts */
-        outline: none; /* Noņemam noklusēto apmales stāvokli */
-        margin-left: 7px; /* Atstarpe no labās puses */
-        width: 41px;
-        height: 40px;
-        transition: border-color 0.3s;
-    }
-
-    .btn .fa{
-        font-size: 20px;
-        text-align: center;
-        transition: color 0.3s !important;
-    }
-
-    .input{
-        color: rgba(26, 16, 8, 0.8);
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonta tips */
-    }
-    .search input::placeholder {
-        color: rgba(26, 16, 8, 0.42); /* Krāsa */
-    }
-
-    .input:focus {
-        outline: none !important; /* Noņemam noklusēto apmales stāvokli */
-        box-shadow: none !important;
-        background-color: #ffd9c6; /* Fona krāsa */
-    }
-    .btn:hover {
-        border-color: rgba(255, 187, 142, 0.8); /* Mainam apmales krāsu, kad pele tiek pārvilkta */
-    }
-    .btn:hover .fa {
-        color: rgba(255, 187, 142, 0.8); /* Mainam ikonas krāsu, kad pele tiek pārvilkta */
-    }
-    .fa{
-        color: rgba(26, 16, 8, 0.8);  /* Fonta krāsa */
     }
 
     .story-form {
@@ -608,13 +464,6 @@
         padding: 5px 10px;
     }
 
-    .block {
-        align-self: flex-start;
-        margin-bottom: 5px;
-        border: 2px solid rgba(35, 11, 11, 0.8);
-        background-color: #714e3e;
-    }
-
     .delete-btn {
         font-family: Tahoma, Helvetica, sans-serif;
         padding: 3px 15px;
@@ -694,22 +543,6 @@
     }
 
     @media (max-width: 500px) {
-        .search .input {
-            font-size: 0.9rem; /* Fonta izmērs */
-            height: 30px;
-            width: 75%;
-        }
-
-        /* Poga meklēšanai */
-        .search .btn {
-            padding: 0;
-            width: 34px;
-            height: 34px;
-        }
-
-        .btn .fa{
-            font-size: 18px;
-        }
 
         h1 {
             font-size: 1.5rem;
@@ -758,16 +591,8 @@
             font-size: 0.9rem;
         }
 
-        .modal{
-            max-width: 300px;
-        }
-
         .success-container h2{
             font-size: 1.1rem;
-        }
-
-        .report-wrapper .fa{
-            font-size: 0.9rem;
         }
     }
 </style>

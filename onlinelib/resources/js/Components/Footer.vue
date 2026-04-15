@@ -13,7 +13,7 @@
                 <li><a href="/technicalsupport">Tehniskais atbalsts</a></li> <!-- Saite uz tehnisko atbalstu -->
             </ul>
     </div>
-    <p class="info">© 2025 Onlib. Visas tiesības paturētas.</p>
+    <p class="info">© 2026 Onlib. Visas tiesības paturētas.</p>
 </footer>
 
 </template>

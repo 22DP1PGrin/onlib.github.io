@@ -3,8 +3,11 @@
     import Navbar from "@/Components/Navbar.vue";
     import Footer from "@/Components/Footer.vue";
     import { route } from "ziggy-js";
+    import ConfirmModal from "@/Components/Modal/ConfirmModal.vue";
+    import SuccessModal from "@/Components/Modal/SuccessModal.vue";
+    import {nextTick, onMounted, ref} from "vue";
 
-    // Saņem datus no servera kā props
+    // Komponenta ievaddati
     const props = defineProps({
         book: Object,
         genres: Array,
@@ -12,10 +15,24 @@
         flash: Object
     });
 
-    // Paņema žanru ID no esošā stāsta
+    // Paņem žanru ID no esošā stāsta
     const initialGenreIds = props.book.genres?.map(g => g.id) || [];
 
-    // Veidlapas datus
+    // Uzglabā izvēlētās nodaļas ID dzēšanai
+    const selectedChapterId = ref(null);
+
+    // Modālo logu stāvokļi
+    const showDeleteModal = ref(false);
+    const showDeleteSuccesModal = ref(false);
+    const showSuccesModal = ref(false);
+
+    // Atver dzēšanas apstiprinājuma modāli
+    const openDeleteModal = (id) => {
+        selectedChapterId.value = id;
+        showDeleteModal.value = true;
+    };
+
+    // Grāmatas rediģēšanas forma
     const form = useForm({
         name: props.book.name,
         description: props.book.description,
@@ -37,31 +54,22 @@
     // Veidlapas iesniegšana – atjaunina stāstu
     const submitForm = () => {
         form.put(route('books.update', { id: props.book.id }), {
-            preserveScroll: true, // Patur skatu ritināšanas vietā
+            preserveScroll: true,
             onSuccess: () => {
-                alert('Stāsts veiksmīgi atjaunināts!'); // Panākumu ziņojums
-                router.visit(route('StoryList')); // Pāriet uz stāstu sarakstu
-            },
-            onError: (errors) => {
-                console.log(errors); // Kļūdu izvadīšana konsolē
+                showSuccesModal.value = true
             },
         });
     };
 
-    // Nodaļas dzēšana pēc apstiprinājuma
-    const deleteChapter = (chapterId) => {
-        if (confirm('Vai tiešām vēlaties dzēst šo nodaļu?')) {
-            router.delete(route('user.chapters.destroy', { chapter: chapterId }), {
-                preserveScroll: true,
-                onSuccess: () => {
-                    alert('Nodaļa veiksmīgi dzēsta.');
-                },
-                onError: (errors) => {
-                    console.error(errors);
-                    alert('Radās kļūda, mēģiniet vēlreiz.');
-                }
-            });
-        }
+    // Nodaļas dzēšana
+    const confirmDelete = () => {
+        router.delete(route('user.chapters.destroy', { id: selectedChapterId.value }), {
+            preserveScroll: true,
+            onSuccess: () => {
+                showDeleteModal.value = false;
+                showDeleteSuccesModal.value = true;
+            },
+        });
     };
 
     // Pāriet uz nodaļas izveides lapu
@@ -73,10 +81,57 @@
     const goToEdit = (chapterId) => {
         router.get(route('user.chapters.edit', { chapter: chapterId }));
     };
+
+    // Funkcija, kas automātiski pielāgo textarea augstumu atkarībā no teksta daudzuma
+    const resizeTextarea = (el) => {
+        el.style.height = "auto"
+        el.style.height = el.scrollHeight + "px"
+
+        // Ja teksts pārsniedz 200px, tiek parādīts vertikālais scroll
+        el.style.overflowY = el.scrollHeight > 200 ? "auto" : "hidden"
+    }
+
+    // Automātiska textarea izmēra pielāgošana ievades laikā
+    const autoResize = (e) => resizeTextarea(e.target)
+
+    // Kad komponents ir ielādēts, pielāgo apraksta lauka augstumu esošajam tekstam
+    onMounted(() => {
+        nextTick(() => {
+            const descriptionTextarea = document.getElementById('description');
+            if (descriptionTextarea) {
+                resizeTextarea(descriptionTextarea);
+            }
+        });
+    });
+
 </script>
 
 <template>
+    <!-- Navigācijas josla -->
     <Navbar />
+
+    <!-- Nodaļas dzēšanas apstiprinājuma modālis -->
+    <ConfirmModal
+        :is-open="showDeleteModal"
+        title="Vai tiešām vēlaties dzēst šo nodaļu?"
+        confirm-text="Dzēst"
+        @confirm="confirmDelete"
+        @cancel="showDeleteModal = false"
+    />
+
+    <!-- Veiksmīgas grāmatas atjaunināšanas modālis -->
+    <SuccessModal
+        :is-open="showSuccesModal"
+        title="Grāmata ir veiksmīgi atjaunināta!"
+        @close="showSuccesModal = false"
+    />
+
+    <!-- Veiksmīgas nodaļas dzēšanas modālis -->
+    <SuccessModal
+        :is-open="showDeleteSuccesModal"
+        title="Nodaļa veiksmīgi izdzēsta!"
+        @close="showDeleteSuccesModal = false"
+    />
 
     <!-- Galvenais satura bloks -->
     <div class="main-content">
@@ -102,7 +157,6 @@
 
             </div>
 
-            <!-- Veidlapas sadaļa -->
             <form @submit.prevent="submitForm" class="submit">
                 <!-- Nosaukuma ievades lauks -->
                 <div class="form-group">
@@ -111,11 +165,13 @@
                         type="text"
                         id="name"
                         v-model="form.name"
+                        @input="autoResize"
                         class="form-input"
                         placeholder="Stāsta nosaukums"
                         required
                     >
-                    <!-- Validācijas kļūda nosaukumam -->
+
+                    <!-- Kļūdas paziņojums, ja nosaukums nav derīgs -->
                     <div v-if="form.errors.name" class="error-message">
                         {{ form.errors.name }}
                     </div>
@@ -131,7 +187,8 @@
                         placeholder="Īsumā par stāstu"
                         required
                     ></textarea>
-                    <!-- Validācijas kļūda aprakstam -->
+
+                    <!-- Kļūdas paziņojums, ja apraksts nav derīgs -->
                     <div v-if="form.errors.description" class="error-message">
                         {{ form.errors.description }}
                     </div>
@@ -171,7 +228,8 @@
                             {{ genre.name }}
                         </div>
                     </div>
-                    <!-- Validācijas kļūda žanriem -->
+
+                    <!-- Kļūdas paziņojums, ja nav izvēlēts žanrs -->
                     <div v-if="form.errors.genres" class="error-message">
                         {{ form.errors.genres }}
                     </div>
@@ -192,7 +250,8 @@
                             {{ option }}
                         </div>
                     </div>
-                    <!-- Validācijas kļūda statusam -->
+
+                    <!-- Kļūdas paziņojums, ja status nav derīgs -->
                     <div v-if="form.errors.status" class="error-message">
                         {{ form.errors.status }}
                     </div>
@@ -219,7 +278,7 @@
                         <!-- Nodaļu pārvaldības pogas -->
                         <div class="buttons-container">
                             <button class="edit-btn" @click="goToEdit(chapter.id)">Rediģēt</button>
-                            <button class="delete-btn" @click="deleteChapter(chapter.id)">Dzēst</button>
+                            <button class="delete-btn" @click="openDeleteModal(chapter.id)">Dzēst</button>
                         </div>
                     </div>
                 </div>
@@ -229,7 +288,7 @@
             </div>
         </div>
     </div>
-
+    <!-- Kājene -->
     <Footer/>
 </template>
 
@@ -346,7 +405,7 @@
         font-size: 1rem;
     }
     .genre-checkbox.selected {
-        background-color: #ffc8a9;
+        background-color: #ffb18e;
     }
 
     .status-options {

@@ -1,40 +1,46 @@
 <script setup>
-import { computed } from 'vue'
-import { router } from '@inertiajs/vue3'
-import Navbar from '@/Components/Navbar.vue'
-import Footer from '@/Components/Footer.vue'
-import { route } from 'ziggy-js'
+    import { computed } from 'vue'
+    import { router } from '@inertiajs/vue3'
+    import Navbar from '@/Components/Navbar.vue'
+    import Footer from '@/Components/Footer.vue'
+    import { route } from 'ziggy-js'
 
-const props = defineProps({
-    chapter: { type: Object, required: true },
-    bookChapters: { type: Array, default: () => [] },
-    bookId: { type: Number, required: true },
-    type: { type: String, required: true } // classic или user
-})
+    // Komponenta ievaddatus
+    const props = defineProps({
+        chapter: { type: Object, required: true },
+        bookChapters: { type: Array, default: () => [] },
+        bookId: { type: Number, required: true },
+        type: { type: String, required: true }
+    })
 
-const currentIndex = computed(() =>
-    props.bookChapters.findIndex(c => c.id === props.chapter.id)
-)
+    // Aprēķina pašreizējās nodaļas indeksu nodaļu sarakstā
+    const currentIndex = computed(() =>
+        props.bookChapters.findIndex(c => c.id === props.chapter.id)
+    )
 
-const prevChapter = computed(() =>
-    currentIndex.value > 0 ? props.bookChapters[currentIndex.value - 1] : null
-)
+    // Aprēķina iepriekšējo nodaļu (ja tāda eksistē)
+    const prevChapter = computed(() =>
+        currentIndex.value > 0 ? props.bookChapters[currentIndex.value - 1] : null
+    )
 
-const nextChapter = computed(() =>
-    currentIndex.value < props.bookChapters.length - 1
-        ? props.bookChapters[currentIndex.value + 1]
-        : null
-)
+    // Aprēķina nākamo nodaļu (ja tāda eksistē)
+    const nextChapter = computed(() =>
+        currentIndex.value < props.bookChapters.length - 1
+            ? props.bookChapters[currentIndex.value + 1]
+            : null
+    )
 
-const goToChapter = (chapter) => {
-    router.visit(route('chapter.content', {
-        bookId: props.bookId,
-        chapterId: chapter.id
-    }))
-}
+    // Funkcija navigācijai uz konkrēto nodaļu
+    const goToChapter = (chapter) => {
+        router.visit(route('chapter.content', {
+            bookId: props.bookId,
+            chapterId: chapter.id
+        }))
+    }
 </script>
 
 <template>
+    <!-- Navigācijas josla -->
     <Navbar />
     <div class="chapter-container">
         <div class="chapter-content">
@@ -65,11 +71,10 @@ const goToChapter = (chapter) => {
             </div>
         </div>
     </div>
-
+    <!-- Kājene -->
     <Footer />
 </template>
 <style scoped>
-
     .chapter-container {
         max-width: 1100px; /* Maksimālais platums */
         margin: 0 auto; /* Centrēšana horizontāli */

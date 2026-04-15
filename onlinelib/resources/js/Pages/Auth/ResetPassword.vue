@@ -1,10 +1,10 @@
 <script setup>
-    // Importē nepieciešamās funkcijas un komponentes
     import { useForm } from '@inertiajs/vue3';
-    import {onMounted, ref} from 'vue';
     import { route } from 'ziggy-js';
     import Navbar from '@/Components/Navbar.vue';
     import Footer from '@/Components/Footer.vue';
+    import SuccessModal from "@/Components/Modal/SuccessModal.vue";
+    import {ref} from "vue";
 
     const verified = ref(false); // Norāda, vai lietotājs jau ir pārbaudījis kodu
     const showModal = ref(false); // Vai modālais logs ir redzams
@@ -44,10 +44,25 @@
         });
     };
 
+    // Aizver modalo logu
+    const handleSuccessClose = () => {
+        showModal.value = false
+        document.body.style.overflow = ""
+        window.location.href = route('login')
+    }
+
 </script>
 
 <template>
+    <!-- Navigācijas josla -->
     <Navbar />
+
+    <!-- Modālais logs pēc veiksmīgas paroles maiņas -->
+    <SuccessModal
+        :is-open="showModal"
+        title="Parole veiksmīgi atjaunināta!"
+        @close="handleSuccessClose"
+    />
 
     <div class="center-container">
         <div class="container">
@@ -128,20 +143,7 @@
             </form>
         </div>
     </div>
-
-    <!-- Modālais logs pēc veiksmīgas paroles maiņas -->
-    <div v-if="showModal" class="modal-overlay">
-        <div class="modal">
-            <div class="success-container">
-                <h2>Parole veiksmīgi atjaunināta!</h2>
-                <p>
-                    Tagad Jūs varat
-                    <a href="/" class="home">atgriezties vietnē</a>.
-                </p>
-            </div>
-        </div>
-    </div>
-
+    <!-- Kājene -->
     <Footer />
 </template>
 

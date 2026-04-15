@@ -21,21 +21,17 @@ class SupportController extends Controller
             'problem' => 'required|string|max:1000',
         ]);
 
-        try {
-            // Izveidojam jaunu atbalsta pieteikumu datu bāzē
-            $form = TechnicalSupportForm::create([
-                'nickname' => $validated['nickname'],
-                'email' => $validated['email'],
-                'subject' => $validated['subject'],
-                'problem' => $validated['problem'],
-            ]);
+        // Izveidojam jaunu atbalsta pieteikumu datu bāzē
+        TechnicalSupportForm::create([
+            'nickname' => $validated['nickname'],
+            'email' => $validated['email'],
+            'subject' => $validated['subject'],
+            'problem' => $validated['problem'],
+        ]);
 
-            // Atgriežam atbildi, ka pieteikums ir veiksmīgi nosūtīts
-            return response()->json(['message' => 'Pieteikums veiksmīgi nosūtīts!'], 200);
-        } catch (\Exception $e) {
-            // Ja notika kļūda, atgriežam kļūdas ziņojumu
-            return response()->json(['error' => 'Radās kļūda: ' . $e->getMessage()], 500);
-        }
+        // Atgriežam atbildi, ka pieteikums ir veiksmīgi nosūtīts
+        return back()->with('success', 'Pieteikums veiksmīgi nosūtīts!');
+
     }
 
     // Atgriež visu tehnisko atbalsta pieteikumu sarakstu
@@ -55,16 +51,6 @@ class SupportController extends Controller
             'filters' => [
                 'search' => $search
             ]
-        ]);
-    }
-
-    // Atgriež konkrēta pieteikuma detalizētu informāciju
-    public function showForm($id)
-    {
-        $form = TechnicalSupportForm::findOrFail($id);
-
-        return Inertia::render('Control/TechnicalSupport/ProblemInfo', [
-            'form' => $form,
         ]);
     }
 

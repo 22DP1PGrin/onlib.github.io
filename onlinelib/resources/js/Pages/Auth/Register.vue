@@ -8,7 +8,7 @@
         window.history.back();
     };
 
-    // Izveido Inertia formu ar sākotnējām vērtībām
+    // Izveido formu reģistrešanai
     const form = useForm({
         name: '', // Lietotāja vārds
         lastname: '', // Lietotāja uzvārds

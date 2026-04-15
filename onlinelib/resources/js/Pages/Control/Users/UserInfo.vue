@@ -1,23 +1,21 @@
 <script setup>
-    import {router, useForm, usePage} from '@inertiajs/vue3';
+    import {useForm, usePage} from '@inertiajs/vue3';
     import Navbar from "@/Components/Navbar.vue";
     import Footer from "@/Components/Footer.vue";
     import {computed, ref} from "vue";
     import {route} from "ziggy-js";
+    import SuccessModal from "@/Components/Modal/SuccessModal.vue";
 
-    // Saņem datus no servera kā props
+    // Komponenta ievaddati
     const props = defineProps({
         users: Object, // Objekts
     });
+
+    // Iegūst pašreizējā pieslēgušos lietotāja datus
     const currentUser = computed(() => usePage().props.auth.user)
 
+    // Modālo logu stāvokļi
     const showModal = ref(false);
-
-    // Aizver profila modāli
-    const closeModal = () => {
-        showModal.value = false;
-        document.body.style.overflow = "";
-    };
 
     // Izveido veidlapas datus, sākotnēji aizpildītus ar esošo stāsta informāciju
     const form = useForm({
@@ -45,27 +43,25 @@
 </script>
 
 <template>
+    <!-- Navigācijas josla -->
     <Navbar />
 
     <!-- Galvenais satura bloks -->
     <div class="main-content">
 
-        <!-- Modālie logi dažādiem notikumiem -->
-        <div v-if="showModal" class="modal-overlay">
-            <div class="modal">
-                <div class="success-container">
-                    <h2>Lietotāja dati veiksmīgi saglabāti!</h2>
-                    <p>Lietotāja loma ir atjaunināta.</p>
-                    <button @click="closeModal" class="close-btn">Aizvērt</button>
-                </div>
-            </div>
-        </div>
+        <!-- Veiksmīgas atjaunināšanas modālais logs -->
+        <SuccessModal
+            :is-open="showModal"
+            title="Lietotāja loma ir atjaunināta!"
+            @close="showModal = false"
+        />
 
-        <!-- Stāsta rediģēšanas forma -->
+        <!-- Lietotāja informācija-->
         <div class="user-form">
 
             <h1>Lietotāja apskate</h1>
 
+            <!-- Lietotāja avatars-->
             <div class="avatar-wrapper">
                 <div class="avatar">
                     <i v-if="!form.avatar" class="fa profile-icon">&#xf2be;</i>
@@ -93,17 +89,19 @@
 
             <!-- Veidlapas sadaļa -->
             <div class="form">
-                <!-- Nosaukuma ievades lauks -->
+                <!-- Lietotājvārds -->
                 <div class="form-group">
                     <h2 class="title">Lietotājsvārds</h2>
                     <div class="form-info">{{form.nickname}}</div>
                 </div>
 
+                <!-- Lietotāja e-pasts-->
                 <div class="form-group">
                     <h2 class="title">E-pasts</h2>
                     <div class="form-info">{{form.email}}</div>
                 </div>
 
+                <!-- Lietotāja apraksts-->
                 <div class="form-group">
                     <h2 class="title">Apraksts</h2>
                     <div class="form-info">{{form.bio || 'Nav informācijas par lietotāju.'}}</div>
@@ -126,55 +124,11 @@
             </div>
         </div>
     </div>
-
+    <!-- Kājene -->
     <Footer/>
 </template>
 
 <style scoped>
-    /* Modala loga stils */
-    .modal-overlay {
-        position: fixed; /* Fiksēta pozicija */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(19, 8, 0, 0.59);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000; /* Virs visiem elementiem */
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-    }
-
-    .modal {
-        border-radius: 12px;
-        padding: 15px;
-        max-width: 400px;
-        width: 90%;
-        position: relative;
-        background-color: #e4a27c; /* Fona krāsa */
-        border: 1px solid rgba(26, 16, 8, 0.8); /* Apmales krāsa */
-        font-family: Tahoma, Helvetica, sans-serif; /* Fonts */
-    }
-
-    .success-container {
-        text-align: center;
-        padding: 15px;
-    }
-
-    .success-container h2 {
-        margin-bottom: 15px;
-        font-size:  1.3rem;
-        font-weight: bold;
-        color: rgba(26, 16, 8, 0.8);
-    }
-
-    .success-container p {
-        margin-bottom: 15px;
-        color: rgba(26, 16, 8, 0.8);
-
-    }
-
     .main-content {
         padding-bottom: 45px; /* Atstarpe apakšā */
     }
@@ -322,10 +276,6 @@
         .btn{
             font-size: 0.9rem;
             padding: 5px 15px;
-        }
-
-        .modal{
-            max-width: 300px;
         }
 
         .avatar {
