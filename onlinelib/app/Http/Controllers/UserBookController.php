@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
+// Kontrolieris, kas apstrādā ar lietotāju stāstiem saistītās darbības
 class UserBookController extends Controller
 {
     // Metode, kas atgriež visus lietotāja grāmatas
@@ -231,7 +232,7 @@ class UserBookController extends Controller
             }
         }
 
-        // Saņema komentārus
+        // Saņem komentārus
         $comments = Comment::with([
             'user:id,nickname,avatar',
             'replies.user:id,nickname,avatar'
@@ -241,9 +242,10 @@ class UserBookController extends Controller
             ->latest()
             ->get();
 
+        // Komentāru skaits
         $commentsCount = Comment::where('user_book_id', $id)->count();
 
-        // Atgriež rediģēšanas skatu ar nepieciešamajiem datiem
+        // Atgriež lasīšānas skatu ar nepieciešamajiem datiem
         return Inertia::render('Reading/UserBooks/UserBook', [
             'book' => $book,
             'genres' => $book->genres,

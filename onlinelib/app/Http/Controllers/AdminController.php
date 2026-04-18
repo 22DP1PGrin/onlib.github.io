@@ -18,21 +18,24 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
+// Kontrolieris, kas apstrādā administrācijas darbības
 class AdminController
 {
-    // Atgriež visu ne-bloķēto lietotāju un klasisko grāmatu sarakstu
+    // Atgriež ne-bloķēto grāmatu sarakstu (ar meklēšanu)
     public function showAllList(Request $request)
     {
-        $search = $request->input('search');
+        $search = $request->input('search'); // Meklēšanas pieprasījums
 
+        // Lietotāju grāmatas (ne-bloķētas)
         $book = UserBook::with('user')
             ->where('is_blocked', false)
             ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%");
+                $query->where('name', 'like', "%{$search}%"); // Filtrē pēc nosaukuma
             })
-            ->orderBy('name', 'asc')
+            ->orderBy('name', 'asc') // Sakārto pēc nosaukuma
             ->get();
 
+        // Klasiskās grāmatas (ne-bloķētas)
         $classicBooks = ClassicBook::where('is_blocked', false)
             ->when($search, function ($query) use ($search) {
                 $query->where('name', 'like', "%{$search}%");
@@ -40,29 +43,31 @@ class AdminController
             ->orderBy('name', 'asc')
             ->get();
 
-        // Atgriež Inertia skatu ar grāmatu datiem
+        // Nosūta datus uz Inertia skatu
         return Inertia::render('Control/Books/BooksList', [
             'book' => $book,
             'classicBooks' => $classicBooks,
             'filters' => [
-                'search' => $search
+                'search' => $search // Aktīvais filtrs
             ]
         ]);
     }
 
-    // Atgriež visu bloķēto lietotāju un klasisko grāmatu sarakstu, sakārtotu pēc nosaukuma
+    // Atgriež bloķēto grāmatu sarakstu (ar meklēšanas)
     public function showAllBlocksList(Request $request)
     {
-        $search = $request->input('search');
+        $search = $request->input('search'); // Meklēšanas pieprasījums
 
+        // Lietotāju bloķētās grāmatas
         $book = UserBook::with('user')
             ->where('is_blocked', true)
             ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%");
+                $query->where('name', 'like', "%{$search}%"); // Filtrē pēc nosaukuma
             })
-            ->orderBy('name', 'asc')
+            ->orderBy('name', 'asc') // Sakārto alfabētiski
             ->get();
 
+        // Klasiskās bloķētās grāmatas
         $classicBooks = ClassicBook::where('is_blocked', true)
             ->when($search, function ($query) use ($search) {
                 $query->where('name', 'like', "%{$search}%");
@@ -70,13 +75,13 @@ class AdminController
             ->orderBy('name', 'asc')
             ->get();
 
-        // Atgriež Inertia skatu ar grāmatu datiem
+        // Nosūta datus uz skatu
         return Inertia::render('Control/Books/BlocksBook', [
-            'authUser' => auth()->user(),
+            'authUser' => auth()->user(), // Pašreizējais lietotājs
             'book' => $book,
             'classicBooks' => $classicBooks,
             'filters' => [
-                'search' => $search
+                'search' => $search // Aktīvais filtrs
             ]
         ]);
     }
@@ -92,25 +97,25 @@ class AdminController
         ]);
     }
 
-    // Atgriež visu lietotāju sarakstu
+    // Atgriež ne-bloķēto lietotāju un administratoru sarakstu (ar meklēšanu)
     public function showUsers(Request $request)
     {
-        $currentUser = auth()->user();
-        $search = $request->input('search');
+        $currentUser = auth()->user(); // Pašreiz autentificētais lietotājs
+        $search = $request->input('search'); // Meklēšanas pieprasījums
 
-        // Visi parastie lietotāji
+        // Parastie lietotāji
         $usersQuery = User::where('role', 'user')
             ->where('is_blocked', false);
 
         if ($search) {
-            $usersQuery->where('nickname', 'like', "%{$search}%");
+            $usersQuery->where('nickname', 'like', "%{$search}%"); // Filtrē pēc lietotājvārda
         }
-
+        // Sakārto pēc lietotājvārda alfabētiski
         $users = $usersQuery
             ->orderBy('nickname', 'asc')
             ->get();
 
-        // Visi administratori(tikai superadminiem)
+        // Administratori (redzami tikai superadminam)
         $admins = collect();
 
         if ($currentUser->role === 'superadmin') {
@@ -121,40 +126,43 @@ class AdminController
                 $adminsQuery->where('nickname', 'like', "%{$search}%");
             }
 
+            // Sakārto pēc lietotājvārda alfabētiski
             $admins = $adminsQuery
                 ->orderBy('nickname', 'asc')
                 ->get();
         }
 
+        // Nosūta datus uz Inertia skatu
         return Inertia::render('Control/Users/Users', [
             'users' => $users,
             'admins' => $admins,
             'currentUser' => $currentUser,
             'filters' => [
-                'search' => $search
+                'search' => $search // Aktīvais filtrs
             ]
         ]);
     }
 
-    // Atgriež visu bloķētu lietotāju sarakstu
+    // Atgriež bloķēto lietotāju un administratoru sarakstu (ar meklēšanu)
     public function showBlockUsers(Request $request)
     {
-        $currentUser = auth()->user();
-        $search = $request->input('search');
+        $currentUser = auth()->user(); // Pašreiz autentificētais lietotājs
+        $search = $request->input('search'); // Meklēšanas pieprasījums
 
         // Visi parastie lietotāji
         $usersQuery = User::where('role', 'user')
             ->where('is_blocked', true);
 
         if ($search) {
-            $usersQuery->where('nickname', 'like', "%{$search}%");
+            $usersQuery->where('nickname', 'like', "%{$search}%"); // Filtrē pēc lietotājvārda
         }
 
+        // Sakārto pēc lietotājvārda alfabētiski
         $users = $usersQuery
             ->orderBy('nickname', 'asc')
             ->get();
 
-        // Visi administratori(tikai superadminiem)
+        // Administratori (redzami tikai superadminam)
         $admins = collect();
 
         if ($currentUser->role === 'superadmin') {
@@ -165,17 +173,19 @@ class AdminController
                 $adminsQuery->where('nickname', 'like', "%{$search}%");
             }
 
+            // Sakārto pēc lietotājvārda alfabētiski
             $admins = $adminsQuery
                 ->orderBy('nickname', 'asc')
                 ->get();
         }
 
+        // Nosūta datus uz Inertia skatu
         return Inertia::render('Control/Users/BlockUsers', [
             'users' => $users,
             'admins' => $admins,
             'currentUser' => $currentUser,
             'filters' => [
-                'search' => $search
+                'search' => $search // Aktīvais filtrs
             ]
         ]);
     }
@@ -203,6 +213,7 @@ class AdminController
     // Atjaunīna lietotāju lomu
     public function updateRole(Request $request, User $user)
     {
+        // Iegūst izvelēto autentificēto lietotāju
         $currentUser = $request->user();
 
         // Tikai superadmins drīkst mainīt lietotāja lomu
@@ -322,10 +333,10 @@ class AdminController
         return back()->with('success', 'Lietotājs bloķēts');
     }
 
-    // Atgriež visu sūdzības sarakstu
+    // Atgriež visu sūdzības sarakstu(ar meklēšanu)
     public function indexReports(Request $request)
     {
-        $search = $request->input('search');
+        $search = $request->input('search'); // Meklēšanas pieprasījums
 
         // Saņem sūdzības par lietotāju stāstiem
         $storyReports = ObjectReport::with(['userBook', 'reporter'])

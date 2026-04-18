@@ -2,20 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Bookmark;
 use App\Models\ClassicBook;
-use App\Models\BookChapter;
 use App\Models\Comment;
 use App\Models\ObjectReport;
 use App\Models\Rating;
 use App\Models\Genre;
-use App\Models\UserBook;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
+// Kontrolieris, kas apstrādā ar grāmatam saistītās darbības
 class ClassicBookController extends Controller
 {
 
@@ -24,7 +20,7 @@ class ClassicBookController extends Controller
     {
         // Atgriež skatu ar žanriem un vecuma ierobežojumiem
         return Inertia::render('Control/Books/NewInfo/NewClassicBook', [
-            'genres' => Genre::all(), // Saņemam visus žanrus no datu bāzes
+            'genres' => Genre::all(), // Saņem visus žanrus no datu bāzes
             'ratings' => [
                 ['id' => '0+', 'label' => '0+ '],
                 ['id' => '6+', 'label' => '6+'],
@@ -82,7 +78,7 @@ class ClassicBookController extends Controller
     {
         // Atrod grāmatu pēc ID un lietotāja ID
         $classic_book = ClassicBook::findOrFail($id)
-            ->with('genres', 'chapters') // Iekļaujam žanrus un nodaļas
+            ->with('genres', 'chapters') // Iekļauj žanrus un nodaļas
             ->findOrFail($id);
 
         // Atgriež skatu ar grāmatas datiem un iespējām rediģēt
@@ -229,9 +225,10 @@ class ClassicBookController extends Controller
             ->latest()
             ->get();
 
+        // Komentāru skaits
         $commentsCount = Comment::where('classic_book_id', $id)->count();
 
-        // Atgriež rediģēšanas skatu ar nepieciešamajiem datiem
+        // Atgriež lasīšanu skatu ar nepieciešamajiem datiem
         return Inertia::render('Reading/ClassicBooks/ClassicBook', [
             'book' => $book,
             'genres' => $book->genres,

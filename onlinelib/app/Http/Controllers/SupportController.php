@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\TechnicalSupportForm;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
+// Kontrolieris, kas apstrādā ar lietotāja pieteikumiem saistītās darbības
 class SupportController extends Controller
 {
     // Metode, kas apstrādā atbalsta pieteikuma saglabāšanu
     public function store(Request $request)
     {
-        // Validējam saņemtos datus
+        // Valide saņemtos datus
         $validated = $request->validate([
             'nickname' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -21,7 +20,7 @@ class SupportController extends Controller
             'problem' => 'required|string|max:1000',
         ]);
 
-        // Izveidojam jaunu atbalsta pieteikumu datu bāzē
+        // Izveido jaunu atbalsta pieteikumu datu bāzē
         TechnicalSupportForm::create([
             'nickname' => $validated['nickname'],
             'email' => $validated['email'],
@@ -29,37 +28,38 @@ class SupportController extends Controller
             'problem' => $validated['problem'],
         ]);
 
-        // Atgriežam atbildi, ka pieteikums ir veiksmīgi nosūtīts
+        // Atgriež atbildi, ka pieteikums ir veiksmīgi nosūtīts
         return back()->with('success', 'Pieteikums veiksmīgi nosūtīts!');
 
     }
 
-    // Atgriež visu tehnisko atbalsta pieteikumu sarakstu
+    // Atgriež tehniskā atbalsta pieteikumu sarakstu (ar meklēšanu)
     public function showProblems(Request $request)
     {
-        $search = $request->input('search');
+        $search = $request->input('search'); // Meklēšanas pieprasījums
 
         $technical_support_form = TechnicalSupportForm::query()
             ->when($search, function ($query) use ($search) {
-                $query->where('nickname', 'like', "%{$search}%");
+                $query->where('nickname', 'like', "%{$search}%"); // Filtrē pēc lietotāja lieotājvārda
             })
-            ->latest()
+            ->latest() // Jaunākie pieteikumi vispirms
             ->get();
 
         return Inertia::render('Control/TechnicalSupport/Problems', [
             'technical_support_form' => $technical_support_form,
             'filters' => [
-                'search' => $search
+                'search' => $search // Aktīvais meklēšanas filtrs
             ]
         ]);
     }
 
-    // Dzēš konkrētu tehnisko atbalsta pieteikumu
+    // Dzēš tehniskā atbalsta pieteikumu
     public function destroy($id)
     {
-        $form = TechnicalSupportForm::findOrFail($id);
-        $form->delete();
+        $form = TechnicalSupportForm::findOrFail($id); // Atrod pieteikumu
+        $form->delete(); // Dzēš pieteikumu
 
-        return redirect()->route('problems')->with('success', 'Pieteikums dzēsts.');
+        return redirect()->route('problems')
+            ->with('success', 'Pieteikums dzēsts.'); // Paziņojums par veiksmīgu dzēšanu
     }
 }

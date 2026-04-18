@@ -8,15 +8,13 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
+// Kontrolieris, kas apstrādā lietotāja autentifikāciju
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Display the login view.
-     */
+    // Attēlo pieteikšanās lapu
     public function create(): Response
     {
         return Inertia::render('Auth/Login', [
@@ -25,30 +23,26 @@ class AuthenticatedSessionController extends Controller
         ]);
     }
 
-    /**
-     * Handle an incoming authentication request.
-     * @throws ValidationException
-     */
+    // Apstrādā pieteikšanās pieprasījumu
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $request->authenticate(); // Veic lietotāja autentifikāciju
 
-        $request->session()->regenerate();
+        $request->session()->regenerate(); // Atjauno sesiju drošības nolūkos
 
+        // Novirza uz sākotnēji pieprasīto lapu
         return redirect()->intended(route('Home', absolute: false));
     }
 
-    /**
-     * Destroy an authenticated session.
-     */
+    // Apstrādā izrakstīšanos
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        Auth::guard('web')->logout(); // Izraksta lietotāju
 
-        $request->session()->invalidate();
+        $request->session()->invalidate(); // Dzēš sesijas datus
 
-        $request->session()->regenerateToken();
+        $request->session()->regenerateToken(); // Atjauno CSRF tokenu
 
-        return redirect('/');
+        return redirect('/'); // Novirza uz sākumlapu
     }
 }

@@ -13,15 +13,15 @@ class BookDeleted extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $book;
+    public $book; // Grāmatas dati
 
-    // Izveido jaunu vēstules instanci.
+    // Izveido jaunu vēstules instanci
     public function __construct(UserBook $book)
     {
         $this->book = $book;
     }
 
-    // E-pasta vēstules tēma.
+    // E-pasta vēstules tēma
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -29,7 +29,7 @@ class BookDeleted extends Mailable
         );
     }
 
-    // Satura veidu un datus, kas tiks izmantoti e-pastā.
+    // Satura veidu un datus, kas tiks izmantoti e-pastā
     public function content(): Content
     {
 

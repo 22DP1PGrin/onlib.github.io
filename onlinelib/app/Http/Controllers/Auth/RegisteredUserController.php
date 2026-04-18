@@ -16,6 +16,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Validation\Rules\Password;
 
+// Kontrolieris, kas apstrādā lietotāja reģistrāciju
 class RegisteredUserController extends Controller
 {
     // Parāda reģistrācijas lapu

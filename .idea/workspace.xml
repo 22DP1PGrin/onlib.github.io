@@ -5,81 +5,49 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3e76eb8-75aa-48f5-a2ef-f4cf9daec5ed" name="Changes" comment="return view('example_vue', compact('story'));">
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Books/ClassicBookSection.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Books/UserBookSection.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Comments/CommentsSection.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Modal/BaseModal.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Modal/ConfirmModal.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Modal/FormModal.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Modal/SuccessModal.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/SearchComponent.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Console/Commands/UnblockExpiredUsers.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Console/Commands/UnblockExpiredUsers.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/AdminController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/AdminController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/AllBooksController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/AllBooksController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/Auth/AuthenticatedSessionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/Auth/AuthenticatedSessionController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/Auth/PasswordResetController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/Auth/PasswordResetController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/Auth/RegisteredUserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/Auth/RegisteredUserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/BookmarkController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/BookmarkController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ChapterController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ChapterController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ClassicBookController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ClassicBookController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/CommentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/CommentController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/GenreController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/GenreController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/PdfExport.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/PdfExport.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ProfileController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ProfileController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/SupportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/SupportController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/UserBookController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/UserBookController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Middleware/HandleInertiaRequests.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Middleware/HandleInertiaRequests.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Requests/Auth/LoginRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Requests/Auth/LoginRequest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Requests/ProfileUpdateRequest.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Mail/BookDeleted.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Mail/BookDeleted.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Mail/PasswordMessage.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Mail/PasswordMessage.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Mail/PasswordResetCodeMail.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Mail/PasswordResetCodeMail.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Mail/PendingUserVerification.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Mail/PendingUserVerification.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Mail/UpdateRoleMessage.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Mail/UpdateRoleMessage.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Mail/UserBlocked.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Mail/UserBlocked.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Mail/UserBookBlocked.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Mail/UserBookBlocked.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Mail/UserBookUnblocked.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Mail/UserBookUnblocked.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Mail/UserDeleted.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Mail/UserDeleted.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Mail/UserUnblocked.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Mail/UserUnblocked.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Mail/Welcome.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Mail/Welcome.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/BookChapter.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/BookChapter.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/Bookmark.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/Bookmark.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/BookmarkType.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/BookmarkType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/ClassicBook.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/ClassicBook.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/Comment.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/Comment.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/Genre.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/Genre.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/ObjectReport.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/ObjectReport.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/Rating.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/Rating.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/StoryBlock.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/StoryBlock.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/TechnicalSupportForm.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/TechnicalSupportForm.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/ApplicationLogo.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/BonusInfo.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/Cards.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/Checkbox.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/DangerButton.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/Dropdown.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/DropdownLink.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/Footer.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Footer.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/InputError.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/InputLabel.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/MainInfo.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/Modal.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/NavLink.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Components/Navbar.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/PrimaryButton.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/ResponsiveNavLink.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/SecondaryButton.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Components/TextInput.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Layouts/AuthenticatedLayout.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Layouts/GuestLayout.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/ForgotPassword.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/ForgotPassword.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Login.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/Register.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/ResetPassword.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/ResetPassword.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/VerifyEmail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Auth/VerifyEmail.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Bookmarks/SingleBookmarkPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Bookmarks/SingleBookmarkPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Bookmarks/UserSingleBookmarkPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Bookmarks/UserSingleBookmarkPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/ContentPolicy.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/ContentPolicy.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/BlocksBook.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/BlocksBook.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/BooksList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/BooksList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/EditInfo/ClassicEdit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/EditInfo/ClassicEdit.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/NewInfo/NewClassicBook.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Books/NewInfo/NewClassicBook.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Reports/Reports.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Reports/Reports.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/TechnicalSupport/Problems.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/TechnicalSupport/Problems.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/BlockUsers.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/BlockUsers.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/UserInfo.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/UserInfo.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/Users.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Control/Users/Users.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/DMCAPolicy.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/DMCAPolicy.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/FAQ.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/FAQ.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/HomeView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/HomeView.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/PrivacyPolicy.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/PrivacyPolicy.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Profile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Profile.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Settings.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Settings.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/VerifyEmailChange.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/VerifyEmailChange.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ChapterContent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ChapterContent.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ClassicBooks/ClassicBook.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ClassicBooks/ClassicBook.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/Library.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/Library.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/UserBooks/UserBook.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/UserBooks/UserBook.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Search/Results.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Search/Results.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TechnicalSupport.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TechnicalSupport.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TermsOfService.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/TermsOfService.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/UserProfile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/UserProfile.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditInfo/EditChapter.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditInfo/EditChapter.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditInfo/EditStory.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditInfo/EditStory.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/NewInfo/NewChapter.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/NewInfo/NewChapter.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/NewInfo/NewStory.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/NewInfo/NewStory.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/StoryList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/StoryList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/routes/auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/routes/auth.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/UserBook.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/UserBook.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onlinelib/app/Providers/AppServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Providers/AppServiceProvider.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -412,7 +380,8 @@
       <workItem from="1774688565635" duration="788000" />
       <workItem from="1774941540229" duration="3298000" />
       <workItem from="1775112946650" duration="16509000" />
-      <workItem from="1775715802161" duration="45680000" />
+      <workItem from="1775715802161" duration="45995000" />
+      <workItem from="1776408131376" duration="8117000" />
     </task>
     <servers />
   </component>

@@ -4,21 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+// Attēlo grāmatas žanru
 class Genre extends Model
 {
-    protected $fillable = ['name'];
+    // Masveidā aizpildāmais lauks
+    protected $fillable = [
+        'name'
+    ];
 
-    // Attiecības ar grāmatām: viens žanrs var būt saistīts ar daudzām grāmatām
+    // Žanram var būt vairākas lietotāja grāmatas
     public function books()
     {
-        // Definē attiecības ar grāmatām, izmantojot starpposma tabulu 'user_book_genre'
         return $this->belongsToMany(UserBook::class, 'user_book_genre', 'genre_id', 'book_id');
     }
 
+    // Žanram var būt vairākas klasiskās grāmatas
     public function classic_books()
     {
-        // Definē attiecības ar grāmatām, izmantojot starpposma tabulu 'user_book_genre'
         return $this->belongsToMany(ClassicBook::class, 'classic_book_genre', 'genre_id', 'book_id');
     }
-
 }

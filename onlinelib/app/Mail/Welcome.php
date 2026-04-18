@@ -15,13 +15,13 @@ class Welcome extends Mailable
 
     public User $user; // Lietotāju dati
 
-    // Izveido jaunu vēstules instanci.
+    // Izveido jaunu vēstules instanci
     public function __construct(User $user)
     {
         $this->user = $user;
     }
 
-    // E-pasta vēstules tēma.
+    // E-pasta vēstules tēma
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -29,7 +29,7 @@ class Welcome extends Mailable
         );
     }
 
-    // Satura veidu un datus, kas tiks izmantoti e-pastā.
+    // Satura veidu un datus, kas tiks izmantoti e-pastā
     public function content(): Content
     {
         return new Content(

@@ -14,13 +14,13 @@ class PendingUserVerification extends Mailable
 
     public $pending; // Pagaidu sesija ar datiem
 
-    // Izveido jaunu vēstules instanci.
+    // Izveido jaunu vēstules instanci
     public function __construct($pending)
     {
         $this->pending = $pending;
     }
 
-    // E-pasta vēstules tēma.
+    // E-pasta vēstules tēma
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -28,7 +28,7 @@ class PendingUserVerification extends Mailable
         );
     }
 
-    // Satura veidu un datus, kas tiks izmantoti e-pastā.
+    // Satura veidu un datus, kas tiks izmantoti e-pastā
     public function content(): Content
     {
         $verificationUrl = isset($this->pending['user_id'])

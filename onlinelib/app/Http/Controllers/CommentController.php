@@ -9,6 +9,7 @@ use App\Models\ObjectReport;
 use App\Models\UserBook;
 use Illuminate\Http\Request;
 
+// Kontrolieris, kas apstrādā ar komentāriem saistītās darbības
 class CommentController extends Controller
 {
     // Izveido komentāru klasiskajai grāmatai
@@ -54,6 +55,7 @@ class CommentController extends Controller
     // Atjaunina esošo komentāru
     public function update(Request $request, Comment $comment)
     {
+        // Iegūst autentificēto lietotāju
         $user = auth()->user();
 
         // Tiek pārbaudītas lietotāja tiesības rediģēt komentāru

@@ -8,6 +8,7 @@ use App\Models\UserBook;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
+// Kontrolieris, kas apstrādā ar nodaļām saistītās darbības
 class ChapterController extends Controller
 {
 
@@ -24,14 +25,13 @@ class ChapterController extends Controller
         $order = BookChapter::where('classic_book_id', $book->id)->count() + 1;
 
         // Izveido jaunu nodaļu datubāzē
-        $chapter = BookChapter::create([
+        BookChapter::create([
             'classic_book_id' => $book->id,
             'name' => $validated['name'],
             'content' => $validated['content'],
             'order' => $order,
         ]);
 
-        // Atgriež JSON atbildi ar veiksmīgu izveidi
         return back();
     }
 
@@ -48,14 +48,13 @@ class ChapterController extends Controller
         $order = BookChapter::where('user_book_id', $book->id)->count() + 1;
 
         // Izveido jaunu nodaļu datubāzē
-        $chapter = BookChapter::create([
+        BookChapter::create([
             'user_book_id' => $book->id,
             'name' => $validated['name'],
             'content' => $validated['content'],
             'order' => $order,
         ]);
 
-        // Atgriež JSON atbildi ar veiksmīgu izveidi
         return back();
     }
 
@@ -109,7 +108,6 @@ class ChapterController extends Controller
         // Atjaunina nodaļu ar jaunajiem datiem
         $chapter->update($validated);
 
-        // Atgriež JSON ar veiksmīgu atjaunināšanu
         return back();
     }
 
@@ -166,7 +164,6 @@ class ChapterController extends Controller
                     abort(403, 'Grāmata ir bloķēta');
                 }
             }
-
         } else {
 
             // Atrod nodaļu stāstā

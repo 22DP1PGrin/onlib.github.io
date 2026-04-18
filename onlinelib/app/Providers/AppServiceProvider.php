@@ -3,26 +3,16 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
+    // Pārbauda lietotāja tiesības.
     public function boot(): void
     {
+        // Tiek definēta piekļuves pārbaude
         Gate::define('Admin', function ($user) {
+            // Tiek pārbaudīts, vai lietotāja loma ir "admin" vai "superadmin"
             return in_array($user->role, ['admin', 'superadmin']);
         });
     }

@@ -12,15 +12,15 @@ class UpdateRoleMessage extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $user; // Lietotājs
+    public $user; // Lietotāju dati
 
-    // Izveido jaunu vēstules instanci.
+    // Izveido jaunu vēstules instanci
     public function __construct($user)
     {
         $this->user = $user;
     }
 
-    // E-pasta vēstules tēma.
+    // E-pasta vēstules tēma
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -28,7 +28,7 @@ class UpdateRoleMessage extends Mailable
         );
     }
 
-    // Satura veidu un datus, kas tiks izmantoti e-pastā.
+    // Satura veidu un datus, kas tiks izmantoti e-pastā
     public function content(): Content
     {
 

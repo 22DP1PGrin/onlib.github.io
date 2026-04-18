@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Log;
 
+// Kontrolieris, kas apstrādā ar lietotāja profilu saistītās darbības
 class ProfileController extends Controller
 {
     // Atgriež lietotāja iestatījumu skatu
@@ -96,12 +97,12 @@ class ProfileController extends Controller
                 'token'    => $token,
             ];
 
-            // Ja mainās arī segvārds
+            // Ja mainās arī lietotājvārds
             if ($nicknameChanged) {
                 $pending['nickname'] = $validated['nickname'];
             }
 
-            // Ja mainās arī bio
+            // Ja mainās arī biografija
             if ($bioChanged) {
                 $pending['bio'] = $validated['bio'];
             }
@@ -133,7 +134,7 @@ class ProfileController extends Controller
                 ->with('status', 'email-change-verification-sent');
         }
 
-        //Ja e-pasts nav mainīts — vienkārši atjaunojam segvārdu/bio
+        //Ja e-pasts nav mainīts — vienkārši atjaunojam lietotājvārdu/biografiju
         if ($nicknameChanged || $bioChanged) {
 
             $user->update($validated);
@@ -253,7 +254,7 @@ class ProfileController extends Controller
         $user = auth()->user(); // Iegūst autentificēto lietotāju
         $booksCount = $user->books()->count(); // Saskaita lietotāja grāmatas
         $RatingsCount = $user->BookRatings()->count(); // Kopējais vērtējumu skaits
-        $commentsCount = $user->comments()->count();
+        $commentsCount = $user->comments()->count(); // Kopējais komentāru skaits
 
         // Grāmatzīmju skaits grupēts pēc tipa
         $bookmarkCounts = Bookmark::where('user_id', $user->id)
@@ -271,16 +272,16 @@ class ProfileController extends Controller
             'booksCount' => $booksCount, // Grāmatu skaits
             'totalRatingsCount' => $RatingsCount, // Kopējais vērtējumu skaits
             'readBooksCount' => $readBooksCount, // Izlasīto grāmatu skaits
-            'commentsCount' => $commentsCount,
+            'commentsCount' => $commentsCount,  // Kopējais komentāru skaits
         ]);
     }
 
     // Atgriež cita konkrēta lietotāja informācijas skatu
     public function Watch($id)
     {
-        $user = User::findOrFail($id);
-        $booksCount = $user->books()->count();
-        $ratingsCount = $user->BookRatings()->count();
+        $user = User::findOrFail($id); // Iegūst izvelēto lietotāju
+        $booksCount = $user->books()->count(); // Saskaita lietotāja grāmatas
+        $ratingsCount = $user->BookRatings()->count(); // Kopējais vērtējumu skaits
         $commentsCount = $user->comments()->count();
 
         // Grāmatzīmju skaits grupēts pēc tipa

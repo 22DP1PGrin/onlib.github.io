@@ -5,28 +5,19 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
+// Inertia middleware, kas nodod kopīgos datus uz frontend
 class HandleInertiaRequests extends Middleware
 {
-    /**
-     * The root template that is loaded on the first page visit.
-     *
-     * @var string
-     */
+    // Galvenais Blade skats
     protected $rootView = 'app';
 
-    /**
-     * Determine the current asset version.
-     */
+    // Nosaka frontend versiju
     public function version(Request $request): ?string
     {
         return parent::version($request);
     }
 
-    /**
-     * Define the props that are shared by default.
-     *
-     * @return array<string, mixed>
-     */
+    // Kopīgie dati, kas pieejami visās lapās
     public function share(Request $request): array
     {
         return [

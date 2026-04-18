@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
+// Automatiska atbloķēšana
 class UnblockExpiredUsers extends Command
 {
     protected $signature = 'app:unblock-expired-users';

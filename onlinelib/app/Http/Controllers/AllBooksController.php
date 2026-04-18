@@ -9,6 +9,7 @@ use App\Models\UserBook;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
+// Kontrolieris, kas apstrādā ar lietotāju stāstiem un grāmatam saistītās darbības
 class AllBooksController extends Controller
 {
     // Atgriež visu grāmatu sarakstu ar saistītajiem datiem bibliotēkai
@@ -70,25 +71,25 @@ class AllBooksController extends Controller
         ]);
     }
 
-    //Metode filtrešānai
+    // Filtrē un kārto lietotāju un klasiskās grāmatas
     public function filter(Request $request)
     {
-        $sort = $request->sort ?? 'date';
-        $direction = $request->direction ?? 'desc';
-        $userId = auth()->id();
+        $sort = $request->sort ?? 'date'; // Kārtošanas lauks
+        $direction = $request->direction ?? 'desc'; // Kārtošanas virziens
+        $userId = auth()->id(); // Pašreizējais lietotājs
 
-        // Lietotāju grāmatas ar vidējo vērtējumu un skaitu
+        // Lietotāju grāmatu vaicājums
         $query = UserBook::query()
             ->where('is_blocked', false)
             ->with(['user', 'genres',
                 'bookmark' => function ($q) use ($userId) {
                     $q->where('user_id', $userId)
-                        ->with('bookmarkType');
-            }])
-            ->withAvg('ratings as ratings_avg_grade', 'grade')
-            ->withCount('ratings as ratings_count')
-            ->withCount('comments as comments_count')
-            ->withCount('chapters as chapters_count');
+                        ->with('bookmarkType'); // Lietotāja grāmatzīme
+                }])
+            ->withAvg('ratings as ratings_avg_grade', 'grade') // Vidējais vērtējums
+            ->withCount('ratings as ratings_count') // Vērtējumu skaits
+            ->withCount('comments as comments_count') // Komentāru skaits
+            ->withCount('chapters as chapters_count'); // Nodaļu skaits
 
         // Klasiskās grāmatas ar vidējo vērtējumu un skaitu
         $classicQuery = ClassicBook::query()
@@ -103,59 +104,67 @@ class AllBooksController extends Controller
             ->withCount('comments as comments_count')
             ->withCount('chapters as chapters_count');
 
-        // Lietotāju grāmatu filtrēšana (ja nav atlasīts tikai klasiskās)
+        // Klasisko grāmatu filtrēšana
         if ($request->bookType !== 'classic') {
-            // Filtrē pēc vecuma ierobežojuma
+
+            // Vecuma ierobežojums
             if ($request->ratings) {
                 $query->whereIn('age_limit', $request->ratings);
             }
 
-            // Filtrē pēc žanriem
+            // Žanri (iekļautie)
             if (!empty($request->includeGenres)) {
                 $query->whereHas('genres', fn($q) => $q->whereIn('genres.id', $request->includeGenres));
             }
 
+            // Žanri (izslēgtie)
             if (!empty($request->excludeGenres)) {
                 $query->whereDoesntHave('genres', fn($q) => $q->whereIn('genres.id', $request->excludeGenres));
             }
 
-            // Filtrē pēc statusa (tikai lietotāju grāmatām)
-            if (!empty($request->statuses)) {
-                $query->whereIn('status', $request->statuses);
-            }
-
+            // Pielieto kārtošanu
             $this->applySorting($query, $sort, $direction);
         }
 
-        // Klasisko grāmatu filtrēšana (ja nav atlasīts tikai lietotāju grāmatas)
+        // Lietotāju grāmatu filtrēšana
         if ($request->bookType !== 'user') {
-            // Filtrē pēc vecuma ierobežojuma
+
+            // Vecuma ierobežojums
             if ($request->ratings) {
                 $classicQuery->whereIn('age_limit', $request->ratings);
             }
 
-            // Filtrē pēc žanriem
+            // Žanri (iekļautie)
             if (!empty($request->includeGenres)) {
                 $classicQuery->whereHas('genres', fn($q) => $q->whereIn('genres.id', $request->includeGenres));
             }
 
+            // Žanri (izslēgtie)
             if (!empty($request->excludeGenres)) {
                 $classicQuery->whereDoesntHave('genres', fn($q) => $q->whereIn('genres.id', $request->excludeGenres));
             }
 
+            // Statuss (tikai lietotāju grāmatām)
+            if (!empty($request->statuses)) {
+                $query->whereIn('status', $request->statuses);
+            }
+
+            // Pielieto kārtošanu
             $this->applySorting($classicQuery, $sort, $direction);
         }
 
+        // Lietotāju grāmatu rezultāti
         $books = $request->bookType === 'classic'
             ? collect()
             : $query->get()->each(function ($book) {
-                $book->current_bookmark = $book->bookmark?->first()?->bookmarkType;
+                $book->current_bookmark = $book->bookmark?->first()?->bookmarkType; // Aktīvā grāmatzīme
             });
 
+        // Klasisko grāmatu rezultāti
         $classicBooks = $request->bookType === 'user'
             ? collect()
             : $classicQuery->get()->each(function ($book) {
-                $book->current_bookmark = $book->bookmark?->bookmarkType;
+                $book->current_bookmark = $book->bookmark?->bookmarkType; // Aktīvā grāmatzīme
             });
 
         // Atgriež Inertia skatu ar filtrētajiem rezultātiem
@@ -230,7 +239,8 @@ class AllBooksController extends Controller
     // Mēkle grāmatu vai stāstu pēc to nosaukuma
     public function searchBooks(Request $request)
     {
-        $query = $request->input('query');
+        $query = $request->input('query'); // Meklēšanas pieprasījums
+        // Pašreizējā lietotāja ID
         $userId = auth()->id();
 
         // Lietotāju grāmatu meklēšanu
@@ -286,6 +296,7 @@ class AllBooksController extends Controller
     // Atgriež 3 jaunākās klasiskās un lietotāju grāmatas mājaslapas skata sākumlapai
     public function getHomePageBooks()
     {
+        // Pašreizējā lietotāja ID
         $userId = auth()->id();
 
         // Iegūst 3 jaunākās klasiskās grāmatas, sakārtotas pēc izveides datuma (jaunākās pirmās)

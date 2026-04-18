@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+// Attēlo lietotāju
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
 
-
+    // Masveidā aizpildāmie lauki
     protected $fillable = [
         'nickname',
         'email',
@@ -23,12 +24,13 @@ class User extends Authenticatable implements MustVerifyEmail
         'avatar',
     ];
 
-
+    // Slēptie lauki
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    // Lauku tipu pārveidošana
     protected function casts(): array
     {
         return [
@@ -37,16 +39,20 @@ class User extends Authenticatable implements MustVerifyEmail
             'blocked_until' => 'datetime',
         ];
     }
+
+    // Lietotājam var būt vairākas grāmatas
     public function books()
     {
-        return $this->hasMany(UserBook::class, 'user_id'); // Lietotājam pieder daudzas grāmatas
+        return $this->hasMany(UserBook::class, 'user_id');
     }
 
+    // Lietotājam var būt vairāki vērtējumi
     public function bookRatings()
     {
         return $this->hasMany(Rating::class);
     }
 
+    // Lietotājam var būt vairāki komentāri
     public function comments()
     {
         return $this->hasMany(Comment::class);

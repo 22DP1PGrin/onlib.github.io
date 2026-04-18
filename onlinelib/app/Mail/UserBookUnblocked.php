@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -13,17 +12,17 @@ class UserBookUnblocked extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $bookName;
-    public $nickname;
+    public $bookName; // Stāsta nosaukums
+    public $nickname; // Lietotājvārds
 
-    // Izveido jaunu vēstules instanci.
+    // Izveido jaunu vēstules instanci
     public function __construct($bookName, $nickname)
     {
         $this->nickname = $nickname;
         $this->bookName = $bookName;
     }
 
-    // E-pasta vēstules tēma.
+    // E-pasta vēstules tēma
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -31,7 +30,7 @@ class UserBookUnblocked extends Mailable
         );
     }
 
-    // Satura veidu un datus, kas tiks izmantoti e-pastā.
+    // Satura veidu un datus, kas tiks izmantoti e-pastā
     public function content(): Content
     {
 

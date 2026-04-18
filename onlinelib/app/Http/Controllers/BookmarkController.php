@@ -10,10 +10,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
+// Kontrolieris, kas apstrādā ar grāmatzīmem saistītās darbības
 class BookmarkController extends Controller
 {
 
-    // Pievieno jaunu grāmatzīmi vai atjauno esošu
+    // Pievieno jaunu grāmatu grāmatzīmei vai atjauno esošu
     public function add(Request $request)
     {
         // Validācija ievaddatiem
@@ -43,7 +44,7 @@ class BookmarkController extends Controller
         ]);
     }
 
-     //Dzēš gramatas grāmatzīmē
+     // Dzēš gramatas grāmatzīmē
     public function remove($bookId)
     {
         // Atrod un dzēš grāmatas
@@ -55,7 +56,7 @@ class BookmarkController extends Controller
         return response()->json(['success' => true]);
     }
 
-    //Atgriež grāmatzīmju lapu pēc tipa
+    // Atgriež grāmatzīmju lapu pēc tipa
     public function bookmarkPage($typeId)
     {
         $userId = auth()->id(); // Pašreizējā lietotāja ID
@@ -84,9 +85,10 @@ class BookmarkController extends Controller
     // Atgriež cita lietotāja grāmatzīmes pēc tipa
     public function userBookmarkPage($userId, $typeId)
     {
-        // Atro grāmatzīmes tipu, lai iegūtu nosaukumu
+        // Atrod grāmatzīmes tipu, lai iegūtu nosaukumu
         $bookmarkType = BookmarkType::findOrFail($typeId);
 
+        // Kartēšana starp grāmatzīmju tipu ID un nosaukumiem
         $typeTitles = [
             1 => 'Izlasītās grāmatas',
             2 => 'Grāmatas lasāmas',
@@ -107,7 +109,7 @@ class BookmarkController extends Controller
     }
 
      //Iegūst grāmatas ar noteikto grāmatzīmi
-    protected function getBooks($model, $field, $userId, $typeId)
+    protected function getBooks($model, $userId, $typeId)
     {
         // Veido vaicājumu grāmatām ar grāmatzīmēm
         $query = $model::where('is_blocked', false)

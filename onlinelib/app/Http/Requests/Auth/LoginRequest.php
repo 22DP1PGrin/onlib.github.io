@@ -11,13 +11,13 @@ use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
-    // Pārbauda, vai lietotājs ir pilnvarots veikt šo pieprasījumu.
+    // Pārbauda, vai lietotājs ir pilnvarots veikt šo pieprasījumu
     public function authorize(): bool
     {
         return true;
     }
 
-    // Validācijas noteikumi pieprasījumam.
+    // Validācijas noteikumi pieprasījumam
     public function rules(): array
     {
         return [
@@ -26,7 +26,7 @@ class LoginRequest extends FormRequest
         ];
     }
 
-    // Mēģina autentificēt lietotāju ar sniegtajām akreditācijām.
+    // Mēģina autentificēt lietotāju ar sniegtajām akreditācijām
     public function authenticate(): void
     {
         // Pārbauda, vai nav pārsniegts mēģinājumu limits
@@ -70,7 +70,7 @@ class LoginRequest extends FormRequest
         }
     }
 
-    // Pārbauda, vai pieprasījums nav pārsniedzis mēģinājumu limitu.
+    // Pārbauda, vai pieprasījums nav pārsniedzis mēģinājumu limitu
     public function ensureIsNotRateLimited(): void
     {
         if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
@@ -91,7 +91,7 @@ class LoginRequest extends FormRequest
         ]);
     }
 
-    // Atgriež atslēgu, pēc kuras tiek skaitīti mēģinājumi (throttle key)
+    // Atgriež atslēgu, pēc kuras tiek skaitīti mēģinājumi
     public function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());

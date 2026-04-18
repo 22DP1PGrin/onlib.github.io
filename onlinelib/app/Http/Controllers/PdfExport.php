@@ -10,6 +10,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\User;
 use Carbon\Carbon;
 
+// Kontrolieris, kas veido pdf izrakstas
 class PdfExport
 {
     // Eksportē lietotāju sarakstu PDF formātā
@@ -89,7 +90,7 @@ class PdfExport
             return $book;
         });
 
-        $lastUpdated = Carbon::now()->format('Y-m-d H:i:s'); // pēdējās atjaunināšanas laiks
+        $lastUpdated = Carbon::now()->format('Y-m-d H:i:s'); // Pēdējās atjaunināšanas laiks
 
         // Izveido PDF
         $pdf = Pdf::loadView('pdf.books', compact(

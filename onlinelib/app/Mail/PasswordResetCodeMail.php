@@ -17,14 +17,14 @@ class PasswordResetCodeMail extends Mailable
     public User $user; // Lietotāju dati
 
 
-    // Izveido jaunu vēstules instanci.
+    // Izveido jaunu vēstules instanci
     public function __construct($code, $user)
     {
         $this->code = $code;
         $this->user = $user;
     }
 
-    // E-pasta vēstules tēma.
+    // E-pasta vēstules tēma
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -32,7 +32,7 @@ class PasswordResetCodeMail extends Mailable
         );
     }
 
-    // Satura veidu un datus, kas tiks izmantoti e-pastā.
+    // Satura veidu un datus, kas tiks izmantoti e-pastā
     public function content(): Content
     {
         return new Content(

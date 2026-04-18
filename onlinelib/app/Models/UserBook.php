@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Inertia\Inertia;
 
+// Attēlo lietotāja izveidotu grāmatu
 class UserBook extends Model
 {
     use HasFactory;
 
-    // Aizpildāmās vērtības, kas var tikt masveidā pievienotas
+    // Masveidā aizpildāmie lauki
     protected $fillable = [
         'user_id',
         'name',
@@ -19,39 +19,44 @@ class UserBook extends Model
         'age_limit',
     ];
 
-    // Attiecības ar lietotāju: katram grāmatai ir viens lietotājs
+    // Saite uz lietotāju
     public function user()
     {
-        return $this->belongsTo(User::class); // Grāmatai pieder lietotājam
+        return $this->belongsTo(User::class);
     }
 
-    // Attiecības ar nodaļām: katrai grāmatai var būt daudzas nodaļas
+    // Grāmatai var būt vairākas nodaļas
     public function chapters()
     {
-        return $this->hasMany(BookChapter::class, 'user_book_id'); // Grāmatai ir vairākas nodaļas
+        return $this->hasMany(BookChapter::class, 'user_book_id');
     }
 
-    // Attiecības ar žanriem: grāmata var piederēt vairākiem žanriem
+    // Grāmatai var būt vairāki žanri
     public function genres()
     {
-        return $this->belongsToMany(Genre::class, 'book_genres', 'user_book_id', 'genre_id'); // Grāmatai var būt vairāki žanri
+        return $this->belongsToMany(Genre::class, 'book_genres', 'user_book_id', 'genre_id');
     }
 
+    // Grāmatai var būt vairāki vērtējumi
     public function ratings()
     {
         return $this->hasMany(Rating::class, 'user_book_id');
     }
+
+    // Katram lietotājam grāmatai var būt viena grāmatzīme
     public function bookmark()
     {
         return $this->hasOne(Bookmark::class, 'user_book_id')
             ->with('bookmarkType');
     }
 
+    // Grāmatai var būt viens bloķēšanas ieraksts
     public function block()
     {
         return $this->hasOne(StoryBlock::class, 'user_book_id', 'id');
     }
 
+    // Grāmatai var būt vairāki komentāri
     public function comments()
     {
         return $this->hasMany(Comment::class, 'user_book_id');
