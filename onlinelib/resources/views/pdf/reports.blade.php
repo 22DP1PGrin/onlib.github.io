@@ -66,7 +66,7 @@
 <body>
 
 <div class="date">
-    Pēdējo reizi atjaunināts: {{ $lastUpdated }}
+    Lejupielādēts: {{ $lastUpdated }}
 </div>
 
 <table>

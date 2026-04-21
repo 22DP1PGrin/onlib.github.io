@@ -108,7 +108,7 @@ class CommentController extends Controller
         // Validē ienākošos datus no formas
         $validated = $request->validate([
             'subject' => 'required|string|max:255',
-            'problem' => 'required|string|max:500',
+            'problem' => 'required|string',
         ]);
 
         // Atrod konkrēto stāstu pēc ID

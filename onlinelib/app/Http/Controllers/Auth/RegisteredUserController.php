@@ -39,7 +39,7 @@ class RegisteredUserController extends Controller
                     ->numbers()
                     ->symbols()
             ],
-            'bio' => 'nullable|string|max:150',
+            'bio' => 'nullable|string|max:400',
         ]);
 
         // Izveido unikālu tokenu e-pasta verifikācijai

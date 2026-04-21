@@ -14,10 +14,10 @@ class SupportController extends Controller
     {
         // Valide saņemtos datus
         $validated = $request->validate([
-            'nickname' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'subject' => 'required|string|max:255',
-            'problem' => 'required|string|max:1000',
+            'nickname' => 'required|string|max:50',
+            'email' => 'required|email|max:50',
+            'subject' => 'required|string|max:50',
+            'problem' => 'required|string',
         ]);
 
         // Izveido jaunu atbalsta pieteikumu datu bāzē

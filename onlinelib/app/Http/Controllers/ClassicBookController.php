@@ -36,7 +36,7 @@ class ClassicBookController extends Controller
     {
         // Valide saņemtos datus
         $validated = $request->validate([
-            'title' => 'required|string|max:25',
+            'title' => 'required|string|max:30',
             'description' => 'required|string|max:250',
             'Author_name'=> 'required|string|max:30',
             'Author_surname'=> 'required|string|max:30',
@@ -285,7 +285,7 @@ class ClassicBookController extends Controller
         // Validē ienākošos datus no formas
         $validated = $request->validate([
             'subject' => 'required|string|max:255',
-            'problem' => 'required|string|max:500',
+            'problem' => 'required|string',
         ]);
 
         // Atrod konkrēto grāmatu pēc ID

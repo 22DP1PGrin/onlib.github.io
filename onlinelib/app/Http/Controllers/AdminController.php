@@ -269,7 +269,7 @@ class AdminController
             // Bloķē grāmatu un validē saņemto tēmu un pamatojumu
             $validated = $request->validate([
                 'subject' => 'required|string',
-                'problem' => 'required|string|max:500',
+                'problem' => 'required|string',
             ]);
 
            // Izveido jaunu bloķēšanas ierakstu datubāzē

@@ -28,7 +28,7 @@ class PdfExport
         // Pievieno tulkotos laukus un bloķēšanas statusu
         $users->transform(function ($user) {
             $user->role_translated = match ($user->role) {
-                'superadmin' => 'Super Administrators',
+                'superadmin' => 'Superadministrators',
                 'admin' => 'Administrators',
                 default => 'Lietotājs'
             };
