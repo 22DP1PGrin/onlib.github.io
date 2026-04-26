@@ -100,13 +100,13 @@
                         <!-- Izlasīto grāmatu skaits -->
                         <div class="stat-item">
                             <div class="stat-number">{{ readBooksCount }}</div>
-                            <div class="stat-label">Izlasītās grāmatas</div>
+                            <div class="stat-label">Izlasītie darbi</div>
                         </div>
 
                         <!-- Uzrakstīto darbu skaits -->
                         <div class="stat-item">
                             <div class="stat-number">{{ booksCount || 0 }}</div>
-                            <div class="stat-label">Uzrakstītie darbi</div>
+                            <div class="stat-label">Uzrakstītie stāsti</div>
                         </div>
 
                         <!-- Novērtēto darbu skaits -->
@@ -191,7 +191,7 @@
                         <!-- Visu stāstu pārvaldības saite -->
                         <div class="bookmark-link" @click="GoToBookList">
                             <i class="fa">&#xf2ba;</i>
-                            <span class="link-text">Visi darbi</span>
+                            <span class="link-text">Darbi</span>
                         </div>
                     </div>
                 </div>

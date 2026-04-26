@@ -138,13 +138,13 @@
                         <!-- Izlasīto grāmatu skaits -->
                         <div class="stat-item">
                             <div class="stat-number">{{ readBooksCount }}</div>
-                            <div class="stat-label">Izlasītās grāmatas</div>
+                            <div class="stat-label">Izlasītie darbi</div>
                         </div>
 
                         <!-- Uzrakstīto darbu skaits -->
                         <div class="stat-item">
                             <div class="stat-number">{{ booksCount || 0 }}</div>
-                            <div class="stat-label">Uzrakstītie darbi</div>
+                            <div class="stat-label">Uzrakstītie stāsti</div>
                         </div>
 
                         <!-- Novērtēto darbu skaits -->

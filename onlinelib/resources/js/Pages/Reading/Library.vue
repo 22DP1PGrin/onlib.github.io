@@ -253,19 +253,19 @@
                         Filtrēt
                     </button>
                     <button class="filter-btn" @click="openSortModal">
-                        Kārtot
+                        Sistematizēt
                     </button>
                 </div>
             </div>
 
             <!-- Kartošana -->
             <div v-if="showSortMenu" class="modal-overlay" @click.self="closeSortModal">
-                <div class="modal-content">
+                <div class="modal-content-sort">
                     <button class="close-button" @click="closeSortModal">
                         <i class="fa">&#xf00d;</i>
                     </button>
 
-                    <h3>Kārtošanas opcijas</h3>
+                    <h3>Sistematizēšanas opcijas</h3>
                     <div class="filter-group">
                         <div class="sort">
                             <!-- Kārtošana pēc datuma -->
@@ -557,6 +557,20 @@
         scrollbar-width: thin; /* Plāna ritjosla */
     }
 
+    .modal-content-sort{
+        position: relative;
+        border: 1px solid rgba(26, 16, 8, 0.8);
+        background-color: #e4a27c;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(63, 31, 4, 0.8);
+        padding: 20px;
+        width: 90%; /* Platums 90% no ekrāna */
+        max-width: 400px; /* Maksimālais platums */
+        max-height: 80vh; /* Maksimālais augstums 80% no ekrāna */
+        overflow-y: auto; /* Vertikālais ritināšanas josla */
+        scrollbar-width: thin; /* Plāna ritjosla */
+    }
+
     .close-button {
         position: absolute;
         top: 10px;
@@ -577,17 +591,20 @@
         border:none
     }
 
-    .modal-content .fa{
+    .modal-content .fa,
+    .modal-content-sort .fa{
         transition: all 0.3s ease;
         font-size: 1rem;
     }
 
-    .modal-content .fa:hover{
+    .modal-content .fa:hover,
+    .modal-content-sort .fa:hover{
         color: #ffc8a9;
     }
 
     /* Modālā loga virsraksts */
-    .modal-content h3 {
+    .modal-content h3,
+    .modal-content-sort h3{
         margin-top: 0; /* Bez augšējās atstarpes */
         color: rgba(26, 16, 8, 0.8);
         text-align: center;

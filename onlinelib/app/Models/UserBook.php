@@ -46,8 +46,7 @@ class UserBook extends Model
     // Katram lietotājam grāmatai var būt viena grāmatzīme
     public function bookmark()
     {
-        return $this->hasOne(Bookmark::class, 'user_book_id')
-            ->with('bookmarkType');
+        return $this->hasOne(Bookmark::class, 'user_book_id');
     }
 
     // Grāmatai var būt viens bloķēšanas ieraksts

@@ -12,12 +12,8 @@ class UsersSeeder extends Seeder
     public function run(): void
     {
         DB::table('users')->insert([
-            ['email' => 'pgriniceva@gmail.com', 'nickname' => 'SuperAdmin', 'password' => Hash::make(env('SUPERADMIN_PASSWORD')),
+            ['email' => 'superadmin@gmail.com', 'nickname' => 'SuperAdmin<3', 'password' => Hash::make(env('SUPERADMIN_PASSWORD')),
                 'role' => 'superadmin', 'created_at' => now(), 'updated_at' => now()],
-            ['email' => 'patricija.griniceva@outlook.com', 'nickname' => 'Tester1', 'password' => Hash::make(env('SUPERADMIN_PASSWORD')),
-                'role' => 'admin', 'created_at' => now(), 'updated_at' => now()],
-            ['email' => 'pg00217@rvt.lv', 'nickname' => 'Tester2', 'password' => Hash::make(env('SUPERADMIN_PASSWORD')),
-                'role' => 'user', 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 }

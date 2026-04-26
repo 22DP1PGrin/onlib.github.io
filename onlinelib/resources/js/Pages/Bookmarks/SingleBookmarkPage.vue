@@ -18,7 +18,7 @@ import ClassicBooksSection from "@/Components/Books/ClassicBookSection.vue";
     // Cilņu definīcijas - katra cilne satur ID, nosaukumu un atbilstošo maršrutu
     const tabs = [
         { id: 1, title: 'Izlasītās grāmatas', route: 'bookmarks.read' },
-        { id: 2, title: 'Grāmatas lasāmas', route: 'bookmarks.reading' },
+        { id: 2, title: 'Lasāmās grāmatas', route: 'bookmarks.reading' },
         { id: 3, title: 'Pamestas grāmatas', route: 'bookmarks.dropped' },
         { id: 4, title: 'Plānotās grāmatas', route: 'bookmarks.planned' }
     ]

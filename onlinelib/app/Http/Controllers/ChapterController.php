@@ -32,7 +32,7 @@ class ChapterController extends Controller
             'order' => $order,
         ]);
 
-        return back();
+        return redirect()->back();
     }
 
     // Saglabā jaunu lietotāja nodaļu
@@ -45,17 +45,18 @@ class ChapterController extends Controller
         ]);
 
         // Nosaka nodaļas secības numuru
-        $order = BookChapter::where('user_book_id', $book->id)->count() + 1;
+        $order = BookChapter::where('user_book_id', $book->id)->max('order') + 1;
 
         // Izveido jaunu nodaļu datubāzē
         BookChapter::create([
             'user_book_id' => $book->id,
+            'classic_book_id' => null,
             'name' => $validated['name'],
             'content' => $validated['content'],
             'order' => $order,
         ]);
 
-        return back();
+        return redirect()->back();
     }
 
     // Atver jaunas klasiskās nodaļas izveides formu
