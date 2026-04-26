@@ -5,36 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3e76eb8-75aa-48f5-a2ef-f4cf9daec5ed" name="Changes" comment="return view('example_vue', compact('story'));">
-      <change afterPath="$PROJECT_DIR$/onlinelib/lang/lv/auth.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/lang/lv/passwords.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/onlinelib/lang/lv/validation.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/AdminController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/AdminController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/Auth/RegisteredUserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/Auth/RegisteredUserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/BookmarkController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/BookmarkController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ChapterController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ChapterController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ClassicBookController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ClassicBookController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/CommentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/CommentController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/PdfExport.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/PdfExport.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ProfileController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/ProfileController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/SupportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/SupportController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/UserBookController.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Http/Controllers/UserBookController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/ClassicBook.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/ClassicBook.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/app/Models/UserBook.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/app/Models/UserBook.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/database/seeders/UsersSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/database/seeders/UsersSeeder.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Bookmarks/SingleBookmarkPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Bookmarks/SingleBookmarkPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Bookmarks/UserSingleBookmarkPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Bookmarks/UserSingleBookmarkPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Profile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Profile/Profile.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ClassicBooks/ClassicBook.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/ClassicBooks/ClassicBook.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/Library.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/Library.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/UserBooks/UserBook.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Reading/UserBooks/UserBook.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/UserProfile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/UserProfile.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditInfo/EditChapter.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/EditInfo/EditChapter.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/NewInfo/NewChapter.vue" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/js/Pages/Writing/NewInfo/NewChapter.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/views/pdf/books.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/views/pdf/books.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/views/pdf/problems.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/views/pdf/problems.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/views/pdf/reports.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/views/pdf/reports.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/onlinelib/resources/views/pdf/users.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/onlinelib/resources/views/pdf/users.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,6 +34,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;22DP1PGrin&quot;
+  }
+}</component>
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="a6c8b8ab-f6a2-450c-a5ed-7861de00d12f" />
+  </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/22DP1PGrin/onlib.github.io.git&quot;,
+    &quot;accountId&quot;: &quot;a6c8b8ab-f6a2-450c-a5ed-7861de00d12f&quot;
+  }
+}</component>
   <component name="PhpDebugGeneral" listening_started="true" />
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="$PROJECT_DIR$/../../php/php.exe">
     <include_path>
@@ -380,6 +367,10 @@
       <workItem from="1777014099992" duration="8229000" />
       <workItem from="1777050953908" duration="2506000" />
       <workItem from="1777097650940" duration="1568000" />
+      <workItem from="1777210460429" duration="1054000" />
+      <workItem from="1777213713922" duration="187000" />
+      <workItem from="1777213958645" duration="41000" />
+      <workItem from="1777214226630" duration="164000" />
       <workItem from="1776788483802" duration="1851000" />
       <workItem from="1776408131376" duration="10748000" />
       <workItem from="1776681552455" duration="9041000" />
