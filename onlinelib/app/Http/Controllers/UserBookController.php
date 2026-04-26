@@ -103,6 +103,7 @@ class UserBookController extends Controller
             ->with('genres', 'chapters', 'block') // Iekļauj žanrus un nodaļas
             ->findOrFail($id);
 
+
         // Atgriež skatu ar grāmatas datiem un iespējām rediģēt
         return Inertia::render('Writing/EditInfo/EditStory', [
             'book' => $book,
