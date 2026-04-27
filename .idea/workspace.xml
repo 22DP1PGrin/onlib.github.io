@@ -5,6 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3e76eb8-75aa-48f5-a2ef-f4cf9daec5ed" name="Changes" comment="return view('example_vue', compact('story'));">
+      <change afterPath="$PROJECT_DIR$/onlinelib/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/apache.conf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onlinelib/start.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
