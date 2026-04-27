@@ -2,9 +2,6 @@
 
 echo "Starting Laravel app..."
 
-# Generate app key if not set
-php artisan key:generate --force
-
 # Run database migrations
 php artisan migrate --force
 
