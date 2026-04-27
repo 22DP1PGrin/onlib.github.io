@@ -316,7 +316,7 @@
                     @click="openBookmarkModal"
                     class="bookmark-button"
                 >
-                    {{ currentBookmark ? currentBookmark.name : 'Pievienot grāmatzīmēm' }}
+                    {{ currentBookmark ? currentBookmark.name : 'Pievienot grāmatzīmei' }}
                 </button>
 
                 <!-- Grāmatzīmju izvēlnes modālais logs -->
@@ -575,7 +575,7 @@
     }
 
     .bookmark-option.active {
-        background-color: #ffc8a9;
+        background-color: #ffb18e;
     }
 
     .remove-hint .fa:hover{

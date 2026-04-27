@@ -72,8 +72,8 @@ class BookmarkController extends Controller
 
         // Sagatavo datus skatam
         $data = [
-            'books' => $this->getBooks(UserBook::class, 'user_book_id', $userId, $bookmarkType->id),
-            'classicBooks' => $this->getBooks(ClassicBook::class, 'classic_book_id', $userId, $bookmarkType->id),
+            'books' => $this->getBooks(UserBook::class,  $userId, $bookmarkType->id),
+            'classicBooks' => $this->getBooks(ClassicBook::class, $userId, $bookmarkType->id),
             'pageTitle' => $typeTitles[$bookmarkType->id] ?? 'Grāmatas',
             'activeTab' => $bookmarkType->id,
             'viewingUserId' => $userId
@@ -98,8 +98,8 @@ class BookmarkController extends Controller
 
         // Sagatavo datus skatam
         $data = [
-            'books' => $this->getBooks(UserBook::class, 'user_book_id', $userId, $bookmarkType->id),
-            'classicBooks' => $this->getBooks(ClassicBook::class, 'classic_book_id', $userId, $bookmarkType->id),
+            'books' => $this->getBooks(UserBook::class,  $userId, $bookmarkType->id),
+            'classicBooks' => $this->getBooks(ClassicBook::class,  $userId, $bookmarkType->id),
             'pageTitle' => $typeTitles[$bookmarkType->id] ?? 'Grāmatas',
             'activeTab' => $bookmarkType->id,
             'viewingUserId' => $userId
@@ -113,10 +113,10 @@ class BookmarkController extends Controller
     {
         // Veido vaicājumu grāmatām ar grāmatzīmēm
         $query = $model::where('is_blocked', false)
-        ->whereHas('bookmark', fn($q) => $q
-            ->where('bookmark_type_id', $typeId)
-            ->where('user_id', $userId)
-        );
+            ->whereHas('bookmark', fn($q) =>
+            $q->where('bookmark_type_id', $typeId)
+                ->where('user_id', $userId)
+            );
 
         // Pievieno attiecības atkarībā no modeļa tipa
         $query->with(['genres', 'ratings', 'bookmark.user:id,nickname']);

@@ -41,8 +41,7 @@ class ClassicBook extends Model
     // Grāmatai var būt viena grāmatzīme vienam lietotājam
     public function bookmark()
     {
-        return $this->hasOne(Bookmark::class, 'classic_book_id')
-            ->with('bookmarkType');
+        return $this->hasOne(Bookmark::class, 'classic_book_id');
     }
 
     // Grāmatai var būt vairāki komentāri

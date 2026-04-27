@@ -23,7 +23,7 @@
     // Cilņu definīcijas - katra cilne satur ID, nosaukumu un atbilstošo maršrutu
     const tabs = [
         { id: 1, title: 'Izlasītās grāmatas', typeId: 1 },
-        { id: 2, title: 'Grāmatas lasāmas', typeId: 2 },
+        { id: 2, title: 'Lasāmās grāmatas', typeId: 2 },
         { id: 3, title: 'Pamestas grāmatas', typeId: 3 },
         { id: 4, title: 'Plānotās grāmatas', typeId: 4 }
     ]

@@ -5,7 +5,7 @@
     import axios from "axios";
     import {route} from "ziggy-js";
     import SuccessModal from "@/Components/Modal/SuccessModal.vue";
-    import {router} from "@inertiajs/vue3";
+    import {router, useForm} from "@inertiajs/vue3";
 
     // Komponenta ievaddati
     const props = defineProps({
@@ -15,6 +15,12 @@
 
     // Modālo logu stāvokļi
     const showSuccesModal = ref(false);
+
+    // Forms nodaļās izveidei
+    const form = useForm({
+        name: "",
+        content: ""
+    });
 
     // Aizvēr modāli
     const closeSuccesModal = () => {
@@ -27,11 +33,6 @@
         router.visit(redirectUrl);
     };
 
-    // Formas dati
-    const title = ref('');
-    const content = ref('');
-    const validationErrors = ref({});
-
     // Funkcija, kas saglabā jaunu nodaļu
     const saveChapter = () => {
         // Nosaka, uz kuru servera maršrutu sūtīt datus
@@ -40,15 +41,10 @@
             : route('user.chapters.store', props.bookId);
 
         // Nosūta datus uz serveri
-        router.post(url, {
-            // Nodaļas dati
-            book_id: props.bookId,
-            name: title.value,
-            content: content.value
-
-        }, {
+        form.post(url, {
             onSuccess: () => {
                 showSuccesModal.value = true;
+                form.reset();
             }
         });
     };
@@ -74,36 +70,33 @@
             <form @submit.prevent="saveChapter">
                 <div class="editor-container">
                     <input
-                        v-model="title"
+                        v-model="form.name"
                         type="text"
                         class="chapter-title-input"
                         placeholder="Nodaļas nosaukums"
-                        required
                     />
 
                     <!-- Kļūdas paziņojums, ja nosaukums nav derīgs -->
-                    <div v-if="validationErrors.name" class="error-message1">
-                        {{ validationErrors.name[0] }}
+                    <div v-if="form.errors.name" class="error-message1">
+                        {{ form.errors.name }}
                     </div>
 
                     <!-- Satura ievades lauks -->
                     <textarea
-                        v-model="content"
+                        v-model="form.content"
                         class="chapter-editor"
                         placeholder="Sāciet rakstīt savu nodaļu šeit..."
-                        required
                     ></textarea>
 
                     <!-- Kļūdas paziņojums, ja saturs nav derīgs -->
-                    <div v-if="validationErrors.content" class="error-message">
-                        {{ validationErrors.content[0] }}
+                    <div v-if="form.errors.content" class="error-message">
+                        {{ form.errors.content }}
                     </div>
-
                     <div class="editor-footer">
                         <button type="submit" class="save-btn">Saglabāt</button>
                         <!-- Kopējas rakstszīmes skaits -->
                         <div class="word-count">
-                            Rakstzīmes: {{ content.length }}
+                            Rakstzīmes: {{ form.content.length }}
                         </div>
                     </div>
                 </div>
@@ -122,7 +115,7 @@
     }
 
     .story-form {
-        max-width: 1000px; /* Maksimālais platums formai */
+        max-width: 900px; /* Maksimālais platums formai */
         margin: 0 auto; /* Centrs horizontāli */
         padding: 20px;
     }
@@ -159,7 +152,7 @@
 
     .chapter-editor {
         width: 100%;
-        min-height: 500px; /* Minimālais augstums */
+        min-height: 600px; /* Minimālais augstums */
         padding: 15px;
         font-size: 1rem;
         line-height: 1.6; /* Rindas augstums */

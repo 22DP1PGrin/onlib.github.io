@@ -3,7 +3,7 @@
     import Footer from "@/Components/Footer.vue";
     import { ref } from "vue";
     import { route } from "ziggy-js";
-    import { router } from "@inertiajs/vue3";
+    import {router, useForm} from "@inertiajs/vue3";
     import SuccessModal from "@/Components/Modal/SuccessModal.vue";
 
     // Komponenta ievaddati
@@ -16,10 +16,11 @@
     // Modālo logu stāvokļi
     const showSuccesModal = ref(false);
 
-    // Formas dati
-    const title = ref(props.chapter.name || '');
-    const content = ref(props.chapter.content || '');
-    const validationErrors = ref({});
+    // Forms nodaļās rediģēšanai
+    const form = useForm({
+        name: props.chapter.name ?? "",
+        content: props.chapter.content ?? ""
+    });
 
     // Aizver veiksmīgas atjaunināšanas modāli un pārvirza atpakaļ uz grāmatas rediģēšanas lapu
     const closeSuccesModal = () => {
@@ -41,14 +42,11 @@
             : route('user.chapters.update', props.chapter.id);
 
         // Nosūta PUT pieprasījumu uz serveri ar atjauninātajiem datiem
-        router.put(url, {
-            book_id: props.bookId,
-            name: title.value,
-            content: content.value
-        }, {
+        form.post(url, {
             onSuccess: () => {
                 showSuccesModal.value = true;
-            },
+                form.reset();
+            }
         });
     };
 </script>
@@ -74,7 +72,7 @@
                 <div class="editor-container">
                     <!-- Nodaļas nosaukuma ievades lauks -->
                     <input
-                        v-model="title"
+                        v-model="form.name"
                         type="text"
                         class="chapter-title-input"
                         placeholder="Nodaļas nosaukums"
@@ -82,28 +80,28 @@
                     />
 
                     <!-- Kļūdas paziņojums, ja nosaukums nav derīgs -->
-                    <div v-if="validationErrors.name" class="error-message">
-                        {{ validationErrors.name[0] }}
+                    <div v-if="form.errors.name" class="error-message1">
+                        {{ form.errors.name }}
                     </div>
 
                     <!-- Nodaļas satura ievades lauks (teksta laukums) -->
                     <textarea
-                        v-model="content"
+                        v-model="form.content"
                         class="chapter-editor"
                         placeholder="Sāciet rakstīt savu nodaļu šeit..."
                         required
                     ></textarea>
 
                     <!-- Kļūdas paziņojums, ja saturs nav derīgs -->
-                    <div v-if="validationErrors.content" class="error-message">
-                        {{ validationErrors.content[0] }}
+                    <div v-if="form.errors.content" class="error-message">
+                        {{ form.errors.content }}
                     </div>
 
                     <div class="editor-footer">
                         <button type="submit" class="save-btn">Saglabāt</button>
                         <!-- Kopējas rakstszīmes skaits -->
                         <div class="word-count">
-                            Rakstzīmes: {{ content.length }}
+                            Rakstzīmes: {{ form.content.length }}
                         </div>
                     </div>
                 </div>
@@ -121,7 +119,7 @@
     }
 
     .story-form {
-        max-width: 1000px; /* Maksimālais platums */
+        max-width: 900px; /* Maksimālais platums */
         margin: 0 auto; /* Centrēšana */
         padding: 20px; /* Iekšējais attālums */
     }
@@ -158,7 +156,7 @@
 
     .chapter-editor {
         width: 100%;
-        min-height: 500px; /* Minimālais augstums */
+        min-height: 600px; /* Minimālais augstums */
         padding: 15px;
         font-size: 1rem;
         line-height: 1.6; /* Teksta augstums */
