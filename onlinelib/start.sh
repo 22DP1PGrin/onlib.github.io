@@ -5,10 +5,8 @@ echo "Starting Laravel app..."
 # Run database migrations
 php artisan migrate --force
 
-# Cache configuration for better performance
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+echo "=== LAST LARAVEL ERROR ==="
+cat storage/logs/laravel.log || true
 
 # Fix permissions
 chmod -R 775 storage bootstrap/cache
