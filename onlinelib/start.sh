@@ -1,7 +1,8 @@
 #!/bin/bash
 
 echo "Starting Laravel app..."
-
+php artisan config:clear
+php artisan cache:clear
 # Run database migrations
 php artisan migrate --force
 
