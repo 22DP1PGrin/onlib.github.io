@@ -11,7 +11,7 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 RUN a2enmod rewrite
 
 # Copy Apache configuration
-COPY apache.conf /etc/apache2/sites-available/000-default.conf
+COPY onlinelib/apache.conf /etc/apache2/sites-available/000-default.conf
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -20,7 +20,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 # Copy project files
-COPY .. .
+COPY onlinelib/. .
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
@@ -29,7 +29,8 @@ RUN composer install --no-dev --optimize-autoloader
 RUN chown -R www-data:www-data storage bootstrap/cache
 
 # Copy startup script
-COPY start.sh /start.sh
+COPY onlinelib/start.sh /start.sh
+
 RUN chmod +x /start.sh
 
 # Expose port 80
