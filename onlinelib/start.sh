@@ -8,6 +8,9 @@ php artisan view:cache
 
 # Run database migrations
 php artisan migrate --force
+php artisan db:seed --force
+
+php artisan storage:link || true
 
 echo "=== LAST LARAVEL ERROR ==="
 cat storage/logs/laravel.log || true
