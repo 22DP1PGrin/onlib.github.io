@@ -25,6 +25,14 @@ COPY onlinelib/. .
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
+# Node.js (VITE FIX)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
+
+# Install JS deps + build
+RUN npm install
+RUN npm run build
+
 # Set correct permissions for Laravel
 RUN chown -R www-data:www-data storage bootstrap/cache
 
